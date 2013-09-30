@@ -5,5 +5,16 @@
 *.war
 *.ear
 
+# Binaries #
+*.png
+*.pdn
+*.ogg
+
+# libs #
+*.dll
+
+# eclipse #
+*.prefs
+
 *.out
 
