@@ -1,6 +1,7 @@
 package com.sleep.component.movement;
 
 import com.badlogic.gdx.math.Vector2;
+import com.sleep.Constants;
 import com.sleep.Entity;
 import com.sleep.GameScreen;
 import com.sleep.component.Component;
@@ -31,18 +32,20 @@ public abstract class MovementComponent extends Component {
 		return direction;
 	}
 	
+	/**
+	 * movement collision detection
+	 */
 	protected void moveTo(float x, float y, float delta) {
 		if(GameScreen.level.getEntityAt(x, y) == null) {
 			destination.x = x;
 			destination.y = y;
 			moving = true;
 		} else if(GameScreen.level.getEntityAt(x, y).getName() == "Box") {
-			Vector2 playerMovement = new Vector2(x - owner.getPosition().x, y - owner.getPosition().y);
+			Vector2 playerMovement = new Vector2(x - owner.position.x, y - owner.position.y);
 			Entity box = GameScreen.level.getEntityAt(x, y);
-			Vector2 pushTo = new Vector2(box.getPosition().x + playerMovement.x * 1, box.getPosition().y + playerMovement.y * 1);
+			Vector2 pushTo = new Vector2(box.position.x + playerMovement.x * 1, box.position.y + playerMovement.y * 1);
 			if(GameScreen.level.getEntityAt(pushTo) == null) {
-				box.getPosition().x = pushTo.x;
-				box.getPosition().y = pushTo.y;
+				box.setPosition(pushTo);
 				destination.x = x;
 				destination.y = y;
 				moving = true;
@@ -50,8 +53,20 @@ public abstract class MovementComponent extends Component {
 		}
 	}
 	
+	/**
+	 * instantly moves the entity by a given amount of grid cells
+	 */
+	protected void teleport(Vector2 movement) {
+		teleport(movement.x, movement.y);
+	}
+	
+	protected void teleport(float x, float y) {
+		owner.position.x = owner.position.x + x * Constants.GRID_CELL_SIZE;
+		owner.position.y = owner.position.y + y * Constants.GRID_CELL_SIZE;
+	}
+	
 	private void keepMoving(float delta) {
-		Vector2 currentPos = owner.getPosition();
+		Vector2 currentPos = owner.position;
 		if(destination.x > currentPos.x && Math.abs(destination.x - currentPos.x) > 0) {
 			moveRight(delta);
 		} else if (destination.x < currentPos.x && Math.abs(destination.x - currentPos.x) > 0) {
@@ -65,16 +80,16 @@ public abstract class MovementComponent extends Component {
 	
 	private void stopMoving(float delta) {
 		if(moving) {
-			Vector2 currentPos = owner.getPosition();
+			Vector2 currentPos = owner.position;
 			if(direction.x == 1 && currentPos.x > destination.x ||
 					direction.x == -1 && currentPos.x < destination.x) {
 				moving = false;
-				owner.getPosition().x = destination.x;
+				owner.position.x = destination.x;
 				velocity.x = 0;
 			} else if(direction.y == 1 && currentPos.y > destination.y ||
 					direction.y == -1 && currentPos.y < destination.y) {
 				moving = false;
-				owner.getPosition().y = destination.y;
+				owner.position.y = destination.y;
 				velocity.y = 0;
 			}
 		}
@@ -163,7 +178,7 @@ public abstract class MovementComponent extends Component {
 		velocity.x = newVelocity(velocity.x, direction.x * groundAcceleration, GROUND_FRICTION, delta);
 		velocity.y = newVelocity(velocity.y, direction.y * groundAcceleration, GROUND_FRICTION, delta);
 		
-		Vector2 position = owner.getPosition();
+		Vector2 position = owner.position;
 
 		position.y = position.y + delta / 2 * (oldVelocity.y + velocity.y); //Heun's method
 		position.x = position.x + delta / 2 * (oldVelocity.x + velocity.x); //Heun's method

@@ -22,7 +22,7 @@ public class GameScreen implements Screen {
 		this.game = game;
 		
 		assets = new AssetManager();
-		assets.load("images/enemy.png", Texture.class);
+		assets.load("images/ghost.png", Texture.class);
 		assets.load("images/wall.png", Texture.class);
 		assets.load("images/box.png", Texture.class);
 		assets.load("images/grid.png", Texture.class);

@@ -2,7 +2,6 @@ package com.sleep;
 
 import java.util.LinkedHashMap;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -10,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.sleep.component.animation.AnimationActions;
-import com.sleep.component.animation.AnimationMapComponent;
+import com.sleep.component.movement.GhostMovementComponent;
 import com.sleep.component.movement.PlayerMovementComponent;
 import com.sleep.component.render.AnimationRenderComponent;
 import com.sleep.component.render.BackgroundRenderComponent;
@@ -38,6 +37,14 @@ public class EntityFactory {
 		GameScreen.player = player;
 		
 		return player;
+	}
+	
+	public static Entity makeGhost(int x, int y) {
+		return GameScreen.entityManager.add(new Entity("Ghost"))
+				.addComponent(new GhostMovementComponent())
+				.addComponent(new ImageRenderComponent(GameScreen.assets.get("images/ghost.png", Texture.class)))
+				.initComponents()
+				.setPosition(new Vector2(x, y));
 	}
 	
 	public static Entity makeBox(int x, int y) {

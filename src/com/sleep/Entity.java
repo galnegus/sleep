@@ -13,7 +13,7 @@ public class Entity{
 
 	private String name;
 
-	private Vector2 position;
+	public Vector2 position;
 
 	private Map<Class<? extends Component>, Component> components = null;
 
@@ -86,10 +86,6 @@ public class Entity{
 	 */
 	public <T extends Component> T getComponent(Class<T> type) {
 		return type.cast(components.get(type));
-	}
-	
-	public Vector2 getPosition() {
-		return position;
 	}
 	
 	public Entity setPosition(Vector2 position) {

@@ -33,17 +33,24 @@ public class CoolCamera extends OrthographicCamera {
 	 *            GameContainer
 	 */
 	public void update(float delta) {
-		float increment = 0.05f;
+		float zoomIncrement = 0.05f;
 		if (Gdx.input.isKeyPressed(Constants.ZOOM_IN)) {
-			scale.x += increment;
-			scale.y += increment;
+			scale.x += zoomIncrement;
+			scale.y += zoomIncrement;
 		} else if (Gdx.input.isKeyPressed(Constants.ZOOM_OUT)) {
-			scale.x -= increment;
-			scale.y -= increment;
+			scale.x -= zoomIncrement;
+			scale.y -= zoomIncrement;
 		}
 		
-		float playerX = GameScreen.player.getPosition().x + (GameScreen.player.getWidth())/ (2);
-		float playerY = GameScreen.player.getPosition().y + (GameScreen.player.getHeight())/ (2);
+		float rotateIncrement = 0.05f;
+		if (Gdx.input.isKeyPressed(Constants.ROTATE_LEFT)) {
+			rotation += rotateIncrement;
+		} else if (Gdx.input.isKeyPressed(Constants.ROTATE_RIGHT)) {
+			rotation -= rotateIncrement;
+		}
+		
+		float playerX = GameScreen.player.position.x + (GameScreen.player.getWidth())/ (2);
+		float playerY = GameScreen.player.position.y + (GameScreen.player.getHeight())/ (2);
 		
 		movement.x = delta * ((playerX - position.x) * CAMERA_SCROLL_ACCELERATION) / size.x ;
 		movement.y = delta * ((playerY - position.y) * CAMERA_SCROLL_ACCELERATION) / size.y;
@@ -64,6 +71,7 @@ public class CoolCamera extends OrthographicCamera {
 		
 		
 		this.translate(movement);
+		this.rotate(rotation);
 		super.update();
 	}
 }

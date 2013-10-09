@@ -49,6 +49,8 @@ public class Level {
 						grid[x][y] = EntityFactory.makePlayer(x * Constants.GRID_CELL_SIZE, y * Constants.GRID_CELL_SIZE);
 					} else if(charBoard[x][y] == Constants.WALL){
 						grid[x][y] = EntityFactory.makeWall(x * Constants.GRID_CELL_SIZE, y * Constants.GRID_CELL_SIZE);
+					} else if(charBoard[x][y] == Constants.GHOST){
+						grid[x][y] = EntityFactory.makeGhost(x * Constants.GRID_CELL_SIZE, y * Constants.GRID_CELL_SIZE);
 					}
 				}
 			}
@@ -62,18 +64,28 @@ public class Level {
 		}
 	}
 	
+	public Vector2 getGridPos(Vector2 position) {
+		return getGridPos(position.x, position.y);
+	}
+	
+	public Vector2 getGridPos(float x, float y) {
+		int gridX = (int) x / Constants.GRID_CELL_SIZE;
+		int gridY = (int) y / Constants.GRID_CELL_SIZE;
+		
+		return new Vector2(gridX, gridY);
+	}
+	
 	public Entity getEntityAt(Vector2 position) {
 		return getEntityAt(position.x, position.y);
 	}
 	
 	public Entity getEntityAt(float x, float y) {
-		int gridX = (int) x / Constants.GRID_CELL_SIZE;
-		int gridY = (int) y / Constants.GRID_CELL_SIZE;
+		Vector2 gridPos = getGridPos(x, y);
 		
-		if(gridY < 0 || gridY < 0 || gridX >= xSize || gridY >= ySize)
+		if(gridPos.x < 0 || gridPos.y < 0 || gridPos.x >= xSize || gridPos.y >= ySize)
 			return null;
 		else
-			return grid[gridX][gridY];
+			return grid[(int) gridPos.x][(int) gridPos.y];
 	}
 	
 	public Entity setEntityAt(Vector2 position, Entity e) {
@@ -96,10 +108,10 @@ public class Level {
 		for(int x = 0; x < xSize; x++) {
 			for(int y = 0; y < ySize; y++) {
 				if(grid[x][y] != null) {
-					if(grid[x][y] != getEntityAt(grid[x][y].getPosition())) {
+					if(grid[x][y] != getEntityAt(grid[x][y].position)) {
 						temp = grid[x][y];
 						grid[x][y] = null;
-						setEntityAt((temp.getPosition()), temp);
+						setEntityAt((temp.position), temp);
 					}
 				}
 			}
@@ -120,8 +132,8 @@ public class Level {
 			}
 		}
 		
-		int xPlayer = (int) GameScreen.player.getPosition().x / Constants.GRID_CELL_SIZE;
-		int yPlayer = (int) GameScreen.player.getPosition().y / Constants.GRID_CELL_SIZE;
+		int xPlayer = (int) GameScreen.player.position.x / Constants.GRID_CELL_SIZE;
+		int yPlayer = (int) GameScreen.player.position.y / Constants.GRID_CELL_SIZE;
 		Vector2 playerPos = new Vector2(xPlayer, yPlayer);
 		distanceGrid[xPlayer][yPlayer] = 0;
 		
@@ -151,6 +163,29 @@ public class Level {
 				
 			}
 		}
+	}
+	
+	public Vector2 bestMove(Vector2 mover) {
+		Vector2 movement = new Vector2(0, 0);
+		Vector2 gridPos = getGridPos(mover);
+		
+		int min = xSize * ySize;
+		
+		Vector2[] moves = new Vector2[4];
+		moves[0] = new Vector2(gridPos.x - 1, gridPos.y);
+		moves[1] = new Vector2(gridPos.x + 1, gridPos.y);
+		moves[2] = new Vector2(gridPos.x, gridPos.y - 1);
+		moves[3] = new Vector2(gridPos.x, gridPos.y + 1);
+		
+		for(Vector2 move : moves) {
+			if(distanceGrid[(int) move.x][(int) move.y] < min && distanceGrid[(int) move.x][(int) move.y] >= 0) {
+				min = distanceGrid[(int) move.x][(int) move.y];
+				movement.x = move.x - gridPos.x;
+				movement.y = move.y - gridPos.y;
+			}
+		}
+		
+		return movement;
 	}
 	
 	public void printDistanceGrid() {

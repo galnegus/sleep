@@ -7,7 +7,11 @@ public class Constants {
 	public static final char BOX = '$';
 	public static final char WALL = '#';
 	public static final char PLAYER = '@';
+	public static final char GHOST = 'x';
 	public static final int GRID_CELL_SIZE = 64;
+	
+	//Ghost behaviour
+	public static final float GHOST_MOVE_FREQUENCY = 0.3f;
 	
 	//Input
 	public static final int MOVE_LEFT = Input.Keys.A;
@@ -17,5 +21,8 @@ public class Constants {
 
 	public static final int ZOOM_IN = Input.Keys.PLUS;
 	public static final int ZOOM_OUT = Input.Keys.MINUS;
+	
+	public static final int ROTATE_LEFT = Input.Keys.Q;
+	public static final int ROTATE_RIGHT = Input.Keys.E;
 	
 }
