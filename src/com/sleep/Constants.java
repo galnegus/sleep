@@ -11,7 +11,7 @@ public class Constants {
 	public static final int GRID_CELL_SIZE = 64;
 	
 	//Ghost behaviour
-	public static final float GHOST_MOVE_FREQUENCY = 0.3f;
+	public static final float GHOST_MOVE_FREQUENCY = 0.8f;
 	
 	//Input
 	public static final int MOVE_LEFT = Input.Keys.A;

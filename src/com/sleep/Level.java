@@ -168,6 +168,7 @@ public class Level {
 	public Vector2 bestMove(Vector2 mover) {
 		Vector2 movement = new Vector2(0, 0);
 		Vector2 gridPos = getGridPos(mover);
+		Vector2 player = getGridPos(GameScreen.player.position);
 		
 		int min = xSize * ySize;
 		
@@ -182,6 +183,12 @@ public class Level {
 				min = distanceGrid[(int) move.x][(int) move.y];
 				movement.x = move.x - gridPos.x;
 				movement.y = move.y - gridPos.y;
+			} else if(distanceGrid[(int) move.x][(int) move.y] == min) {
+				if(Math.abs(Math.abs(player.x - gridPos.x) - Math.abs(player.y - gridPos.y)) 
+						> Math.abs(Math.abs(player.x - move.x) - Math.abs(player.y - move.y))) {
+					movement.x = move.x - gridPos.x;
+					movement.y = move.y - gridPos.y;
+				}
 			}
 		}
 		

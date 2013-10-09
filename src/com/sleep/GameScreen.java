@@ -58,10 +58,8 @@ public class GameScreen implements Screen {
 		//draw batch
 		game.batch.setProjectionMatrix(camera.combined);
 		game.batch.begin();
-		
 		backgroundManager.render(game);
 		entityManager.render(game);
-		
 		game.batch.end();
 		
 		//update stuff
