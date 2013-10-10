@@ -10,6 +10,9 @@ public class Constants {
 	public static final char GHOST = 'x';
 	public static final int GRID_CELL_SIZE = 64;
 	
+	//Player behaviour
+	public static final float PLAYER_MOVE_FREQUENCY = 0.25f;
+	
 	//Ghost behaviour
 	public static final float GHOST_MOVE_FREQUENCY = 0.8f;
 	

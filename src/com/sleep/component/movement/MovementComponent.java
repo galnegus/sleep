@@ -1,8 +1,6 @@
 package com.sleep.component.movement;
 
 import com.badlogic.gdx.math.Vector2;
-import com.sleep.Constants;
-import com.sleep.Entity;
 import com.sleep.GameScreen;
 import com.sleep.component.Component;
 import com.sleep.component.ComponentException;
@@ -16,8 +14,7 @@ public class MovementComponent extends Component {
 	protected static final float MAX_VELOCITY = 600000f;
 	protected static final float GROUND_FRICTION = 1.01f;
 	
-	protected float groundAcceleration = calculateAcceleration(GROUND_FRICTION, MAX_VELOCITY);
-	protected float maxVelocity = terminalVelocity(groundAcceleration, GROUND_FRICTION);
+	private float acceleration = calculateAcceleration(GROUND_FRICTION, MAX_VELOCITY);
 	
 	protected Vector2 velocity = new Vector2();
 	protected Vector2 direction = new Vector2(0, 0);
@@ -38,11 +35,13 @@ public class MovementComponent extends Component {
 		destination.y = owner.position.y + y;
 		if(GameScreen.level.getEntityAt(destination.x, destination.y) == null) {
 			moving = true;
+			GameScreen.level.moveEntityTo(destination, owner);
 		} else if(GameScreen.level.getEntityAt(destination.x, destination.y).getName().equals("Box") && owner.getName().equals("Player")) {
 			Vector2 pushTo = new Vector2(destination.x + x, destination.y + y);
 			if(GameScreen.level.getEntityAt(pushTo) == null) {
 				GameScreen.level.getEntityAt(destination.x, destination.y).getComponent(MovementComponent.class).move(x, y);
 				moving = true;
+				GameScreen.level.moveEntityTo(destination, owner);
 			}
 		}
 	}
@@ -147,8 +146,8 @@ public class MovementComponent extends Component {
 		}
 		*/
 		
-		velocity.x = newVelocity(velocity.x, direction.x * groundAcceleration, GROUND_FRICTION, delta);
-		velocity.y = newVelocity(velocity.y, direction.y * groundAcceleration, GROUND_FRICTION, delta);
+		velocity.x = newVelocity(velocity.x, direction.x * acceleration, GROUND_FRICTION, delta);
+		velocity.y = newVelocity(velocity.y, direction.y * acceleration, GROUND_FRICTION, delta);
 		
 		Vector2 position = owner.position;
 

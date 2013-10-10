@@ -25,7 +25,7 @@ public class Level {
 		char[][] charBoard;
 		try {
 			FileHandle levelTxt = Gdx.files.internal("levels/test.txt");
-			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(levelTxt.file())));
+			BufferedReader br = levelTxt.reader(200);
 
 			xSize = Integer.parseInt(br.readLine());
 			ySize = Integer.parseInt(br.readLine());
@@ -75,19 +75,34 @@ public class Level {
 		return new Vector2(gridX, gridY);
 	}
 	
+	/**
+	 * retrieves an entity at the given render position.
+	 * 
+	 * as there can be 2 possible grid positions for a given render positions (technically 4, but only 2 are ever used), 
+	 * both grid positions are checked for any entity.
+	 * if no entity is found at the floor, the entity (or lack of) at the ceiling is returned.
+	 */
 	public Entity getEntityAt(Vector2 position) {
 		return getEntityAt(position.x, position.y);
 	}
-	
 	public Entity getEntityAt(float x, float y) {
-		Vector2 gridPos = getGridPos(x, y);
+		Vector2 floorGridPos = getGridPos(x, y);
+		Vector2 ceilGridPos = new Vector2((float) Math.ceil(x / Constants.GRID_CELL_SIZE), (float) Math.ceil(y / Constants.GRID_CELL_SIZE));
 		
-		if(gridPos.x < 0 || gridPos.y < 0 || gridPos.x >= xSize || gridPos.y >= ySize)
+		if(floorGridPos.x < 0 || floorGridPos.y < 0 || floorGridPos.x >= xSize || floorGridPos.y >= ySize) {
 			return null;
-		else
-			return grid[(int) gridPos.x][(int) gridPos.y];
+		} else {
+			Entity floorEntity = grid[(int) floorGridPos.x][(int) floorGridPos.y];
+			Entity ceilEntity = grid[(int) ceilGridPos.x][(int) ceilGridPos.y];
+			
+			return floorEntity == null ? ceilEntity : floorEntity;
+		}
+			
 	}
 	
+	/**
+	 * puts an entity on the grid at the given render position
+	 */
 	public Entity setEntityAt(Vector2 position, Entity e) {
 		return setEntityAt(position.x, position.y, e);
 	}
@@ -103,34 +118,18 @@ public class Level {
 			
 	}
 	
+	public Entity moveEntityTo(Vector2 position, Entity e) {
+		return moveEntityTo(position.x, position.y, e);
+	}
+	
+	public Entity moveEntityTo(float x, float y, Entity e) {
+		Vector2 eGridPos = getGridPos(e.position);
+		grid[(int) eGridPos.x][(int) eGridPos.y] = null;
+		return setEntityAt(x, y, e);
+	}
+	
 	public void update(float delta) {
-		
-		for(int x = 0; x < xSize; x++) {
-			for(int y = 0; y < ySize; y++) {
-				updateEntityGridPos(x, y);
-			}
-		}
 		updateDistanceMatrix();
-	}
-	
-	private void updateEntityGridPos(Vector2 pos) {
-		updateEntityGridPos((int) pos.x, (int) pos.y);
-	}
-	
-	private void updateEntityGridPos(int x, int y) {
-		Entity temp;
-		if(grid[x][y] != null) {
-			if(grid[x][y] != getEntityAt(grid[x][y].position)) {
-				temp = grid[x][y];
-				
-				//check if the new grid position needs to be updated before overwriting it
-				updateEntityGridPos(getGridPos(temp.position));
-				
-				grid[x][y] = null;
-				setEntityAt((temp.position), temp);
-			}
-		}
-		
 	}
 	
 	/**

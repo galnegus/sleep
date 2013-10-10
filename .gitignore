@@ -9,6 +9,7 @@
 *.png
 *.pdn
 *.ogg
+/bin
 
 # libs #
 *.dll
