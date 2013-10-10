@@ -5,12 +5,13 @@ import com.sleep.Constants;
 import com.sleep.Entity;
 import com.sleep.GameScreen;
 import com.sleep.component.Component;
+import com.sleep.component.ComponentException;
 
 /**
  * @author thi
  *
  */
-public abstract class MovementComponent extends Component {
+public class MovementComponent extends Component {
 
 	protected static final float MAX_VELOCITY = 600000f;
 	protected static final float GROUND_FRICTION = 1.01f;
@@ -32,85 +33,44 @@ public abstract class MovementComponent extends Component {
 		return direction;
 	}
 	
-	/**
-	 * movement collision detection
-	 */
-	protected void moveTo(float x, float y, float delta) {
-		if(GameScreen.level.getEntityAt(x, y) == null) {
-			destination.x = x;
-			destination.y = y;
+	public void move(float x, float y) {
+		destination.x = owner.position.x + x;
+		destination.y = owner.position.y + y;
+		if(GameScreen.level.getEntityAt(destination.x, destination.y) == null) {
 			moving = true;
-		} else if(GameScreen.level.getEntityAt(x, y).getName() == "Box") {
-			Vector2 playerMovement = new Vector2(x - owner.position.x, y - owner.position.y);
-			Entity box = GameScreen.level.getEntityAt(x, y);
-			Vector2 pushTo = new Vector2(box.position.x + playerMovement.x * 1, box.position.y + playerMovement.y * 1);
+		} else if(GameScreen.level.getEntityAt(destination.x, destination.y).getName().equals("Box") && owner.getName().equals("Player")) {
+			Vector2 pushTo = new Vector2(destination.x + x, destination.y + y);
 			if(GameScreen.level.getEntityAt(pushTo) == null) {
-				box.setPosition(pushTo);
-				destination.x = x;
-				destination.y = y;
+				GameScreen.level.getEntityAt(destination.x, destination.y).getComponent(MovementComponent.class).move(x, y);
 				moving = true;
 			}
 		}
 	}
 	
-	/**
-	 * instantly moves the entity by a given amount of grid cells
-	 */
-	protected void teleport(Vector2 movement) {
-		teleport(movement.x, movement.y);
-	}
-	
-	protected void teleport(float x, float y) {
-		owner.position.x = owner.position.x + x * Constants.GRID_CELL_SIZE;
-		owner.position.y = owner.position.y + y * Constants.GRID_CELL_SIZE;
-	}
-	
 	private void keepMoving(float delta) {
-		Vector2 currentPos = owner.position;
-		if(destination.x > currentPos.x && Math.abs(destination.x - currentPos.x) > 0) {
-			moveRight(delta);
-		} else if (destination.x < currentPos.x && Math.abs(destination.x - currentPos.x) > 0) {
-			moveLeft(delta);
-		} else if (destination.y < currentPos.y) {
-			moveDown(delta);
-		} else if (destination.y > currentPos.y) {
-			moveUp(delta);
+		if(destination.x > owner.position.x && Math.abs(destination.x - owner.position.x) > 0) {
+			direction.x += 1;
+		} else if (destination.x < owner.position.x && Math.abs(destination.x - owner.position.x) > 0) {
+			direction.x -= 1;
+		} else if (destination.y < owner.position.y) {
+			direction.y -= 1;
+		} else if (destination.y > owner.position.y) {
+			direction.y += 1;
 		}
 	}
 	
 	private void stopMoving(float delta) {
-		if(moving) {
-			Vector2 currentPos = owner.position;
-			if(direction.x == 1 && currentPos.x > destination.x ||
-					direction.x == -1 && currentPos.x < destination.x) {
-				moving = false;
-				owner.position.x = destination.x;
-				velocity.x = 0;
-			} else if(direction.y == 1 && currentPos.y > destination.y ||
-					direction.y == -1 && currentPos.y < destination.y) {
-				moving = false;
-				owner.position.y = destination.y;
-				velocity.y = 0;
-			}
+		if((direction.x == 1 && destination.x < owner.position.x) || (direction.x == -1 && destination.x > owner.position.x)) {
+			moving = false;
+			owner.position.x = destination.x;
+			velocity.x = 0;
+		} else if((direction.y == 1 && destination.y < owner.position.y) || (direction.y == -1 && destination.y > owner.position.y)) {
+			moving = false;
+			owner.position.y = destination.y;
+			velocity.y = 0;
 		}
 	}
-	
 
-	private void moveLeft(float delta) {
-		direction.x -= 1;
-	}
-
-	private void moveRight(float delta) {
-		direction.x += 1;
-	}
-
-	private void moveUp(float delta) {
-		direction.y += 1;
-	}
-
-	private void moveDown(float delta) {
-		direction.y -= 1;
-	}
 	
 	/**
 	 * NEWVELOCITY():
@@ -160,7 +120,19 @@ public abstract class MovementComponent extends Component {
 		return -terminalVelocity / friction + terminalVelocity;
 	}
 
-	protected void updateStuff(float delta) {
+	/**
+	 * Should always be called first in the update method. Movement will still be functional if called last, but then
+	 * other components/entities won't be able to see the owner entity's acceleration.
+	 */
+	protected void resetAcceleration() {
+		direction.x = 0;
+		direction.y = 0;
+	}
+
+	@Override
+	public void update(float delta) {
+		resetAcceleration();
+		
 		if(moving)
 			keepMoving(delta);
 		
@@ -187,15 +159,9 @@ public abstract class MovementComponent extends Component {
 			stopMoving(delta);
 	}
 
-	/**
-	 * Should always be called first in the update method. Movement will still be functional if called last, but then
-	 * other components/entities won't be able to see the owner entity's acceleration.
-	 */
-	protected void resetAcceleration() {
-		direction.x = 0;
-		direction.y = 0;
-	}
-
 	@Override
-	public abstract void update(float delta);
+	public void init() throws ComponentException {
+		// TODO Auto-generated method stub
+		
+	}
 }

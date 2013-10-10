@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.sleep.component.animation.AnimationActions;
 import com.sleep.component.movement.GhostMovementComponent;
+import com.sleep.component.movement.MovementComponent;
 import com.sleep.component.movement.PlayerMovementComponent;
 import com.sleep.component.render.AnimationRenderComponent;
 import com.sleep.component.render.BackgroundRenderComponent;
@@ -50,6 +51,7 @@ public class EntityFactory {
 	public static Entity makeBox(int x, int y) {
 		return GameScreen.entityManager.add(new Entity("Box"))
 				.addComponent(new ImageRenderComponent(GameScreen.assets.get("images/box.png", Texture.class)))
+				.addComponent(new MovementComponent())
 				.initComponents()
 				.setPosition(new Vector2(x, y));
 	}

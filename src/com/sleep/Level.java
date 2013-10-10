@@ -104,20 +104,33 @@ public class Level {
 	}
 	
 	public void update(float delta) {
-		Entity temp;
+		
 		for(int x = 0; x < xSize; x++) {
 			for(int y = 0; y < ySize; y++) {
-				if(grid[x][y] != null) {
-					if(grid[x][y] != getEntityAt(grid[x][y].position)) {
-						temp = grid[x][y];
-						grid[x][y] = null;
-						setEntityAt((temp.position), temp);
-					}
-				}
+				updateEntityGridPos(x, y);
+			}
+		}
+		updateDistanceMatrix();
+	}
+	
+	private void updateEntityGridPos(Vector2 pos) {
+		updateEntityGridPos((int) pos.x, (int) pos.y);
+	}
+	
+	private void updateEntityGridPos(int x, int y) {
+		Entity temp;
+		if(grid[x][y] != null) {
+			if(grid[x][y] != getEntityAt(grid[x][y].position)) {
+				temp = grid[x][y];
+				
+				//check if the new grid position needs to be updated before overwriting it
+				updateEntityGridPos(getGridPos(temp.position));
+				
+				grid[x][y] = null;
+				setEntityAt((temp.position), temp);
 			}
 		}
 		
-		updateDistanceMatrix();
 	}
 	
 	/**
@@ -165,6 +178,12 @@ public class Level {
 		}
 	}
 	
+	/**
+	 * looks in the distanceGrid for the move that brings the entity the closest to the player
+	 * 
+	 * @param mover the entity being moved
+	 * @return a vector describing the movement (ie movement.x = -1, movement.y = 0 for a move going left)
+	 */
 	public Vector2 bestMove(Vector2 mover) {
 		Vector2 movement = new Vector2(0, 0);
 		Vector2 gridPos = getGridPos(mover);
@@ -196,10 +215,32 @@ public class Level {
 	}
 	
 	public void printDistanceGrid() {
-		System.out.println("grid: ");
+		System.out.println("distance grid: ");
 		for(int x = 0; x < xSize; x++) {
 			for(int y = 0; y < ySize; y++) {
 				System.out.print(distanceGrid[x][y] + "\t");
+			}
+			System.out.println();
+		}
+	}
+	
+	public void printGrid() {
+		System.out.println("grid: ");
+		for(int x = 0; x < xSize; x++) {
+			for(int y = 0; y < ySize; y++) {
+				if(grid[x][y] == null) {
+					System.out.print(" ");
+				} else if(grid[x][y].getName().equals("Player")) {
+					System.out.print(Constants.PLAYER);
+				} else if(grid[x][y].getName().equals("Wall")) {
+					System.out.print(Constants.WALL);
+				} else if(grid[x][y].getName().equals("Box")) {
+					System.out.print(Constants.BOX);
+				} else if(grid[x][y].getName().equals("Ghost")) {
+					System.out.print(Constants.GHOST);
+				}
+				
+				//System.out.print("\t");
 			}
 			System.out.println();
 		}
