@@ -84,8 +84,9 @@ public class Entity{
 	 *            <b>or</b> the class type of a component that extends it;
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Component> T getComponent(Class<T> type) {
-		return type.cast(components.get(type));
+		return (T) (components.get(type));
 	}
 	
 	public Entity setPosition(Vector2 position) {

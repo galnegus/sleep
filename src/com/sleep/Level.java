@@ -3,6 +3,8 @@ package com.sleep;
 import java.io.*;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -149,11 +151,11 @@ public class Level {
 		Vector2 playerPos = new Vector2(xPlayer, yPlayer);
 		distanceGrid[xPlayer][yPlayer] = 0;
 		
-		Deque<Vector2> queue = new ArrayDeque<Vector2>();
+		LinkedList<Vector2> queue = new LinkedList<Vector2>();
 		Vector2[] moves = new Vector2[4];
 		queue.add(playerPos);
 		while(!queue.isEmpty()) {
-			Vector2 currentPos = queue.pop();
+			Vector2 currentPos = queue.poll();
 			
 			moves[0] = new Vector2(currentPos.x - 1, currentPos.y);
 			moves[1] = new Vector2(currentPos.x + 1, currentPos.y);

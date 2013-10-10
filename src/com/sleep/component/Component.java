@@ -1,5 +1,6 @@
 package com.sleep.component;
 
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.sleep.Entity;
 
 public abstract class Component {
@@ -13,13 +14,14 @@ public abstract class Component {
 	
 	public abstract void init() throws ComponentException;
 	
+	@SuppressWarnings("unchecked")
 	public <T extends Component> T getDependency(Class<? extends Component> familyClass, Class<T> returnClass) throws ComponentException {
 		Component returnObj = owner.getComponent(familyClass);
 		
-		if (returnObj != null && returnClass.isInstance(returnObj)) {
-			return returnClass.cast(returnObj);
+		if (returnObj != null && ClassReflection.isInstance(returnClass, returnObj)) {
+			return (T) returnObj;
 		} else {
-			throw new ComponentException(returnClass.getSimpleName() + " missing from Entity!");
+			throw new ComponentException(ClassReflection.getSimpleName(returnClass) + " missing from Entity!");
 		}
 	}
 }
