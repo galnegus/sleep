@@ -1,6 +1,8 @@
 package com.sleep;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class EntityManager {
@@ -17,13 +19,18 @@ public class EntityManager {
 	}
 
 	public void render(Sleep game) {
+		sort();
 		for (Entity e : entityList) {
 			e.render(game);
 		}
 	}
 	
-	public List<Entity> getEntityList() {
-		return entityList;
+	private void sort() {
+		Collections.sort(entityList, new Comparator<Entity> () {
+			public int compare(Entity a, Entity b) {
+		        return a.getDepth() - b.getDepth();
+		    }
+		});
 	}
 	
 	public Entity get(String name) {

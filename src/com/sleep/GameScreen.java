@@ -13,7 +13,7 @@ public class GameScreen implements Screen {
 	public static EntityManager entityManager;
 	public static AssetManager assets;
 	public static Entity player;
-	public static Level level;
+	public static Grid grid;
 
 	//Camera camera;
 	CoolCamera camera;
@@ -36,7 +36,7 @@ public class GameScreen implements Screen {
 		//camera = new Camera(gc);
 		camera = new CoolCamera(1280, 720);
 		
-		level = new Level();
+		grid = new Grid();
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class GameScreen implements Screen {
 		//update stuff
 		entityManager.update(delta);
 		backgroundManager.update(delta);
-		level.update(delta);
+		grid.update(delta);
 
 	}
 	

@@ -12,7 +12,7 @@ public class PlayerMovementComponent extends MovementComponent {
 
 	@Override
 	public void update(float delta) {
-		if(!moving) {
+		if(!isMoving()) {
 			if(Gdx.input.isKeyPressed(Constants.MOVE_LEFT) && triggerLeft) {
 				move(-Constants.GRID_CELL_SIZE, 0);
 				triggerLeft = false;

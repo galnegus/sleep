@@ -9,20 +9,20 @@ import com.sleep.component.ComponentException;
 import com.sleep.component.RenderableComponent;
 import com.sleep.component.render.RenderComponent;
 
-public class Entity{
+public class Entity {
 
 	private String name;
-
 	public Vector2 position;
+	private int depth;
 
 	private Map<Class<? extends Component>, Component> components = null;
 
-	public Entity(String id) {
+	public Entity(String id, Vector2 position, int depth) {
 		this.name = id;
+		this.position = position;
+		this.depth = depth;
 
 		components = new HashMap<Class<? extends Component>, Component>();
-
-		position = new Vector2();
 	}
 
 	/**
@@ -35,9 +35,9 @@ public class Entity{
 	 * key of the added mapping will be HackingComponent.class.
 	 * <p>
 	 * If the components extends another component that isn't Component (but
-	 * rather another component which does extend Component), then the key
-	 * will be defined as the class type of the superclass. Ie if you add a
-	 * component of class {@code<ImageRenderComponent extends RenderComponent
+	 * rather another component which does extend Component), then the key will
+	 * be defined as the class type of the superclass. Ie if you add a component
+	 * of class {@code<ImageRenderComponent extends RenderComponent
 	 * extends Component>} then the key of the added mapping will be
 	 * RenderComponent.class.
 	 * <p>
@@ -48,15 +48,15 @@ public class Entity{
 	 * @param component
 	 *            The component being added.
 	 */
-	public Entity addComponent(Component component) {		
-		Class<? extends Component>compFamilyClass = getComponentFamilyClass(component);
+	public Entity addComponent(Component component) {
+		Class<? extends Component> compFamilyClass = getComponentFamilyClass(component);
 		components.put(compFamilyClass, component);
 
 		component.setOwnerEntity(this);
-		
+
 		return this;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private Class<? extends Component> getComponentFamilyClass(Component component) {
 		Class<? extends Component> current = component.getClass();
@@ -88,11 +88,6 @@ public class Entity{
 	public <T extends Component> T getComponent(Class<T> type) {
 		return (T) (components.get(type));
 	}
-	
-	public Entity setPosition(Vector2 position) {
-		this.position = position;
-		return this;
-	}
 
 	public int getWidth() {
 		RenderComponent renderComponent = getComponent(RenderComponent.class);
@@ -110,6 +105,10 @@ public class Entity{
 			return 0;
 	}
 
+	public int getDepth() {
+		return depth;
+	}
+
 	public void update(float delta) {
 		for (Component comp : components.values()) {
 			comp.update(delta);
@@ -117,8 +116,8 @@ public class Entity{
 	}
 
 	public void render(Sleep game) {
-		for(Component comp : components.values()) {
-			if(comp instanceof RenderableComponent) {
+		for (Component comp : components.values()) {
+			if (comp instanceof RenderableComponent) {
 				((RenderableComponent) comp).render(game);
 			}
 		}
@@ -129,12 +128,13 @@ public class Entity{
 			try {
 				comp.init();
 			} catch (ComponentException e) {
-				System.err.println("initComponents() failed in\n entity: " + name + "\n component: " + comp.getClass().getName() + ".");
+				System.err.println("initComponents() failed in\n entity: " + name + "\n component: "
+						+ comp.getClass().getName() + ".");
 				e.printStackTrace();
 				System.exit(0);
 			}
 		}
-		
+
 		return this;
 	}
 

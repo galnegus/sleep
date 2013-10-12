@@ -12,7 +12,7 @@ public class PlayerAltMovementComponent extends MovementComponent {
 	@Override
 	public void update(float delta) {
 		moveTimer += delta;
-		if(!moving && moveTimer < Constants.PLAYER_MOVE_FREQUENCY) {
+		if(!isMoving() && moveTimer < Constants.PLAYER_MOVE_FREQUENCY) {
 			if(Gdx.input.isKeyPressed(Constants.MOVE_LEFT)) {
 				queuedMove.set(-Constants.GRID_CELL_SIZE, 0);
 			} 
@@ -27,7 +27,7 @@ public class PlayerAltMovementComponent extends MovementComponent {
 			}
 		}
 		
-		if(!moving && moveTimer >= Constants.PLAYER_MOVE_FREQUENCY) {
+		if(!isMoving() && moveTimer >= Constants.PLAYER_MOVE_FREQUENCY) {
 			if(queuedMove.x != 0 || queuedMove.y != 0) {
 				move(queuedMove.x, queuedMove.y);
 				queuedMove.set(0, 0);

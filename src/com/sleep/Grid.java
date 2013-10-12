@@ -7,7 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 
-public class Level {
+public class Grid {
 	private Entity[][] grid;
 	private int[][] distanceGrid;
 	private int xSize, ySize;
@@ -20,7 +20,7 @@ public class Level {
 		return ySize;
 	}
 
-	public Level() {
+	public Grid() {
 		char[][] charBoard;
 		try {
 			FileHandle levelTxt = Gdx.files.internal("levels/test.txt");
@@ -63,6 +63,10 @@ public class Level {
 		}
 	}
 	
+	public Vector2 getGridPos(Entity e) {
+		return getGridPos(e.position.x, e.position.y);
+	}
+	
 	public Vector2 getGridPos(Vector2 position) {
 		return getGridPos(position.x, position.y);
 	}
@@ -102,33 +106,39 @@ public class Level {
 	/**
 	 * puts an entity on the grid at the given render position
 	 */
-	public Entity setEntityAt(Vector2 position, Entity e) {
-		return setEntityAt(position.x, position.y, e);
+	public Entity setEntityAt(Entity e, Vector2 position) {
+		return setEntityAt(e, position.x, position.y);
 	}
 	
-	public Entity setEntityAt(float x, float y, Entity e) {
+	public Entity setEntityAt(Entity e, float x, float y) {
 		int gridX = (int) x / Constants.GRID_CELL_SIZE;
 		int gridY = (int) y / Constants.GRID_CELL_SIZE;
 		
-		if(gridY < 0 || gridY < 0 || gridX >= xSize || gridY >= ySize)
+		if(gridX < 0 || gridY < 0 || gridX >= xSize || gridY >= ySize)
 			return null;
 		else 
 			return grid[gridX][gridY] = e;
 			
 	}
 	
-	public Entity moveEntityTo(Vector2 position, Entity e) {
-		return moveEntityTo(position.x, position.y, e);
+	public void removeEntity(Entity e) {
+		Vector2 gridPos = getGridPos(e.position);
+		grid[(int) gridPos.x][(int) gridPos.y] = null;
 	}
 	
-	public Entity moveEntityTo(float x, float y, Entity e) {
-		Vector2 eGridPos = getGridPos(e.position);
-		grid[(int) eGridPos.x][(int) eGridPos.y] = null;
-		return setEntityAt(x, y, e);
+	public Entity moveEntityTo(Entity e, Vector2 position) {
+		return moveEntityTo(e, position.x, position.y);
+	}
+	
+	public Entity moveEntityTo(Entity e, float x, float y) {
+		Vector2 gridPos = getGridPos(e.position);
+		grid[(int) gridPos.x][(int) gridPos.y] = null;
+		return setEntityAt(e, x, y);
 	}
 	
 	public void update(float delta) {
 		updateDistanceMatrix();
+		printGrid();
 	}
 	
 	/**
@@ -196,15 +206,17 @@ public class Level {
 		moves[3] = new Vector2(gridPos.x, gridPos.y + 1);
 		
 		for(Vector2 move : moves) {
-			if(distanceGrid[(int) move.x][(int) move.y] < min && distanceGrid[(int) move.x][(int) move.y] >= 0) {
-				min = distanceGrid[(int) move.x][(int) move.y];
-				movement.x = move.x - gridPos.x;
-				movement.y = move.y - gridPos.y;
-			} else if(distanceGrid[(int) move.x][(int) move.y] == min) {
-				if(Math.abs(Math.abs(player.x - gridPos.x) - Math.abs(player.y - gridPos.y)) 
-						> Math.abs(Math.abs(player.x - move.x) - Math.abs(player.y - move.y))) {
+			if(move.x >= 0 && move.x < xSize && move.y >= 0 && move.y < ySize) {
+				if(distanceGrid[(int) move.x][(int) move.y] < min && distanceGrid[(int) move.x][(int) move.y] >= 0) {
+					min = distanceGrid[(int) move.x][(int) move.y];
 					movement.x = move.x - gridPos.x;
 					movement.y = move.y - gridPos.y;
+				} else if(distanceGrid[(int) move.x][(int) move.y] == min) {
+					if(Math.abs(Math.abs(player.x - gridPos.x) - Math.abs(player.y - gridPos.y)) 
+							> Math.abs(Math.abs(player.x - move.x) - Math.abs(player.y - move.y))) {
+						movement.x = move.x - gridPos.x;
+						movement.y = move.y - gridPos.y;
+					}
 				}
 			}
 		}
@@ -223,6 +235,9 @@ public class Level {
 	}
 	
 	public void printGrid() {
+		for(int i = 0; i < 50; i++) {
+			System.out.println();
+		}
 		System.out.println("grid: ");
 		for(int x = 0; x < xSize; x++) {
 			for(int y = 0; y < ySize; y++) {

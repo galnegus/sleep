@@ -11,10 +11,10 @@ public class GhostMovementComponent extends MovementComponent {
 	@Override
 	public void update(float delta) {
 		moveTimer += delta;
-		if(moveTimer >= Constants.GHOST_MOVE_FREQUENCY && !moving) {
-			moveTimer = 0;
+		if(moveTimer >= Constants.GHOST_MOVE_FREQUENCY && !isMoving()) {
+			moveTimer -= Constants.GHOST_MOVE_FREQUENCY;
 			
-			Vector2 moveTo = GameScreen.level.bestMove(owner.position);
+			Vector2 moveTo = GameScreen.grid.bestMove(owner.position);
 			
 			move(moveTo.x * Constants.GRID_CELL_SIZE, moveTo.y * Constants.GRID_CELL_SIZE);
 		}
