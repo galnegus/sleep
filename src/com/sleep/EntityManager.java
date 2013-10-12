@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EntityManager {
-	protected List<Entity> entityList;
+	private List<Entity> entityList;
 	
 	public EntityManager() {
 		entityList = new ArrayList<Entity>();
@@ -26,13 +26,17 @@ public class EntityManager {
 		return entityList;
 	}
 	
-	public Entity getEntity(String name) {
+	public Entity get(String name) {
 		for(Entity e : entityList) {
 			if(e.getName().equals(name)) {
 				return e;
 			}
 		}
 		return null;
+	}
+	
+	public boolean remove(Entity e) {
+		return entityList.remove(e);
 	}
 	
 	public Entity add(Entity e) {

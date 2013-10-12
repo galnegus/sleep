@@ -1,9 +1,11 @@
 package com.sleep.component.movement;
 
 import com.badlogic.gdx.math.Vector2;
+import com.sleep.Entity;
 import com.sleep.GameScreen;
 import com.sleep.component.Component;
 import com.sleep.component.ComponentException;
+import com.sleep.component.death.DeathComponent;
 
 /**
  * @author thi
@@ -30,23 +32,39 @@ public class MovementComponent extends Component {
 		return direction;
 	}
 	
-	public void move(float x, float y) {
+	/**
+	 * moves the entity by a given amount
+	 * 
+	 * this method only triggers a "movement", 
+	 * the movement is done when the moving boolean is set to false
+	 * 
+	 * @param x
+	 * @param y
+	 */
+	public boolean move(float x, float y) {
 		destination.x = owner.position.x + x;
 		destination.y = owner.position.y + y;
-		if(GameScreen.level.getEntityAt(destination.x, destination.y) == null) {
+		Entity entityAtDest = GameScreen.level.getEntityAt(destination.x, destination.y);
+		
+		if(entityAtDest == null) {
 			moving = true;
 			GameScreen.level.moveEntityTo(destination, owner);
-		} else if(GameScreen.level.getEntityAt(destination.x, destination.y).getName().equals("Box") && owner.getName().equals("Player")) {
-			Vector2 pushTo = new Vector2(destination.x + x, destination.y + y);
-			if(GameScreen.level.getEntityAt(pushTo) == null) {
-				GameScreen.level.getEntityAt(destination.x, destination.y).getComponent(MovementComponent.class).move(x, y);
+		} else if(entityAtDest.getName().equals("Box") && (owner.getName().equals("Player") || owner.getName().equals("Box") )) {
+			if(entityAtDest.getComponent(MovementComponent.class).move(x, y)) {
 				moving = true;
 				GameScreen.level.moveEntityTo(destination, owner);
 			}
+		} else if((entityAtDest.getName().equals("Ghost") && owner.getName().equals("Box")) ||
+				(entityAtDest.getName().equals("Player") && owner.getName().equals("Ghost"))) {
+			entityAtDest.getComponent(DeathComponent.class).die();
+			moving = true;
+			GameScreen.level.moveEntityTo(destination, owner);
 		}
+		
+		return moving;
 	}
 	
-	private void keepMoving(float delta) {
+	private void keepMoving() {
 		if(destination.x > owner.position.x && Math.abs(destination.x - owner.position.x) > 0) {
 			direction.x += 1;
 		} else if (destination.x < owner.position.x && Math.abs(destination.x - owner.position.x) > 0) {
@@ -58,7 +76,7 @@ public class MovementComponent extends Component {
 		}
 	}
 	
-	private void stopMoving(float delta) {
+	private void stopMoving() {
 		if((direction.x == 1 && destination.x < owner.position.x) || (direction.x == -1 && destination.x > owner.position.x)) {
 			moving = false;
 			owner.position.x = destination.x;
@@ -133,7 +151,7 @@ public class MovementComponent extends Component {
 		resetAcceleration();
 		
 		if(moving)
-			keepMoving(delta);
+			keepMoving();
 		
 		Vector2 oldVelocity = new Vector2(velocity);
 		
@@ -155,7 +173,7 @@ public class MovementComponent extends Component {
 		position.x = position.x + delta / 2 * (oldVelocity.x + velocity.x); //Heun's method
 		
 		if(moving)
-			stopMoving(delta);
+			stopMoving();
 	}
 
 	@Override

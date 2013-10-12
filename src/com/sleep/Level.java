@@ -1,10 +1,7 @@
 package com.sleep;
 
 import java.io.*;
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.LinkedList;
-import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;

@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.sleep.component.animation.AnimationActions;
+import com.sleep.component.death.DeathComponent;
+import com.sleep.component.death.PlayerDeathComponent;
 import com.sleep.component.movement.GhostMovementComponent;
 import com.sleep.component.movement.MovementComponent;
 import com.sleep.component.movement.PlayerMovementComponent;
@@ -31,7 +33,7 @@ public class EntityFactory {
 		Entity player = GameScreen.entityManager.add(new Entity("Player"))
 				.addComponent(new PlayerMovementComponent())
 				.addComponent(new AnimationRenderComponent(idle))
-				//.addComponent(new AnimationMapComponent(monkeyAnimations))
+				.addComponent(new PlayerDeathComponent())
 				.initComponents()
 				.setPosition(new Vector2(x, y));
 		
@@ -44,6 +46,7 @@ public class EntityFactory {
 		return GameScreen.entityManager.add(new Entity("Ghost"))
 				.addComponent(new GhostMovementComponent())
 				.addComponent(new ImageRenderComponent(GameScreen.assets.get("images/ghost.png", Texture.class)))
+				.addComponent(new DeathComponent())
 				.initComponents()
 				.setPosition(new Vector2(x, y));
 	}
