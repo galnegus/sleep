@@ -18,6 +18,10 @@ public class DeathComponent extends Component {
 	public void die() {
 		alive = false;
 		Sleep.grid.removeEntity(owner);
+		MovementComponent moveComp = owner.getComponent(MovementComponent.class);
+		if (moveComp != null) {
+			moveComp.moveable = false;
+		}
 	}
 
 	@Override

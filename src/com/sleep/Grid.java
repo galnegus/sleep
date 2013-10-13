@@ -66,15 +66,16 @@ public class Grid {
 						grid[x][y] = EntityFactory
 								.makeGhost(x * Constants.GRID_CELL_SIZE, y * Constants.GRID_CELL_SIZE);
 					} else if (Character.isLetterOrDigit(charBoard[x][y])) {
-						if(!spawnerInit.containsKey(charBoard[x][y])) {
+						if (!spawnerInit.containsKey(charBoard[x][y])) {
 							Gdx.app.error("GridError", "spawnerInit value for key '" + charBoard[x][y] + "' missing");
 						}
-						if(!spawnerFreq.containsKey(charBoard[x][y])) {
+						if (!spawnerFreq.containsKey(charBoard[x][y])) {
 							Gdx.app.error("GridError", "spawnerFreq value for key '" + charBoard[x][y] + "' missing");
 						}
-						
+
 						grid[x][y] = EntityFactory.makeSpawner(x * Constants.GRID_CELL_SIZE, y
-								* Constants.GRID_CELL_SIZE, spawnerInit.get(charBoard[x][y]), spawnerFreq.get(charBoard[x][y]));
+								* Constants.GRID_CELL_SIZE, spawnerInit.get(charBoard[x][y]),
+								spawnerFreq.get(charBoard[x][y]));
 					}
 				}
 			}
@@ -111,6 +112,9 @@ public class Grid {
 	 * both grid positions are checked for any entity.
 	 * if no entity is found at the floor, the entity (or lack of) at the
 	 * ceiling is returned.
+	 * 
+	 * this is necessary because of collision detection on entities that are
+	 * moving
 	 */
 	public Entity getEntityAt(Vector2 position) {
 		return getEntityAt(position.x, position.y);

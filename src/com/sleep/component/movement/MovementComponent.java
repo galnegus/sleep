@@ -17,6 +17,7 @@ public class MovementComponent extends Component {
 	private Vector2 destination = new Vector2();
 
 	private boolean moving = false;
+	public boolean moveable = true;
 
 	public Vector2 getDirection() {
 		return direction;
@@ -32,27 +33,30 @@ public class MovementComponent extends Component {
 	 * @param y
 	 */
 	public boolean move(float x, float y) {
-		destination.x = owner.position.x + x;
-		destination.y = owner.position.y + y;
-		Entity entityAtDest = Sleep.grid.getEntityAt(destination.x, destination.y);
+		if(moveable) {
+			destination.x = owner.position.x + x;
+			destination.y = owner.position.y + y;
+			Entity entityAtDest = Sleep.grid.getEntityAt(destination.x, destination.y);
 
-		if (entityAtDest == null) {
-			moving = true;
-			Sleep.grid.moveEntityTo(owner, destination);
-		} else if (entityAtDest.getName().equals("Box")
-				&& (owner.getName().equals("Player") || owner.getName().equals("Box"))) {
-			if (entityAtDest.getComponent(MovementComponent.class).move(x, y)) {
+			if (entityAtDest == null) {
+				moving = true;
+				Sleep.grid.moveEntityTo(owner, destination);
+			} else if (entityAtDest.getName().equals("Box")
+					&& (owner.getName().equals("Player") || owner.getName().equals("Box"))) {
+				if (entityAtDest.getComponent(MovementComponent.class).move(x, y)) {
+					moving = true;
+					Sleep.grid.moveEntityTo(owner, destination);
+				}
+			} else if ((owner.getName().equals("Box") && entityAtDest.getName().equals("Ghost"))
+					|| (owner.getName().equals("Ghost") && entityAtDest.getName().equals("Player"))) {
+				entityAtDest.getComponent(DeathComponent.class).die();
 				moving = true;
 				Sleep.grid.moveEntityTo(owner, destination);
 			}
-		} else if ((owner.getName().equals("Box") && entityAtDest.getName().equals("Ghost"))
-				|| (owner.getName().equals("Ghost") && entityAtDest.getName().equals("Player"))) {
-			entityAtDest.getComponent(DeathComponent.class).die();
-			moving = true;
-			Sleep.grid.moveEntityTo(owner, destination);
-		}
 
-		return moving;
+			return moving;
+		}
+		return false;
 	}
 
 	private void keepMoving() {
