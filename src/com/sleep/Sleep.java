@@ -50,7 +50,7 @@ public class Sleep implements ApplicationListener {
 		assets.update();
 
 		// clear screen
-		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+		Gdx.gl.glClearColor(1, 0.98f, 0.96f, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		// update camera matrices

@@ -28,7 +28,7 @@ public class EntityManager {
 	private void sort() {
 		Collections.sort(entityList, new Comparator<Entity> () {
 			public int compare(Entity a, Entity b) {
-		        return a.getDepth() - b.getDepth();
+		        return b.getDepth() - a.getDepth();
 		    }
 		});
 	}

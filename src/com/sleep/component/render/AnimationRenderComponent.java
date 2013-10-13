@@ -6,7 +6,7 @@ import com.sleep.component.ComponentException;
 
 
 public class AnimationRenderComponent extends RenderComponent {
-	Animation animation;
+	private Animation animation;
 	float stateTime;
 
 	public AnimationRenderComponent(Animation animation) {
@@ -48,6 +48,5 @@ public class AnimationRenderComponent extends RenderComponent {
 	@Override
 	public void init() throws ComponentException {
 		// DO NOTHING		
-	}	
-
+	}
 }

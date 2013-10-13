@@ -5,7 +5,7 @@ import com.sleep.Sleep;
 import com.sleep.component.ComponentException;
 
 public class ImageRenderComponent extends RenderComponent {	
-	Texture image;
+	private Texture image;
 	public ImageRenderComponent(Texture image) {
 		this.image = image;
 	}
@@ -16,14 +16,6 @@ public class ImageRenderComponent extends RenderComponent {
 	
 	public int getHeight() {
 		return image.getHeight();
-	}
-	
-	public void setImage(Texture image) {
-		this.image = image;
-	}
-	
-	public Texture getImage() {
-		return image;
 	}
 	
 	@Override

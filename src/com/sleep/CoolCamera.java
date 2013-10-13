@@ -71,7 +71,6 @@ public class CoolCamera extends OrthographicCamera {
 		
 		
 		this.translate(movement);
-		this.rotate(rotation);
 		super.update();
 	}
 }
