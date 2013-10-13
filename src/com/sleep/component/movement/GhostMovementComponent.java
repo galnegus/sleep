@@ -6,7 +6,11 @@ import com.sleep.Sleep;
 import com.sleep.component.ComponentException;
 
 public class GhostMovementComponent extends MovementComponent {
-	private float moveTimer = 0;
+	private float moveTimer;
+	
+	public GhostMovementComponent() {
+		this.moveTimer = 0;
+	}
 
 	@Override
 	public void update(float delta) {

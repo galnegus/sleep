@@ -3,8 +3,10 @@ package com.sleep;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Sleep implements ApplicationListener {
@@ -15,6 +17,7 @@ public class Sleep implements ApplicationListener {
 	public static Grid grid;
 
 	public static SpriteBatch batch;
+	public static BitmapFont font;
 
 	// Camera camera;
 	CoolCamera camera;
@@ -22,6 +25,8 @@ public class Sleep implements ApplicationListener {
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
+		font = new BitmapFont(Gdx.files.internal("fonts/24pt.fnt"));
+		
 
 		assets = new AssetManager();
 		assets.load("images/ghost.png", Texture.class);

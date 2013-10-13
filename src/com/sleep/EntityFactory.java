@@ -1,12 +1,14 @@
 package com.sleep;
 
 import java.util.LinkedHashMap;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.sleep.component.SpawnerComponent;
 import com.sleep.component.animation.AnimationActions;
 import com.sleep.component.death.DeathComponent;
 import com.sleep.component.death.PlayerDeathComponent;
@@ -70,9 +72,9 @@ public class EntityFactory {
 				new BackgroundRenderComponent(tex, xSize, ySize));
 	}
 
-	public static Entity makeSpawner(int x, int y, float timing) {
+	public static Entity makeSpawner(int x, int y, float init, float freq) {
 		Sleep.entityManager.add(new Entity("Spawner", new Vector2(x, y), SPAWNER_DEPTH))
-				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/placeholder.png", Texture.class)))
+				.addComponent(new SpawnerComponent(init, freq))
 				.initComponents();
 		
 		return makeWall(x, y);

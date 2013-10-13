@@ -41,10 +41,12 @@ public class Grid {
 
 			// parse spawner timings
 			String[] line;
-			Map<Character, Float> spawnerTiming = new HashMap<Character, Float>();
+			Map<Character, Float> spawnerInit = new HashMap<Character, Float>();
+			Map<Character, Float> spawnerFreq = new HashMap<Character, Float>();
 			while (br.ready()) {
 				line = br.readLine().split(" ");
-				spawnerTiming.put(line[0].charAt(0), Float.parseFloat(line[1]));
+				spawnerInit.put(line[0].charAt(0), Float.parseFloat(line[1]));
+				spawnerFreq.put(line[0].charAt(0), Float.parseFloat(line[2]));
 			}
 
 			br.close();
@@ -64,12 +66,15 @@ public class Grid {
 						grid[x][y] = EntityFactory
 								.makeGhost(x * Constants.GRID_CELL_SIZE, y * Constants.GRID_CELL_SIZE);
 					} else if (Character.isLetterOrDigit(charBoard[x][y])) {
-						if(!spawnerTiming.containsKey(charBoard[x][y])) {
-							Gdx.app.error("GridError", "spawnerTiming value for key '" + charBoard[x][y] + "' missing");
+						if(!spawnerInit.containsKey(charBoard[x][y])) {
+							Gdx.app.error("GridError", "spawnerInit value for key '" + charBoard[x][y] + "' missing");
+						}
+						if(!spawnerFreq.containsKey(charBoard[x][y])) {
+							Gdx.app.error("GridError", "spawnerFreq value for key '" + charBoard[x][y] + "' missing");
 						}
 						
 						grid[x][y] = EntityFactory.makeSpawner(x * Constants.GRID_CELL_SIZE, y
-								* Constants.GRID_CELL_SIZE, spawnerTiming.get(charBoard[x][y]));
+								* Constants.GRID_CELL_SIZE, spawnerInit.get(charBoard[x][y]), spawnerFreq.get(charBoard[x][y]));
 					}
 				}
 			}
@@ -156,13 +161,15 @@ public class Grid {
 
 	public Entity moveEntityTo(Entity e, float x, float y) {
 		Vector2 gridPos = getGridPos(e.position);
-		grid[(int) gridPos.x][(int) gridPos.y] = null;
+		if (grid[(int) gridPos.x][(int) gridPos.y] == e) {
+			grid[(int) gridPos.x][(int) gridPos.y] = null;
+		}
 		return setEntityAt(e, x, y);
 	}
 
 	public void update() {
 		updateDistanceMatrix();
-		//printGrid();
+		printGrid();
 	}
 
 	/**
