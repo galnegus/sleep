@@ -30,6 +30,7 @@ public class Sleep implements ApplicationListener {
 		assets.load("images/grid.png", Texture.class);
 		assets.load("images/player.png", Texture.class);
 		assets.load("images/player_bw.png", Texture.class);
+		assets.load("images/placeholder.png", Texture.class);
 		assets.finishLoading();
 
 		entityManager = new EntityManager();

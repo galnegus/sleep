@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.sleep.Constants;
 import com.sleep.component.ComponentException;
 
-public class PlayerAltMovementComponent extends MovementComponent {
+public class PlayerContinousMovementComponent extends MovementComponent {
 	float moveTimer = 0;
 
 	@Override

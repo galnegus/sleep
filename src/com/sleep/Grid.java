@@ -1,7 +1,9 @@
 package com.sleep;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -33,16 +35,25 @@ public class Grid {
 			grid = new Entity[xSize][ySize];
 			distanceGrid = new int[xSize][ySize];
 
-			int i = 0;
+			for (int i = 0; i < xSize; i++) {
+				charBoard[i] = br.readLine().toCharArray();
+			}
+
+			// parse spawner timings
+			String[] line;
+			Map<Character, Float> spawnerTiming = new HashMap<Character, Float>();
 			while (br.ready()) {
-				charBoard[i++] = br.readLine().toCharArray();
+				line = br.readLine().split(" ");
+				spawnerTiming.put(line[0].charAt(0), Float.parseFloat(line[1]));
 			}
 
 			br.close();
 
 			for (int x = 0; x < charBoard.length; x++) {
 				for (int y = 0; y < charBoard[x].length; y++) {
-					if (charBoard[x][y] == Constants.BOX) {
+					if (charBoard[x][y] == ' ') {
+						// do nothing
+					} else if (charBoard[x][y] == Constants.BOX) {
 						grid[x][y] = EntityFactory.makeBox(x * Constants.GRID_CELL_SIZE, y * Constants.GRID_CELL_SIZE);
 					} else if (charBoard[x][y] == Constants.PLAYER) {
 						grid[x][y] = EntityFactory.makePlayer(x * Constants.GRID_CELL_SIZE, y
@@ -52,6 +63,13 @@ public class Grid {
 					} else if (charBoard[x][y] == Constants.GHOST) {
 						grid[x][y] = EntityFactory
 								.makeGhost(x * Constants.GRID_CELL_SIZE, y * Constants.GRID_CELL_SIZE);
+					} else if (Character.isLetterOrDigit(charBoard[x][y])) {
+						if(!spawnerTiming.containsKey(charBoard[x][y])) {
+							Gdx.app.error("GridError", "spawnerTiming value for key '" + charBoard[x][y] + "' missing");
+						}
+						
+						grid[x][y] = EntityFactory.makeSpawner(x * Constants.GRID_CELL_SIZE, y
+								* Constants.GRID_CELL_SIZE, spawnerTiming.get(charBoard[x][y]));
 					}
 				}
 			}
@@ -144,7 +162,7 @@ public class Grid {
 
 	public void update() {
 		updateDistanceMatrix();
-		printGrid();
+		//printGrid();
 	}
 
 	/**

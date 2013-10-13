@@ -21,9 +21,9 @@ public class EntityFactory {
 	private static final int PLAYER_DEPTH = 2;
 	private static final int SPAWNER_DEPTH = 3;
 	private static final int WALL_DEPTH = 4;
-	
+
 	private static final int GRID_DEPTH = -1;
-	
+
 	public static Entity makePlayer(int x, int y) {
 		Array<TextureRegion> anim = new Array<TextureRegion>();
 		anim.add(new TextureRegion(Sleep.assets.get("images/player.png", Texture.class)));
@@ -68,5 +68,13 @@ public class EntityFactory {
 		tex.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		return Sleep.backgroundManager.add(new Entity("Grid", new Vector2(0, 0), GRID_DEPTH)).addComponent(
 				new BackgroundRenderComponent(tex, xSize, ySize));
+	}
+
+	public static Entity makeSpawner(int x, int y, float timing) {
+		Sleep.entityManager.add(new Entity("Spawner", new Vector2(x, y), SPAWNER_DEPTH))
+				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/placeholder.png", Texture.class)))
+				.initComponents();
+		
+		return makeWall(x, y);
 	}
 }
