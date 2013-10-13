@@ -12,34 +12,28 @@ public class PlayerMovementComponent extends MovementComponent {
 
 	@Override
 	public void update(float delta) {
-		if(!isMoving()) {
-			if(Gdx.input.isKeyPressed(Constants.MOVE_LEFT) && triggerLeft) {
+		if (!isMoving()) {
+			if (Gdx.input.isKeyPressed(Constants.MOVE_LEFT) && triggerLeft) {
 				move(-Constants.GRID_CELL_SIZE, 0);
 				triggerLeft = false;
-			} else if(!Gdx.input.isKeyPressed(Constants.MOVE_LEFT) && !triggerLeft) {
+			} else if (!Gdx.input.isKeyPressed(Constants.MOVE_LEFT) && !triggerLeft) {
 				triggerLeft = true;
-			}
-			
-			if(Gdx.input.isKeyPressed(Constants.MOVE_RIGHT) && triggerRight) {
+			} else if (Gdx.input.isKeyPressed(Constants.MOVE_RIGHT) && triggerRight) {
 				move(Constants.GRID_CELL_SIZE, 0);
 				triggerRight = false;
-			} else if(!Gdx.input.isKeyPressed(Constants.MOVE_RIGHT) && !triggerRight) {
+			} else if (!Gdx.input.isKeyPressed(Constants.MOVE_RIGHT) && !triggerRight) {
 				triggerRight = true;
-			}
-			
-			if(Gdx.input.isKeyPressed(Constants.MOVE_UP) && triggerUp) {
+			} else if (Gdx.input.isKeyPressed(Constants.MOVE_UP) && triggerUp) {
 				move(0, Constants.GRID_CELL_SIZE);
 				triggerUp = false;
-			} else if(!Gdx.input.isKeyPressed(Constants.MOVE_UP) && !triggerUp) {
+			} else if (!Gdx.input.isKeyPressed(Constants.MOVE_UP) && !triggerUp) {
 				triggerUp = true;
-			}
-			
-			if(Gdx.input.isKeyPressed(Constants.MOVE_DOWN) && triggerDown){
+			} else if (Gdx.input.isKeyPressed(Constants.MOVE_DOWN) && triggerDown) {
 				move(0, -Constants.GRID_CELL_SIZE);
 				triggerDown = false;
-			} else if(!Gdx.input.isKeyPressed(Constants.MOVE_DOWN) && !triggerDown) {
+			} else if (!Gdx.input.isKeyPressed(Constants.MOVE_DOWN) && !triggerDown) {
 				triggerDown = true;
-			}		
+			}
 		}
 		super.update(delta);
 	}
