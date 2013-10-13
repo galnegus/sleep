@@ -35,8 +35,8 @@ public class AnimationRenderComponent extends RenderComponent {
 	}
 
 	@Override
-	public void render(Sleep game) {
-		game.batch.draw(animation.getKeyFrame(stateTime, true), owner.position.x, owner.position.y);
+	public void render() {
+		Sleep.batch.draw(animation.getKeyFrame(stateTime, true), owner.position.x, owner.position.y);
 				
 	}
 	

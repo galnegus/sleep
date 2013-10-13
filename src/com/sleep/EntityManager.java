@@ -18,10 +18,10 @@ public class EntityManager {
 		}
 	}
 
-	public void render(Sleep game) {
+	public void render() {
 		sort();
 		for (Entity e : entityList) {
-			e.render(game);
+			e.render();
 		}
 	}
 	

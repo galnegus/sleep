@@ -23,9 +23,9 @@ public class BackgroundRenderComponent extends RenderComponent {
 	}
 
 	@Override
-	public void render(Sleep game) {
+	public void render() {
 		//gr.fillRect(0, 0, getWidth() * ySize, getHeight() * xSize, image, 0, 0);
-		game.batch.draw(image, 0, 0, getWidth() * ySize, getHeight() * xSize, 0, 0, ySize, xSize);
+		Sleep.batch.draw(image, 0, 0, getWidth() * ySize, getHeight() * xSize, 0, 0, ySize, xSize);
 	}
 
 	@Override

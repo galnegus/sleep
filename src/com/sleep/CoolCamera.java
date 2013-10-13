@@ -49,8 +49,8 @@ public class CoolCamera extends OrthographicCamera {
 			rotation -= rotateIncrement;
 		}
 		
-		float playerX = GameScreen.player.position.x + (GameScreen.player.getWidth())/ (2);
-		float playerY = GameScreen.player.position.y + (GameScreen.player.getHeight())/ (2);
+		float playerX = Sleep.player.position.x + (Sleep.player.getWidth())/ (2);
+		float playerY = Sleep.player.position.y + (Sleep.player.getHeight())/ (2);
 		
 		movement.x = delta * ((playerX - position.x) * CAMERA_SCROLL_ACCELERATION) / size.x ;
 		movement.y = delta * ((playerY - position.y) * CAMERA_SCROLL_ACCELERATION) / size.y;
@@ -58,13 +58,13 @@ public class CoolCamera extends OrthographicCamera {
 		
 		if (position.x <= size.x / 2 && movement.x < 0) {
 			movement.x = 0;
-		} else if (position.x >= GameScreen.grid.getXSize() * Constants.GRID_CELL_SIZE - size.x / 2 && movement.x > 0) {
+		} else if (position.x >= Sleep.grid.getXSize() * Constants.GRID_CELL_SIZE - size.x / 2 && movement.x > 0) {
 			movement.x = 0;
 			//movement.x = GameScreen.level.getXSize() * Constants.GRID_CELL_SIZE - size.y;
 		}
 		if (position.y <= size.y / 2 && movement.y < 0) {
 			movement.y = 0;
-		} else if (position.y >= GameScreen.grid.getYSize() * Constants.GRID_CELL_SIZE - size.y / 2 && movement.y > 0) {
+		} else if (position.y >= Sleep.grid.getYSize() * Constants.GRID_CELL_SIZE - size.y / 2 && movement.y > 0) {
 			//movement.y = GameScreen.level.getYSize() * Constants.GRID_CELL_SIZE - size.y / scale.y;
 			movement.y = 0;
 		}

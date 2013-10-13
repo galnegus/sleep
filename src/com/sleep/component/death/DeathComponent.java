@@ -1,6 +1,6 @@
 package com.sleep.component.death;
 
-import com.sleep.GameScreen;
+import com.sleep.Sleep;
 import com.sleep.component.Component;
 import com.sleep.component.ComponentException;
 import com.sleep.component.movement.MovementComponent;
@@ -17,7 +17,7 @@ public class DeathComponent extends Component {
 
 	public void die() {
 		alive = false;
-		GameScreen.grid.removeEntity(owner);
+		Sleep.grid.removeEntity(owner);
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class DeathComponent extends Component {
 					return;
 				}
 			}
-			GameScreen.entityManager.remove(owner);
+			Sleep.entityManager.remove(owner);
 		}
 	}
 

@@ -115,10 +115,10 @@ public class Entity {
 		}
 	}
 
-	public void render(Sleep game) {
+	public void render() {
 		for (Component comp : components.values()) {
 			if (comp instanceof RenderableComponent) {
-				((RenderableComponent) comp).render(game);
+				((RenderableComponent) comp).render();
 			}
 		}
 	}

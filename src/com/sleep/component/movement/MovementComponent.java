@@ -2,7 +2,7 @@ package com.sleep.component.movement;
 
 import com.badlogic.gdx.math.Vector2;
 import com.sleep.Entity;
-import com.sleep.GameScreen;
+import com.sleep.Sleep;
 import com.sleep.component.Component;
 import com.sleep.component.ComponentException;
 import com.sleep.component.death.DeathComponent;
@@ -44,22 +44,22 @@ public class MovementComponent extends Component {
 	public boolean move(float x, float y) {
 		destination.x = owner.position.x + x;
 		destination.y = owner.position.y + y;
-		Entity entityAtDest = GameScreen.grid.getEntityAt(destination.x, destination.y);
+		Entity entityAtDest = Sleep.grid.getEntityAt(destination.x, destination.y);
 
 		if (entityAtDest == null) {
 			moving = true;
-			GameScreen.grid.moveEntityTo(owner, destination);
+			Sleep.grid.moveEntityTo(owner, destination);
 		} else if (entityAtDest.getName().equals("Box")
 				&& (owner.getName().equals("Player") || owner.getName().equals("Box"))) {
 			if (entityAtDest.getComponent(MovementComponent.class).move(x, y)) {
 				moving = true;
-				GameScreen.grid.moveEntityTo(owner, destination);
+				Sleep.grid.moveEntityTo(owner, destination);
 			}
 		} else if ((owner.getName().equals("Box") && entityAtDest.getName().equals("Ghost"))
 				|| (owner.getName().equals("Ghost") && entityAtDest.getName().equals("Player"))) {
 			entityAtDest.getComponent(DeathComponent.class).die();
 			moving = true;
-			GameScreen.grid.moveEntityTo(owner, destination);
+			Sleep.grid.moveEntityTo(owner, destination);
 		}
 
 		return moving;

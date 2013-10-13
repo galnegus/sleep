@@ -27,8 +27,8 @@ public class ImageRenderComponent extends RenderComponent {
 	}
 	
 	@Override
-	public void render(Sleep game) {
-		game.batch.draw(image, owner.position.x, owner.position.y);
+	public void render() {
+		Sleep.batch.draw(image, owner.position.x, owner.position.y);
 	}
 	
 	@Override
