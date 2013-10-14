@@ -15,16 +15,12 @@ public class Entity {
 	public Vector2 position;
 	private int depth;
 	
-	// don't update/render if false
-	public boolean isActive;
-
 	private Map<Class<? extends Component>, Component> components = null;
 
 	public Entity(String id, Vector2 position, int depth) {
 		this.name = id;
 		this.position = position;
 		this.depth = depth;
-		this.isActive = true;
 
 		components = new HashMap<Class<? extends Component>, Component>();
 	}
