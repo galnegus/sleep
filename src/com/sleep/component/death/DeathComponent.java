@@ -13,7 +13,13 @@ import com.sleep.component.movement.MovementComponent;
  * 
  */
 public class DeathComponent extends Component {
-	private boolean alive = true;
+	private boolean alive;
+	private MovementComponent killedBy;
+	
+	public DeathComponent() {
+		this.alive = true;
+		killedBy = null;
+	}
 
 	public void die() {
 		alive = false;
@@ -23,6 +29,17 @@ public class DeathComponent extends Component {
 			moveComp.moveable = false;
 		}
 	}
+	
+	public void die(MovementComponent killedBy) {
+		alive = false;
+		Sleep.grid.removeEntity(owner);
+		MovementComponent moveComp = owner.getComponent(MovementComponent.class);
+		if (moveComp != null) {
+			moveComp.moveable = false;
+		}
+		
+		this.killedBy = killedBy;
+	}
 
 	@Override
 	public void update(float delta) {
@@ -31,6 +48,11 @@ public class DeathComponent extends Component {
 			MovementComponent moveComp = owner.getComponent(MovementComponent.class);
 			if (moveComp != null) {
 				if (moveComp.isMoving()) {
+					return;
+				}
+			}
+			if (killedBy != null) {
+				if (killedBy.isMoving()) {
 					return;
 				}
 			}

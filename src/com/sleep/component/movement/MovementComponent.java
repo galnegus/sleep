@@ -49,7 +49,7 @@ public class MovementComponent extends Component {
 				}
 			} else if ((owner.getName().equals("Box") && entityAtDest.getName().equals("Ghost"))
 					|| (owner.getName().equals("Ghost") && entityAtDest.getName().equals("Player"))) {
-				entityAtDest.getComponent(DeathComponent.class).die();
+				entityAtDest.getComponent(DeathComponent.class).die(this);
 				moving = true;
 				Sleep.grid.moveEntityTo(owner, destination);
 			}
