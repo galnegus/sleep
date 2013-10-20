@@ -16,8 +16,9 @@ public class Constants {
 	// Player behaviour
 	public static final float PLAYER_MOVE_FREQUENCY = 0.25f;
 
-	// Ghost behaviour
+	// Enemy behaviour
 	public static final float GHOST_MOVE_FREQUENCY = 0.5f;
+	public static final float SPECTRE_MOVE_FREQUENCY = 1f;
 
 	// Input
 	public static final int MOVE_LEFT = Input.Keys.A;

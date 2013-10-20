@@ -41,20 +41,20 @@ public class MovementComponent extends Component {
 			if (entityAtDest == null) {
 				moving = true;
 				Sleep.grid.moveEntityTo(owner, destination);
-				
+
 				// push box
 			} else if (entityAtDest.getName().equals("Box")
 					&& (owner.getName().equals("Player") || owner.getName().equals("Box"))) {
-				
+
 				// recursively check that several boxes can be moved
 				if (entityAtDest.getComponent(MovementComponent.class).move(x, y)) {
 					moving = true;
 					Sleep.grid.moveEntityTo(owner, destination);
 				}
-				
+
 				// no cannibalism!
 			} else if (entityAtDest.getComponent(DeathComponent.class) != null
-					&& !owner.getName().equals(entityAtDest.getName())) {
+					&& !owner.getName().equals(entityAtDest.getName()) && !owner.getName().equals("Player")) {
 				entityAtDest.getComponent(DeathComponent.class).die(this);
 				moving = true;
 				Sleep.grid.moveEntityTo(owner, destination);
@@ -71,7 +71,7 @@ public class MovementComponent extends Component {
 		} else if (destination.x < owner.position.x && Math.abs(destination.x - owner.position.x) > 0) {
 			direction.x -= 1;
 		}
-		
+
 		if (destination.y < owner.position.y) {
 			direction.y -= 1;
 		} else if (destination.y > owner.position.y) {
@@ -84,13 +84,13 @@ public class MovementComponent extends Component {
 				|| (direction.x == -1 && destination.x > owner.position.x)) {
 			owner.position.x = destination.x;
 		}
-		
+
 		if ((direction.y == 1 && destination.y < owner.position.y)
 				|| (direction.y == -1 && destination.y > owner.position.y)) {
 			owner.position.y = destination.y;
 		}
-		
-		if(owner.position.x == destination.x && owner.position.y == destination.y) {
+
+		if (owner.position.x == destination.x && owner.position.y == destination.y) {
 			moving = false;
 		}
 	}

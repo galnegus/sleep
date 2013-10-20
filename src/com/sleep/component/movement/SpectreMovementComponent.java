@@ -16,8 +16,8 @@ public class SpectreMovementComponent extends MovementComponent {
 	@Override
 	public void update(float delta) {
 		moveTimer += delta;
-		if(moveTimer >= Constants.GHOST_MOVE_FREQUENCY && !isMoving()) {
-			moveTimer -= Constants.GHOST_MOVE_FREQUENCY;
+		if(moveTimer >= Constants.SPECTRE_MOVE_FREQUENCY && !isMoving()) {
+			moveTimer -= Constants.SPECTRE_MOVE_FREQUENCY;
 			
 			Vector2 moveTo = bestMove(owner.position);
 			
