@@ -53,8 +53,8 @@ public class MovementComponent extends Component {
 				}
 
 				// no cannibalism!
-			} else if (entityAtDest.getComponent(DeathComponent.class) != null
-					&& !owner.getName().equals(entityAtDest.getName()) && !owner.getName().equals("Player")) {
+			} else if (entityAtDest.getComponent(DeathComponent.class) != null && !owner.getName().equals("Player")
+					&& (entityAtDest.getName().equals("Player") || owner.getName().equals("Box"))) {
 				entityAtDest.getComponent(DeathComponent.class).die(this);
 				moving = true;
 				Sleep.grid.moveEntityTo(owner, destination);
