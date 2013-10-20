@@ -52,6 +52,13 @@ public class EntityFactory {
 				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/ghost.png", Texture.class)))
 				.addComponent(new DeathComponent()).initComponents();
 	}
+	
+	public static Entity makeSpectre(int x, int y) {
+		return Sleep.entityManager.add(new Entity("Spectre", new Vector2(x, y), GHOST_DEPTH))
+				.addComponent(new SpectreMovementComponent())
+				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/spectre.png", Texture.class)))
+				.addComponent(new DeathComponent()).initComponents();
+	}
 
 	public static Entity makeBox(int x, int y) {
 		return Sleep.entityManager.add(new Entity("Box", new Vector2(x, y), BOX_DEPTH))
@@ -72,9 +79,9 @@ public class EntityFactory {
 				new BackgroundRenderComponent(tex, xSize, ySize));
 	}
 
-	public static Entity makeSpawner(int x, int y, float init, float freq) {
+	public static Entity makeSpawner(int x, int y, String type, float init, float freq) {
 		Sleep.entityManager.add(new Entity("Spawner", new Vector2(x, y), SPAWNER_DEPTH))
-				.addComponent(new SpawnerComponent(init, freq))
+				.addComponent(new SpawnerComponent(type, init, freq))
 				.initComponents();
 		
 		return makeWall(x, y);

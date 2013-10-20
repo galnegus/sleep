@@ -7,7 +7,6 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class Grid {
@@ -42,16 +41,19 @@ public class Grid {
 
 			// parse spawner timings
 			String[] line;
+			Map<Character, String> spawnerType = new HashMap<Character, String>();
 			Map<Character, Float> spawnerInit = new HashMap<Character, Float>();
 			Map<Character, Float> spawnerFreq = new HashMap<Character, Float>();
 			while (br.ready()) {
 				line = br.readLine().split(" ");
-				spawnerInit.put(line[0].charAt(0), Float.parseFloat(line[1]));
-				spawnerFreq.put(line[0].charAt(0), Float.parseFloat(line[2]));
+				spawnerType.put(line[0].charAt(0), line[1]);
+				spawnerInit.put(line[0].charAt(0), Float.parseFloat(line[2]));
+				spawnerFreq.put(line[0].charAt(0), Float.parseFloat(line[3]));
 			}
 
 			br.close();
 
+			// create entities
 			for (int x = 0; x < charBoard.length; x++) {
 				for (int y = 0; y < charBoard[x].length; y++) {
 					if (charBoard[x][y] == ' ') {
@@ -75,7 +77,7 @@ public class Grid {
 						}
 
 						grid[x][y] = EntityFactory.makeSpawner(x * Constants.GRID_CELL_SIZE, y
-								* Constants.GRID_CELL_SIZE, spawnerInit.get(charBoard[x][y]),
+								* Constants.GRID_CELL_SIZE, spawnerType.get(charBoard[x][y]), spawnerInit.get(charBoard[x][y]),
 								spawnerFreq.get(charBoard[x][y]));
 					}
 				}
@@ -105,36 +107,27 @@ public class Grid {
 		return new Vector2(gridX, gridY);
 	}
 
-	/**
-	 * retrieves an entity at the given render position.
-	 * 
-	 * as there can be 2 possible grid positions for a given render positions
-	 * (technically 4, but only 2 are ever used),
-	 * both grid positions are checked for any entity.
-	 * if no entity is found at the floor, the entity (or lack of) at the
-	 * ceiling is returned.
-	 * 
-	 * this is necessary because of collision detection on entities that are
-	 * moving
-	 */
 	public Entity getEntityAt(Vector2 position) {
 		return getEntityAt(position.x, position.y);
 	}
 
 	public Entity getEntityAt(float x, float y) {
 		Vector2 floorGridPos = getGridPos(x, y);
-		Vector2 ceilGridPos = new Vector2((float) Math.ceil(x / Constants.GRID_CELL_SIZE), (float) Math.ceil(y
-				/ Constants.GRID_CELL_SIZE));
 
 		if (floorGridPos.x < 0 || floorGridPos.y < 0 || floorGridPos.x >= xSize || floorGridPos.y >= ySize) {
 			return null;
 		} else {
-			Entity floorEntity = grid[(int) floorGridPos.x][(int) floorGridPos.y];
-			Entity ceilEntity = grid[(int) ceilGridPos.x][(int) ceilGridPos.y];
-
-			return floorEntity == null ? ceilEntity : floorEntity;
+			return grid[(int) floorGridPos.x][(int) floorGridPos.y];
 		}
 
+	}
+	
+	public int getDistanceAt(Vector2 position) {
+		return getDistanceAt(position.x, position.y);
+	}
+	
+	public int getDistanceAt(float x, float y) {
+		return distanceGrid[(int) x][(int) y];
 	}
 
 	/**
@@ -220,58 +213,6 @@ public class Grid {
 
 			}
 		}
-	}
-
-	/**
-	 * looks in the distanceGrid for the move that brings the entity the closest
-	 * to the player
-	 * 
-	 * @param mover
-	 *            the entity being moved
-	 * @return a vector describing the movement (ie movement.x = -1, movement.y
-	 *         = 0 for a move going left)
-	 */
-	public Vector2 bestMove(Vector2 mover) {
-		Vector2 bestMove = new Vector2(0, 0);
-		Vector2 moverPos = getGridPos(mover);
-		Vector2 player = getGridPos(Sleep.player.position);
-
-		int min = xSize * ySize;
-
-		Vector2[] moves = new Vector2[4];
-		moves[0] = new Vector2(moverPos.x - 1, moverPos.y);
-		moves[1] = new Vector2(moverPos.x + 1, moverPos.y);
-		moves[2] = new Vector2(moverPos.x, moverPos.y - 1);
-		moves[3] = new Vector2(moverPos.x, moverPos.y + 1);
-
-		for (Vector2 move : moves) {
-			if (move.x >= 0 && move.x < xSize && move.y >= 0 && move.y < ySize) {
-				if (distanceGrid[(int) move.x][(int) move.y] < min && distanceGrid[(int) move.x][(int) move.y] >= 0) {
-					min = distanceGrid[(int) move.x][(int) move.y];
-					bestMove.set(move.x, move.y);
-				} else if (distanceGrid[(int) move.x][(int) move.y] == min) {
-
-					// if the difference in distance in x and y from player to
-					// move is smaller than difference in x and y from player to
-					// bestMove, set move to bestMove.
-					if (Math.abs(Math.abs(player.x - bestMove.x) - Math.abs(player.y - bestMove.y)) > Math.abs(Math
-							.abs(player.x - move.x) - Math.abs(player.y - move.y))) {
-						bestMove.set(move.x, move.y);
-					} 
-					
-					// if move is as good as bestMove, random!
-					else if (Math.abs(Math.abs(player.x - bestMove.x) - Math.abs(player.y - bestMove.y)) == Math
-							.abs(Math.abs(player.x - move.x) - Math.abs(player.y - move.y))) {
-						if (MathUtils.random(1) == 0) {
-							bestMove.set(move.x, move.y);
-						}
-					}
-				}
-			}
-		}
-
-		Vector2 movement = new Vector2(bestMove.x - moverPos.x, bestMove.y - moverPos.y);
-		return movement;
 	}
 
 	public void printDistanceGrid() {

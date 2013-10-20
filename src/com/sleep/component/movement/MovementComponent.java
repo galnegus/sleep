@@ -33,7 +33,7 @@ public class MovementComponent extends Component {
 	 * @param y
 	 */
 	public boolean move(float x, float y) {
-		if(moveable) {
+		if (moveable) {
 			destination.x = owner.position.x + x;
 			destination.y = owner.position.y + y;
 			Entity entityAtDest = Sleep.grid.getEntityAt(destination.x, destination.y);
@@ -41,14 +41,20 @@ public class MovementComponent extends Component {
 			if (entityAtDest == null) {
 				moving = true;
 				Sleep.grid.moveEntityTo(owner, destination);
+				
+				// push box
 			} else if (entityAtDest.getName().equals("Box")
 					&& (owner.getName().equals("Player") || owner.getName().equals("Box"))) {
+				
+				// recursively check that several boxes can be moved
 				if (entityAtDest.getComponent(MovementComponent.class).move(x, y)) {
 					moving = true;
 					Sleep.grid.moveEntityTo(owner, destination);
 				}
-			} else if ((owner.getName().equals("Box") && entityAtDest.getName().equals("Ghost"))
-					|| (owner.getName().equals("Ghost") && entityAtDest.getName().equals("Player"))) {
+				
+				// no cannibalism!
+			} else if (entityAtDest.getComponent(DeathComponent.class) != null
+					&& !owner.getName().equals(entityAtDest.getName())) {
 				entityAtDest.getComponent(DeathComponent.class).die(this);
 				moving = true;
 				Sleep.grid.moveEntityTo(owner, destination);
@@ -64,7 +70,9 @@ public class MovementComponent extends Component {
 			direction.x += 1;
 		} else if (destination.x < owner.position.x && Math.abs(destination.x - owner.position.x) > 0) {
 			direction.x -= 1;
-		} else if (destination.y < owner.position.y) {
+		}
+		
+		if (destination.y < owner.position.y) {
 			direction.y -= 1;
 		} else if (destination.y > owner.position.y) {
 			direction.y += 1;
@@ -74,15 +82,19 @@ public class MovementComponent extends Component {
 	private void stopMoving() {
 		if ((direction.x == 1 && destination.x < owner.position.x)
 				|| (direction.x == -1 && destination.x > owner.position.x)) {
-			moving = false;
 			owner.position.x = destination.x;
-		} else if ((direction.y == 1 && destination.y < owner.position.y)
+		}
+		
+		if ((direction.y == 1 && destination.y < owner.position.y)
 				|| (direction.y == -1 && destination.y > owner.position.y)) {
-			moving = false;
 			owner.position.y = destination.y;
 		}
+		
+		if(owner.position.x == destination.x && owner.position.y == destination.y) {
+			moving = false;
+		}
 	}
-	
+
 	public boolean isMoving() {
 		return moving;
 	}

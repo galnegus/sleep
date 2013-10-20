@@ -6,10 +6,10 @@ import com.sleep.Constants;
 import com.sleep.Sleep;
 import com.sleep.component.ComponentException;
 
-public class GhostMovementComponent extends MovementComponent {
+public class SpectreMovementComponent extends MovementComponent {
 	private float moveTimer;
 	
-	public GhostMovementComponent() {
+	public SpectreMovementComponent() {
 		this.moveTimer = 0;
 	}
 
@@ -44,10 +44,10 @@ public class GhostMovementComponent extends MovementComponent {
 		int min = Sleep.grid.getXSize() * Sleep.grid.getYSize();
 
 		Vector2[] moves = new Vector2[4];
-		moves[0] = new Vector2(moverPos.x - 1, moverPos.y);
-		moves[1] = new Vector2(moverPos.x + 1, moverPos.y);
-		moves[2] = new Vector2(moverPos.x, moverPos.y - 1);
-		moves[3] = new Vector2(moverPos.x, moverPos.y + 1);
+		moves[0] = new Vector2(moverPos.x - 1, moverPos.y - 1);
+		moves[1] = new Vector2(moverPos.x + 1, moverPos.y - 1);
+		moves[2] = new Vector2(moverPos.x - 1, moverPos.y + 1);
+		moves[3] = new Vector2(moverPos.x + 1, moverPos.y + 1);
 
 		for (Vector2 move : moves) {
 			if (move.x >= 0 && move.x < Sleep.grid.getXSize() && move.y >= 0 && move.y < Sleep.grid.getYSize()) {

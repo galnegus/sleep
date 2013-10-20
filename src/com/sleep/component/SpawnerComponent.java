@@ -8,12 +8,14 @@ import com.sleep.EntityFactory;
 import com.sleep.Sleep;
 
 public class SpawnerComponent extends Component implements RenderableComponent {
+	String type;
 	float timer;
 	float frequency;
 
 	Vector2 fontOffset = new Vector2(0, 0);
 
-	public SpawnerComponent(float init, float frequency) {
+	public SpawnerComponent(String type, float init, float frequency) {
+		this.type = type;
 		this.timer = init;
 		this.frequency = frequency;
 	}
@@ -36,8 +38,11 @@ public class SpawnerComponent extends Component implements RenderableComponent {
 	public void update(float delta) {
 		timer -= delta;
 		if(timer < 0) {
-			Entity ghost = EntityFactory.makeGhost((int) owner.position.x, (int) owner.position.y);
-			//Sleep.grid.setEntityAt(ghost, owner.position);
+			if(type.equals("Ghost")) {
+				EntityFactory.makeGhost((int) owner.position.x, (int) owner.position.y);
+			} else if(type.equals("Spectre")) {
+				EntityFactory.makeSpectre((int) owner.position.x, (int) owner.position.y);
+			}
 			timer += frequency;
 		}
 

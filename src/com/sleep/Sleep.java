@@ -4,7 +4,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -35,6 +34,7 @@ public class Sleep implements ApplicationListener {
 
 		assets = new AssetManager();
 		assets.load("images/ghost.png", Texture.class);
+		assets.load("images/spectre.png", Texture.class);
 		assets.load("images/wall.png", Texture.class);
 		assets.load("images/box.png", Texture.class);
 		assets.load("images/grid.png", Texture.class);
@@ -46,7 +46,7 @@ public class Sleep implements ApplicationListener {
 		
 		music = assets.get("music/14_october.ogg", Music.class);
 		music.setLooping(true);
-		music.setVolume(0.5f);
+		music.setVolume(0.8f);
 		music.play();
 
 		entityManager = new EntityManager();
