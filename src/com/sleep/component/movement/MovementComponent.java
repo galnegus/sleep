@@ -67,15 +67,15 @@ public class MovementComponent extends Component {
 
 	private void keepMoving() {
 		if (destination.x > owner.position.x && Math.abs(destination.x - owner.position.x) > 0) {
-			direction.x += 1;
+			direction.x = 1;
 		} else if (destination.x < owner.position.x && Math.abs(destination.x - owner.position.x) > 0) {
-			direction.x -= 1;
+			direction.x = -1;
 		}
 
 		if (destination.y < owner.position.y) {
-			direction.y -= 1;
+			direction.y = -1;
 		} else if (destination.y > owner.position.y) {
-			direction.y += 1;
+			direction.y = 1;
 		}
 	}
 

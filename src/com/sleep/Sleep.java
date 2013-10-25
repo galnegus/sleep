@@ -41,10 +41,10 @@ public class Sleep implements ApplicationListener {
 		assets.load("images/player.png", Texture.class);
 		assets.load("images/player_bw.png", Texture.class);
 		assets.load("images/placeholder.png", Texture.class);
-		assets.load("music/14_october.ogg", Music.class);
+		assets.load("music/25_october.ogg", Music.class);
 		assets.finishLoading();
 		
-		music = assets.get("music/14_october.ogg", Music.class);
+		music = assets.get("music/25_october.ogg", Music.class);
 		music.setLooping(true);
 		music.setVolume(0.8f);
 		music.play();
