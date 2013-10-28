@@ -45,7 +45,7 @@ public class LightShaderComponent extends Component implements ShaderComponent {
 		}
 		
 		if (lightOscillate)
-			size = initSize + initSize / 6 * MathUtils.random();
+			size = initSize + initSize / 2 * MathUtils.random();
 		else
 			size = initSize;
 	}
