@@ -2,6 +2,7 @@ package com.sleep;
 
 import java.util.LinkedHashMap;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -16,6 +17,7 @@ import com.sleep.component.movement.*;
 import com.sleep.component.render.AnimationRenderComponent;
 import com.sleep.component.render.BackgroundRenderComponent;
 import com.sleep.component.render.ImageRenderComponent;
+import com.sleep.component.shader.LightShaderComponent;
 
 public class EntityFactory {
 	private static final int BOX_DEPTH = 0;
@@ -39,7 +41,8 @@ public class EntityFactory {
 
 		Entity player = Sleep.entityManager.add(new Entity("Player", new Vector2(x, y), PLAYER_DEPTH))
 				.addComponent(new PlayerMovementComponent()).addComponent(new AnimationRenderComponent(idle))
-				.addComponent(new PlayerDeathComponent()).initComponents();
+				.addComponent(new PlayerDeathComponent()).initComponents()
+				.addComponent(new LightShaderComponent(Sleep.light, new Color(1f, 0.8f, 0.9f, 0.5f), 500, true));
 
 		Sleep.player = player;
 
@@ -51,6 +54,7 @@ public class EntityFactory {
 				.addComponent(new GhostMovementComponent())
 				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/ghost.png", Texture.class)))
 				.addComponent(new DeathComponent()).initComponents();
+//				.addComponent(new LightShaderComponent(Sleep.light, new Color(0.9f, 1f, 0.9f, 0.5f), 256, true));
 	}
 	
 	public static Entity makeSpectre(int x, int y) {
@@ -58,6 +62,7 @@ public class EntityFactory {
 				.addComponent(new SpectreMovementComponent())
 				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/spectre.png", Texture.class)))
 				.addComponent(new DeathComponent()).initComponents();
+//				.addComponent(new LightShaderComponent(Sleep.light, new Color(1f, 0.8f, 0.9f, 0.5f), 256, true));
 	}
 
 	public static Entity makeBox(int x, int y) {

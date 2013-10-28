@@ -60,12 +60,10 @@ public class CoolCamera extends OrthographicCamera {
 			movement.x = 0;
 		} else if (position.x >= Sleep.grid.getXSize() * Constants.GRID_CELL_SIZE - size.x / 2 && movement.x > 0) {
 			movement.x = 0;
-			//movement.x = GameScreen.level.getXSize() * Constants.GRID_CELL_SIZE - size.y;
 		}
 		if (position.y <= size.y / 2 && movement.y < 0) {
 			movement.y = 0;
 		} else if (position.y >= Sleep.grid.getYSize() * Constants.GRID_CELL_SIZE - size.y / 2 && movement.y > 0) {
-			//movement.y = GameScreen.level.getYSize() * Constants.GRID_CELL_SIZE - size.y / scale.y;
 			movement.y = 0;
 		}
 		

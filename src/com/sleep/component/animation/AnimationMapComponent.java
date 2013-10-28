@@ -45,7 +45,7 @@ public class AnimationMapComponent extends Component {
 	 * of the owner entity.
 	 */
 	@Override
-	public void update(float delta) {
+	public void update() {
 		for (AnimationActions action : animations.keySet()) {
 			if (action.check(owner)) {
 				setCurrentAnimation(action);

@@ -1,5 +1,6 @@
 package com.sleep.component.movement;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.sleep.Constants;
 import com.sleep.Entity;
@@ -111,7 +112,7 @@ public class MovementComponent extends Component {
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update() {
 		resetAcceleration();
 
 		if (moving)
@@ -119,8 +120,8 @@ public class MovementComponent extends Component {
 
 		Vector2 position = owner.position;
 
-		position.y += delta * Constants.VELOCITY * direction.y;
-		position.x += delta * Constants.VELOCITY * direction.x;
+		position.y += Gdx.graphics.getDeltaTime() * Constants.VELOCITY * direction.y;
+		position.x += Gdx.graphics.getDeltaTime() * Constants.VELOCITY * direction.x;
 
 		if (moving)
 			stopMoving();

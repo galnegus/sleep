@@ -24,7 +24,7 @@ public class ImageRenderComponent extends RenderComponent {
 	}
 	
 	@Override
-	public void update(float delta) {
+	public void update() {
 	}
 
 	@Override

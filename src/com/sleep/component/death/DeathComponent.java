@@ -4,6 +4,7 @@ import com.sleep.Sleep;
 import com.sleep.component.Component;
 import com.sleep.component.ComponentException;
 import com.sleep.component.movement.MovementComponent;
+import com.sleep.component.shader.LightShaderComponent;
 
 /**
  * when die() is used, the entity is instantly removed from the grid.
@@ -26,23 +27,24 @@ public class DeathComponent extends Component {
 		Sleep.grid.removeEntity(owner);
 		MovementComponent moveComp = owner.getComponent(MovementComponent.class);
 		if (moveComp != null) {
+			
 			moveComp.moveable = false;
+		}
+		LightShaderComponent lightComp = owner.getComponent(LightShaderComponent.class);
+		if (lightComp != null) {
+			
+			lightComp.destroy = true;
 		}
 	}
 	
 	public void die(MovementComponent killedBy) {
-		alive = false;
-		Sleep.grid.removeEntity(owner);
-		MovementComponent moveComp = owner.getComponent(MovementComponent.class);
-		if (moveComp != null) {
-			moveComp.moveable = false;
-		}
+		die();
 		
 		this.killedBy = killedBy;
 	}
 
 	@Override
-	public void update(float delta) {
+	public void update() {
 
 		if (!alive) {
 			MovementComponent moveComp = owner.getComponent(MovementComponent.class);

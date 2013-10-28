@@ -1,5 +1,6 @@
 package com.sleep.component.movement;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.sleep.Constants;
@@ -14,8 +15,8 @@ public class GhostMovementComponent extends MovementComponent {
 	}
 
 	@Override
-	public void update(float delta) {
-		moveTimer += delta;
+	public void update() {
+		moveTimer += Gdx.graphics.getRawDeltaTime();
 		if(moveTimer >= Constants.GHOST_MOVE_FREQUENCY && !isMoving()) {
 			moveTimer -= Constants.GHOST_MOVE_FREQUENCY;
 			
@@ -24,7 +25,7 @@ public class GhostMovementComponent extends MovementComponent {
 			move(moveTo.x * Constants.GRID_CELL_SIZE, moveTo.y * Constants.GRID_CELL_SIZE);
 		}
 		
-		super.update(delta);
+		super.update();
 	}
 	
 	/**

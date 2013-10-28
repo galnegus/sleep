@@ -1,5 +1,6 @@
 package com.sleep.component.render;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.sleep.Sleep;
 import com.sleep.component.ComponentException;
@@ -41,8 +42,8 @@ public class AnimationRenderComponent extends RenderComponent {
 	}
 	
 	@Override
-	public void update(float delta) {
-		stateTime += delta;
+	public void update() {
+		stateTime += Gdx.graphics.getRawDeltaTime();
 	}
 
 	@Override

@@ -3,6 +3,10 @@ package com.sleep;
 import com.badlogic.gdx.Input;
 
 public class Constants {
+	// App
+	public static final int width = 1280;
+	public static final int height = 720;
+	
 	// Level
 	public static final char BOX = '$';
 	public static final char WALL = '#';

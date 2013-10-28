@@ -10,7 +10,7 @@ public abstract class Component {
 		this.owner = owner;
 	}
 	
-	public abstract void update(float delta);
+	public abstract void update();
 	
 	public abstract void init() throws ComponentException;
 	

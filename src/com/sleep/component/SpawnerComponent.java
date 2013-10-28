@@ -1,9 +1,9 @@
 package com.sleep.component;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.sleep.Constants;
-import com.sleep.Entity;
 import com.sleep.EntityFactory;
 import com.sleep.Sleep;
 
@@ -35,8 +35,8 @@ public class SpawnerComponent extends Component implements RenderableComponent {
 	}
 
 	@Override
-	public void update(float delta) {
-		timer -= delta;
+	public void update() {
+		timer -= Gdx.graphics.getRawDeltaTime();
 		if(timer < 0) {
 			if(type.equals("Ghost")) {
 				EntityFactory.makeGhost((int) owner.position.x, (int) owner.position.y);
@@ -53,5 +53,4 @@ public class SpawnerComponent extends Component implements RenderableComponent {
 		// TODO Auto-generated method stub
 
 	}
-
 }

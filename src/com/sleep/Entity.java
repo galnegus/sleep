@@ -8,6 +8,7 @@ import com.sleep.component.Component;
 import com.sleep.component.ComponentException;
 import com.sleep.component.RenderableComponent;
 import com.sleep.component.render.RenderComponent;
+import com.sleep.component.shader.ShaderComponent;
 
 public class Entity {
 
@@ -109,9 +110,17 @@ public class Entity {
 		return depth;
 	}
 
-	public void update(float delta) {
+	public void update() {
 		for (Component comp : components.values()) {
-			comp.update(delta);
+			comp.update();
+		}
+	}
+	
+	public void drawShader() {
+		for (Component comp : components.values()) {
+			if (comp instanceof ShaderComponent) {
+				((ShaderComponent) comp).drawShader();
+			}
 		}
 	}
 
@@ -137,7 +146,7 @@ public class Entity {
 
 		return this;
 	}
-
+	
 	public String getName() {
 		return name;
 	}

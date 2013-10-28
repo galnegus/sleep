@@ -1,7 +1,6 @@
 package com.sleep.component.movement;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 import com.sleep.Constants;
 import com.sleep.component.ComponentException;
 
@@ -11,10 +10,8 @@ public class PlayerMovementComponent extends MovementComponent {
 	private boolean movingLeft = false;
 	private boolean movingRight = false;
 
-	private Vector2 queuedMove = new Vector2(0, 0);
-
 	@Override
-	public void update(float delta) {
+	public void update() {
 		// queue moves
 		if (!isMoving()) {
 			if (!Gdx.input.isKeyPressed(Constants.MOVE_LEFT)) {
@@ -45,7 +42,7 @@ public class PlayerMovementComponent extends MovementComponent {
 			} 
 		}
 
-		super.update(delta);
+		super.update();
 	}
 
 	@Override
