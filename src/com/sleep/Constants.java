@@ -12,17 +12,15 @@ public class Constants {
 	public static final char WALL = '#';
 	public static final char PLAYER = '@';
 	public static final char GHOST = '.';
+	public static final char SPECTRE = ',';
 	public static final int GRID_CELL_SIZE = 64;
-
-	// General movement
-	public static final float VELOCITY = 600f;
 
 	// Player behaviour
 	public static final float PLAYER_MOVE_FREQUENCY = 0.25f;
 
 	// Enemy behaviour
-	public static final float GHOST_MOVE_FREQUENCY = 0.5f;
-	public static final float SPECTRE_MOVE_FREQUENCY = 0.5f;
+	public static final float GHOST_MOVE_FREQUENCY = 120f/144f;
+	public static final float SPECTRE_MOVE_FREQUENCY = 120f/144f;
 
 	// Input
 	public static final int MOVE_LEFT = Input.Keys.A;

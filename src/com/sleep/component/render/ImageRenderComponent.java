@@ -5,7 +5,7 @@ import com.sleep.Sleep;
 import com.sleep.component.ComponentException;
 
 public class ImageRenderComponent extends RenderComponent {	
-	private Texture image;
+	protected Texture image;
 	public ImageRenderComponent(Texture image) {
 		this.image = image;
 	}

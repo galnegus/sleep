@@ -16,7 +16,12 @@ public class LightShaderComponent extends Component implements ShaderComponent {
 
 	// if set to false, the light will "go out"
 	public boolean destroy;
-	private final float destroySteps = 10;
+	
+	/*
+	 * TODO:
+	 * fix destroySteps so it's framerate independent
+	 */
+	private final float destroySteps = 16;
 	private Color destroySubtract;
 
 	public LightShaderComponent(Texture light, Color color, float size, boolean lightOscillate) {
@@ -40,14 +45,23 @@ public class LightShaderComponent extends Component implements ShaderComponent {
 
 	@Override
 	public void update() {
-		if (destroy) {
-			color.sub(destroySubtract);
-		}
-		
 		if (lightOscillate)
 			size = initSize + initSize / 2 * MathUtils.random();
 		else
 			size = initSize;
+		
+		
+		if (destroy) {
+			color.sub(destroySubtract);
+		} else {
+			color.a += 0.05 * (MathUtils.random() - 0.5);
+			if (color.a <= 0.2)
+				color.a = 0.25f;
+			else if (color.a > 0.5)
+				color.a = 0.45f;
+		}
+
+		
 	}
 
 	@Override

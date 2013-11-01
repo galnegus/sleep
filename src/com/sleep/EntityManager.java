@@ -58,4 +58,8 @@ public class EntityManager {
 		entityList.add(e);
 		return e;
 	}
+	
+	public int size() {
+		return entityList.size();
+	}
 }

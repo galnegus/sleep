@@ -16,6 +16,7 @@ import com.sleep.component.death.PlayerDeathComponent;
 import com.sleep.component.movement.*;
 import com.sleep.component.render.AnimationRenderComponent;
 import com.sleep.component.render.BackgroundRenderComponent;
+import com.sleep.component.render.GhostRenderComponent;
 import com.sleep.component.render.ImageRenderComponent;
 import com.sleep.component.shader.LightShaderComponent;
 
@@ -33,7 +34,7 @@ public class EntityFactory {
 		anim.add(new TextureRegion(Sleep.assets.get("images/player.png", Texture.class)));
 		anim.add(new TextureRegion(Sleep.assets.get("images/player_bw.png", Texture.class)));
 
-		Animation idle = new Animation(0.5f, anim, Animation.LOOP);
+		Animation idle = new Animation(120f / 144f, anim, Animation.LOOP);
 
 		LinkedHashMap<AnimationActions, Animation> monkeyAnimations = new LinkedHashMap<AnimationActions, Animation>(2);
 		monkeyAnimations.put(AnimationActions.WALK_RIGHT, idle);
@@ -41,8 +42,9 @@ public class EntityFactory {
 
 		Entity player = Sleep.entityManager.add(new Entity("Player", new Vector2(x, y), PLAYER_DEPTH))
 				.addComponent(new PlayerMovementComponent()).addComponent(new AnimationRenderComponent(idle))
-				.addComponent(new PlayerDeathComponent()).initComponents()
-				.addComponent(new LightShaderComponent(Sleep.light, new Color(1f, 0.8f, 0.9f, 0.5f), 2500, true));
+				.addComponent(new PlayerDeathComponent())
+				.addComponent(new LightShaderComponent(Sleep.light, new Color(1f, 0.8f, 0.9f, 0.25f), 2500, true))
+				.initComponents();
 
 		Sleep.player = player;
 
@@ -52,17 +54,19 @@ public class EntityFactory {
 	public static Entity makeGhost(int x, int y) {
 		return Sleep.entityManager.add(new Entity("Ghost", new Vector2(x, y), GHOST_DEPTH))
 				.addComponent(new GhostMovementComponent())
-				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/ghost.png", Texture.class)))
-				.addComponent(new DeathComponent()).initComponents()
-				.addComponent(new LightShaderComponent(Sleep.light, new Color(0.9f, 1f, 0.9f, 0.1f), 128, true));
+				.addComponent(new GhostRenderComponent(Sleep.assets.get("images/dark_circle.png", Texture.class)))
+				.addComponent(new DeathComponent())
+				.addComponent(new LightShaderComponent(Sleep.light, new Color(0f, 0.01f, 0f, 0.1f), 100, true))
+				.initComponents();
 	}
-	
+
 	public static Entity makeSpectre(int x, int y) {
 		return Sleep.entityManager.add(new Entity("Spectre", new Vector2(x, y), GHOST_DEPTH))
 				.addComponent(new SpectreMovementComponent())
-				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/spectre.png", Texture.class)))
-				.addComponent(new DeathComponent()).initComponents()
-				.addComponent(new LightShaderComponent(Sleep.light, new Color(1f, 0.8f, 0.9f, 0.1f), 128, true));
+				.addComponent(new GhostRenderComponent(Sleep.assets.get("images/dark_circle.png", Texture.class)))
+				.addComponent(new DeathComponent())
+				.addComponent(new LightShaderComponent(Sleep.light, new Color(0.01f, 0f, 0f, 0.01f), 100, true))
+				.initComponents();
 	}
 
 	public static Entity makeBox(int x, int y) {
@@ -86,9 +90,8 @@ public class EntityFactory {
 
 	public static Entity makeSpawner(int x, int y, String type, float init, float freq) {
 		Sleep.entityManager.add(new Entity("Spawner", new Vector2(x, y), SPAWNER_DEPTH))
-				.addComponent(new SpawnerComponent(type, init, freq))
-				.initComponents();
-		
+				.addComponent(new SpawnerComponent(type, init, freq)).initComponents();
+
 		return makeWall(x, y);
 	}
 }

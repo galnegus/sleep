@@ -1,9 +1,12 @@
 package com.sleep.component.death;
 
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.sleep.Sleep;
 import com.sleep.component.Component;
 import com.sleep.component.ComponentException;
 import com.sleep.component.movement.MovementComponent;
+import com.sleep.component.render.GhostRenderComponent;
+import com.sleep.component.render.RenderComponent;
 import com.sleep.component.shader.LightShaderComponent;
 
 /**
@@ -34,6 +37,12 @@ public class DeathComponent extends Component {
 		if (lightComp != null) {
 			
 			lightComp.destroy = true;
+		}
+		// det här är dumt
+		RenderComponent ghostComp = owner.getComponent(RenderComponent.class);
+		if (ClassReflection.isInstance(GhostRenderComponent.class, ghostComp)) {
+			System.out.println("yes");
+			((GhostRenderComponent) ghostComp).castShadows = false;
 		}
 	}
 	

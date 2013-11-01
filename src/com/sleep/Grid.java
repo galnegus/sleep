@@ -1,8 +1,10 @@
 package com.sleep;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
@@ -11,7 +13,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Grid {
 	private Entity[][] grid;
-	private int[][] distanceGrid;
+	private int[][] ghostPathGrid;
+	private int[][] spectrePathGrid;
 	private int xSize, ySize;
 
 	public int getXSize() {
@@ -25,7 +28,7 @@ public class Grid {
 	public Grid() {
 		char[][] charBoard;
 		try {
-			FileHandle levelTxt = Gdx.files.internal("levels/test.txt");
+			FileHandle levelTxt = Gdx.files.internal("levels/level1");
 			BufferedReader br = levelTxt.reader(200);
 
 			xSize = Integer.parseInt(br.readLine());
@@ -33,7 +36,8 @@ public class Grid {
 
 			charBoard = new char[xSize][ySize];
 			grid = new Entity[xSize][ySize];
-			distanceGrid = new int[xSize][ySize];
+			ghostPathGrid = new int[xSize][ySize];
+			spectrePathGrid = new int[xSize][ySize];
 
 			for (int i = 0; i < xSize; i++) {
 				charBoard[i] = br.readLine().toCharArray();
@@ -68,6 +72,9 @@ public class Grid {
 					} else if (charBoard[x][y] == Constants.GHOST) {
 						grid[x][y] = EntityFactory
 								.makeGhost(x * Constants.GRID_CELL_SIZE, y * Constants.GRID_CELL_SIZE);
+					} else if (charBoard[x][y] == Constants.SPECTRE) {
+						grid[x][y] = EntityFactory.makeSpectre(x * Constants.GRID_CELL_SIZE, y
+								* Constants.GRID_CELL_SIZE);
 					} else if (Character.isLetterOrDigit(charBoard[x][y])) {
 						if (!spawnerInit.containsKey(charBoard[x][y])) {
 							Gdx.app.error("GridError", "spawnerInit value for key '" + charBoard[x][y] + "' missing");
@@ -77,8 +84,8 @@ public class Grid {
 						}
 
 						grid[x][y] = EntityFactory.makeSpawner(x * Constants.GRID_CELL_SIZE, y
-								* Constants.GRID_CELL_SIZE, spawnerType.get(charBoard[x][y]), spawnerInit.get(charBoard[x][y]),
-								spawnerFreq.get(charBoard[x][y]));
+								* Constants.GRID_CELL_SIZE, spawnerType.get(charBoard[x][y]),
+								spawnerInit.get(charBoard[x][y]), spawnerFreq.get(charBoard[x][y]));
 					}
 				}
 			}
@@ -121,13 +128,21 @@ public class Grid {
 		}
 
 	}
-	
-	public int getDistanceAt(Vector2 position) {
-		return getDistanceAt(position.x, position.y);
+
+	public int getGhostDistanceAt(Vector2 position) {
+		return getGhostDistanceAt(position.x, position.y);
 	}
-	
-	public int getDistanceAt(float x, float y) {
-		return distanceGrid[(int) x][(int) y];
+
+	public int getGhostDistanceAt(float x, float y) {
+		return ghostPathGrid[(int) x][(int) y];
+	}
+
+	public int getSpectreDistanceAt(Vector2 position) {
+		return getSpectreDistanceAt(position.x, position.y);
+	}
+
+	public int getSpectreDistanceAt(float x, float y) {
+		return spectrePathGrid[(int) x][(int) y];
 	}
 
 	/**
@@ -166,8 +181,10 @@ public class Grid {
 	}
 
 	public void update() {
-		updateDistanceMatrix();
-		// printGrid();
+		updateGhostPathGrid();
+		updateSpectrePathGrid();
+
+		// printGrid(spectrePathGrid);
 	}
 
 	/**
@@ -175,17 +192,17 @@ public class Grid {
 	 * -1 == visited but unreachable
 	 * >= 0 == visited and reachable
 	 */
-	private void updateDistanceMatrix() {
+	private void updateGhostPathGrid() {
 		for (int x = 0; x < xSize; x++) {
 			for (int y = 0; y < ySize; y++) {
-				distanceGrid[x][y] = -2;
+				ghostPathGrid[x][y] = -2;
 			}
 		}
 
 		int xPlayer = (int) Sleep.player.position.x / Constants.GRID_CELL_SIZE;
 		int yPlayer = (int) Sleep.player.position.y / Constants.GRID_CELL_SIZE;
 		Vector2 playerPos = new Vector2(xPlayer, yPlayer);
-		distanceGrid[xPlayer][yPlayer] = 0;
+		ghostPathGrid[xPlayer][yPlayer] = 0;
 
 		LinkedList<Vector2> queue = new LinkedList<Vector2>();
 		Vector2[] moves = new Vector2[4];
@@ -200,12 +217,12 @@ public class Grid {
 
 			for (Vector2 move : moves) {
 				if (move.x >= 0 && move.x < xSize && move.y >= 0 && move.y < ySize) {
-					if (distanceGrid[(int) move.x][(int) move.y] == -2) {
+					if (ghostPathGrid[(int) move.x][(int) move.y] == -2) {
 						if (grid[(int) move.x][(int) move.y] == null) {
-							distanceGrid[(int) move.x][(int) move.y] = distanceGrid[(int) currentPos.x][(int) currentPos.y] + 1;
+							ghostPathGrid[(int) move.x][(int) move.y] = ghostPathGrid[(int) currentPos.x][(int) currentPos.y] + 1;
 							queue.add(move);
 						} else {
-							distanceGrid[(int) move.x][(int) move.y] = -1;
+							ghostPathGrid[(int) move.x][(int) move.y] = -1;
 						}
 
 					}
@@ -215,7 +232,77 @@ public class Grid {
 		}
 	}
 
-	public void printDistanceGrid() {
+	/**
+	 * Works similarily to updateGhostPathGrid(), but searches through the grid
+	 * diagonally rather than horizontally/vertically.
+	 * 
+	 * The BFS searches from up to 5 initial positions: the player's position,
+	 * and any adjacent position horizontally or vertically that doesn't contain
+	 * any box or wall.
+	 */
+	private void updateSpectrePathGrid() {
+		for (int x = 0; x < xSize; x++) {
+			for (int y = 0; y < ySize; y++) {
+				spectrePathGrid[x][y] = -2;
+			}
+		}
+
+		int xPlayer = (int) Sleep.player.position.x / Constants.GRID_CELL_SIZE;
+		int yPlayer = (int) Sleep.player.position.y / Constants.GRID_CELL_SIZE;
+
+		List<Vector2> startingPositions = new ArrayList<Vector2>();
+		startingPositions.add(new Vector2(xPlayer, yPlayer));
+		spectrePathGrid[xPlayer][yPlayer] = 0;
+		if (grid[xPlayer - 1][yPlayer] == null) {
+			startingPositions.add(new Vector2(xPlayer - 1, yPlayer));
+			spectrePathGrid[xPlayer - 1][yPlayer] = 1;
+		}
+		if (grid[xPlayer + 1][yPlayer] == null) {
+			startingPositions.add(new Vector2(xPlayer + 1, yPlayer));
+			spectrePathGrid[xPlayer + 1][yPlayer] = 1;
+		}
+		if (grid[xPlayer][yPlayer - 1] == null) {
+			startingPositions.add(new Vector2(xPlayer, yPlayer - 1));
+			spectrePathGrid[xPlayer][yPlayer - 1] = 1;
+		}
+		if (grid[xPlayer][yPlayer + 1] == null) {
+			startingPositions.add(new Vector2(xPlayer, yPlayer + 1));
+			spectrePathGrid[xPlayer][yPlayer + 1] = 1;
+		}
+
+		for (Vector2 startingPos : startingPositions) {
+			LinkedList<Vector2> queue = new LinkedList<Vector2>();
+			Vector2[] moves = new Vector2[4];
+			queue.add(startingPos);
+			while (!queue.isEmpty()) {
+				Vector2 currentPos = queue.poll();
+
+				moves[0] = new Vector2(currentPos.x - 1, currentPos.y - 1);
+				moves[1] = new Vector2(currentPos.x - 1, currentPos.y + 1);
+				moves[2] = new Vector2(currentPos.x + 1, currentPos.y - 1);
+				moves[3] = new Vector2(currentPos.x + 1, currentPos.y + 1);
+
+				for (Vector2 move : moves) {
+					if (move.x >= 0 && move.x < xSize && move.y >= 0 && move.y < ySize) {
+						if (spectrePathGrid[(int) move.x][(int) move.y] == -2
+								|| spectrePathGrid[(int) move.x][(int) move.y] > spectrePathGrid[(int) currentPos.x][(int) currentPos.y] + 2) {
+							if (grid[(int) move.x][(int) move.y] == null) {
+								spectrePathGrid[(int) move.x][(int) move.y] = spectrePathGrid[(int) currentPos.x][(int) currentPos.y] + 2;
+								queue.add(move);
+							} else {
+								spectrePathGrid[(int) move.x][(int) move.y] = -1;
+							}
+
+						}
+					}
+
+				}
+			}
+		}
+
+	}
+
+	public void printGrid(int[][] distanceGrid) {
 		System.out.println("distance grid: ");
 		for (int x = 0; x < xSize; x++) {
 			for (int y = 0; y < ySize; y++) {

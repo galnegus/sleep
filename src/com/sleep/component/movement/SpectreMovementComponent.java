@@ -9,25 +9,26 @@ import com.sleep.component.ComponentException;
 
 public class SpectreMovementComponent extends MovementComponent {
 	private float moveTimer;
-	
+
 	public SpectreMovementComponent() {
 		this.moveTimer = 0;
+		Velocity = 300f;
 	}
 
 	@Override
 	public void update() {
 		moveTimer += Gdx.graphics.getRawDeltaTime();
-		if(moveTimer >= Constants.SPECTRE_MOVE_FREQUENCY && !isMoving()) {
+		if (moveTimer >= Constants.SPECTRE_MOVE_FREQUENCY && !isMoving()) {
 			moveTimer -= Constants.SPECTRE_MOVE_FREQUENCY;
-			
+
 			Vector2 moveTo = bestMove(owner.position);
-			
+
 			move(moveTo.x * Constants.GRID_CELL_SIZE, moveTo.y * Constants.GRID_CELL_SIZE);
 		}
-		
+
 		super.update();
 	}
-	
+
 	/**
 	 * looks in the distanceGrid for the move that brings the entity the closest
 	 * to the player
@@ -52,10 +53,11 @@ public class SpectreMovementComponent extends MovementComponent {
 
 		for (Vector2 move : moves) {
 			if (move.x >= 0 && move.x < Sleep.grid.getXSize() && move.y >= 0 && move.y < Sleep.grid.getYSize()) {
-				if (Sleep.grid.getDistanceAt(move.x, move.y) < min && Sleep.grid.getDistanceAt(move.x, move.y) >= 0) {
-					min = Sleep.grid.getDistanceAt(move.x, move.y);
+				if (Sleep.grid.getSpectreDistanceAt(move.x, move.y) < min
+						&& Sleep.grid.getSpectreDistanceAt(move.x, move.y) >= 0) {
+					min = Sleep.grid.getSpectreDistanceAt(move.x, move.y);
 					bestMove.set(move.x, move.y);
-				} else if (Sleep.grid.getDistanceAt(move.x, move.y) == min) {
+				} else if (Sleep.grid.getSpectreDistanceAt(move.x, move.y) == min) {
 
 					// if the difference in distance in x and y from player to
 					// move is smaller than difference in x and y from player to
@@ -63,8 +65,8 @@ public class SpectreMovementComponent extends MovementComponent {
 					if (Math.abs(Math.abs(player.x - bestMove.x) - Math.abs(player.y - bestMove.y)) > Math.abs(Math
 							.abs(player.x - move.x) - Math.abs(player.y - move.y))) {
 						bestMove.set(move.x, move.y);
-					} 
-					
+					}
+
 					// if move is as good as bestMove, random!
 					else if (Math.abs(Math.abs(player.x - bestMove.x) - Math.abs(player.y - bestMove.y)) == Math
 							.abs(Math.abs(player.x - move.x) - Math.abs(player.y - move.y))) {

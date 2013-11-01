@@ -49,15 +49,14 @@ public class Sleep implements ApplicationListener {
 		// load assets
 		assets = new AssetManager();
 		assets.load("images/light.png", Texture.class);
-		assets.load("images/ghost.png", Texture.class);
-		assets.load("images/spectre.png", Texture.class);
+		assets.load("images/dark_circle.png", Texture.class);
 		assets.load("images/wall.png", Texture.class);
 		assets.load("images/box.png", Texture.class);
 		assets.load("images/grid.png", Texture.class);
 		assets.load("images/player.png", Texture.class);
 		assets.load("images/player_bw.png", Texture.class);
 		assets.load("images/placeholder.png", Texture.class);
-		assets.load("music/25_october.ogg", Music.class);
+		assets.load("music/spook.ogg", Music.class);
 		assets.finishLoading();
 
 		// create shader
@@ -85,7 +84,7 @@ public class Sleep implements ApplicationListener {
 		fbo = new FrameBuffer(Format.RGBA8888, Constants.width, Constants.height, false);
 
 		// play music
-		music = assets.get("music/25_october.ogg", Music.class);
+		music = assets.get("music/spook.ogg", Music.class);
 		music.setLooping(true);
 		music.setVolume(1f);
 		music.play();

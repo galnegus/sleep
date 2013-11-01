@@ -8,10 +8,12 @@ import com.sleep.Sleep;
 import com.sleep.component.ComponentException;
 
 public class GhostMovementComponent extends MovementComponent {
+	
 	private float moveTimer;
 	
 	public GhostMovementComponent() {
 		this.moveTimer = 0;
+		Velocity = 300f;
 	}
 
 	@Override
@@ -52,10 +54,10 @@ public class GhostMovementComponent extends MovementComponent {
 
 		for (Vector2 move : moves) {
 			if (move.x >= 0 && move.x < Sleep.grid.getXSize() && move.y >= 0 && move.y < Sleep.grid.getYSize()) {
-				if (Sleep.grid.getDistanceAt(move.x, move.y) < min && Sleep.grid.getDistanceAt(move.x, move.y) >= 0) {
-					min = Sleep.grid.getDistanceAt(move.x, move.y);
+				if (Sleep.grid.getGhostDistanceAt(move.x, move.y) < min && Sleep.grid.getGhostDistanceAt(move.x, move.y) >= 0) {
+					min = Sleep.grid.getGhostDistanceAt(move.x, move.y);
 					bestMove.set(move.x, move.y);
-				} else if (Sleep.grid.getDistanceAt(move.x, move.y) == min) {
+				} else if (Sleep.grid.getGhostDistanceAt(move.x, move.y) == min) {
 
 					// if the difference in distance in x and y from player to
 					// move is smaller than difference in x and y from player to

@@ -14,6 +14,8 @@ import com.sleep.component.death.DeathComponent;
  * 
  */
 public class MovementComponent extends Component {
+	public float Velocity = 600f;
+	
 	protected Vector2 direction = new Vector2(0, 0);
 	private Vector2 destination = new Vector2();
 
@@ -120,8 +122,8 @@ public class MovementComponent extends Component {
 
 		Vector2 position = owner.position;
 
-		position.y += Gdx.graphics.getDeltaTime() * Constants.VELOCITY * direction.y;
-		position.x += Gdx.graphics.getDeltaTime() * Constants.VELOCITY * direction.x;
+		position.y += Gdx.graphics.getDeltaTime() * Velocity * direction.y;
+		position.x += Gdx.graphics.getDeltaTime() * Velocity * direction.x;
 
 		if (moving)
 			stopMoving();
