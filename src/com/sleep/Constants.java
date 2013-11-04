@@ -19,14 +19,21 @@ public class Constants {
 	public static final float PLAYER_MOVE_FREQUENCY = 0.25f;
 
 	// Enemy behaviour
-	public static final float GHOST_MOVE_FREQUENCY = 120f/144f;
-	public static final float SPECTRE_MOVE_FREQUENCY = 120f/144f;
+	public static final float GHOST_MOVE_FREQUENCY = 0.5f;
+	public static final float SPECTRE_MOVE_FREQUENCY = 0.5f;
+	
+//	public static final float GHOST_MOVE_FREQUENCY = 0.5f;
+//	public static final float SPECTRE_MOVE_FREQUENCY = 0.5f;
 
 	// Input
 	public static final int MOVE_LEFT = Input.Keys.A;
+	public static final int MOVE_LEFT_ALT = Input.Keys.LEFT;
 	public static final int MOVE_RIGHT = Input.Keys.D;
+	public static final int MOVE_RIGHT_ALT = Input.Keys.RIGHT;
 	public static final int MOVE_UP = Input.Keys.W;
+	public static final int MOVE_UP_ALT = Input.Keys.UP;
 	public static final int MOVE_DOWN = Input.Keys.S;
+	public static final int MOVE_DOWN_ALT = Input.Keys.DOWN;
 
 	public static final int ZOOM_IN = Input.Keys.PLUS;
 	public static final int ZOOM_OUT = Input.Keys.MINUS;

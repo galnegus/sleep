@@ -34,7 +34,7 @@ public class Sleep implements ApplicationListener {
 	public static ShaderProgram ambientShader;
 	public static ShaderProgram defaultShader;
 	public static final float ambientIntensity = 1f;
-	public static final Vector3 ambientColor = new Vector3(0.10f, 0.05f, 0.05f);
+	public static final Vector3 ambientColor = new Vector3(0.1f, 0.1f, 0.1f);
 	public static Texture light;
 
 	/**
@@ -50,13 +50,13 @@ public class Sleep implements ApplicationListener {
 		assets = new AssetManager();
 		assets.load("images/light.png", Texture.class);
 		assets.load("images/dark_circle.png", Texture.class);
-		assets.load("images/wall.png", Texture.class);
-		assets.load("images/box.png", Texture.class);
-		assets.load("images/grid.png", Texture.class);
+		assets.load("images/wall_bw.png", Texture.class);
+		assets.load("images/box_bw.png", Texture.class);
+		assets.load("images/grid_bw.png", Texture.class);
 		assets.load("images/player.png", Texture.class);
 		assets.load("images/player_bw.png", Texture.class);
 		assets.load("images/placeholder.png", Texture.class);
-		assets.load("music/spook.ogg", Music.class);
+		assets.load("music/spook2.ogg", Music.class);
 		assets.finishLoading();
 
 		// create shader
@@ -84,7 +84,7 @@ public class Sleep implements ApplicationListener {
 		fbo = new FrameBuffer(Format.RGBA8888, Constants.width, Constants.height, false);
 
 		// play music
-		music = assets.get("music/spook.ogg", Music.class);
+		music = assets.get("music/spook2.ogg", Music.class);
 		music.setLooping(true);
 		music.setVolume(1f);
 		music.play();

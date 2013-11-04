@@ -14,32 +14,36 @@ public class PlayerMovementComponent extends MovementComponent {
 	public void update() {
 		// queue moves
 		if (!isMoving()) {
-			if (!Gdx.input.isKeyPressed(Constants.MOVE_LEFT)) {
+			if (!Gdx.input.isKeyPressed(Constants.MOVE_LEFT) && !Gdx.input.isKeyPressed(Constants.MOVE_LEFT_ALT)) {
 				movingLeft = false;
-			} 
-			if (!Gdx.input.isKeyPressed(Constants.MOVE_RIGHT)) {
+			}
+			if (!Gdx.input.isKeyPressed(Constants.MOVE_RIGHT) && !Gdx.input.isKeyPressed(Constants.MOVE_RIGHT_ALT)) {
 				movingRight = false;
-			} 
-			if (!Gdx.input.isKeyPressed(Constants.MOVE_UP)) {
+			}
+			if (!Gdx.input.isKeyPressed(Constants.MOVE_UP) && !Gdx.input.isKeyPressed(Constants.MOVE_UP_ALT)) {
 				movingUp = false;
-			} 
-			if (!Gdx.input.isKeyPressed(Constants.MOVE_DOWN)) {
+			}
+			if (!Gdx.input.isKeyPressed(Constants.MOVE_DOWN) && !Gdx.input.isKeyPressed(Constants.MOVE_DOWN_ALT)) {
 				movingDown = false;
 			}
-			
-			if (Gdx.input.isKeyPressed(Constants.MOVE_LEFT) && !movingLeft) {
+
+			if ((Gdx.input.isKeyPressed(Constants.MOVE_LEFT) || Gdx.input.isKeyPressed(Constants.MOVE_LEFT_ALT))
+					&& !movingLeft) {
 				move(-Constants.GRID_CELL_SIZE, 0);
 				movingLeft = true;
-			} else if (Gdx.input.isKeyPressed(Constants.MOVE_RIGHT) && !movingRight) {
+			} else if ((Gdx.input.isKeyPressed(Constants.MOVE_RIGHT) || Gdx.input
+					.isKeyPressed(Constants.MOVE_RIGHT_ALT)) && !movingRight) {
 				move(Constants.GRID_CELL_SIZE, 0);
 				movingRight = true;
-			} else if (Gdx.input.isKeyPressed(Constants.MOVE_UP) && !movingUp) {
+			} else if ((Gdx.input.isKeyPressed(Constants.MOVE_UP) || Gdx.input.isKeyPressed(Constants.MOVE_UP_ALT))
+					&& !movingUp) {
 				move(0, Constants.GRID_CELL_SIZE);
 				movingUp = true;
-			} else if (Gdx.input.isKeyPressed(Constants.MOVE_DOWN) && !movingDown) {
+			} else if ((Gdx.input.isKeyPressed(Constants.MOVE_DOWN) || Gdx.input.isKeyPressed(Constants.MOVE_DOWN_ALT))
+					&& !movingDown) {
 				move(0, -Constants.GRID_CELL_SIZE);
 				movingDown = true;
-			} 
+			}
 		}
 
 		super.update();

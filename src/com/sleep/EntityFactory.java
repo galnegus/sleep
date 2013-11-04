@@ -43,7 +43,7 @@ public class EntityFactory {
 		Entity player = Sleep.entityManager.add(new Entity("Player", new Vector2(x, y), PLAYER_DEPTH))
 				.addComponent(new PlayerMovementComponent()).addComponent(new AnimationRenderComponent(idle))
 				.addComponent(new PlayerDeathComponent())
-				.addComponent(new LightShaderComponent(Sleep.light, new Color(1f, 0.8f, 0.9f, 0.25f), 2500, true))
+				.addComponent(new LightShaderComponent(Sleep.light, new Color(1f, 1f, 1f, 0.25f), 2500, true))
 				.initComponents();
 
 		Sleep.player = player;
@@ -56,7 +56,7 @@ public class EntityFactory {
 				.addComponent(new GhostMovementComponent())
 				.addComponent(new GhostRenderComponent(Sleep.assets.get("images/dark_circle.png", Texture.class)))
 				.addComponent(new DeathComponent())
-				.addComponent(new LightShaderComponent(Sleep.light, new Color(0f, 0.01f, 0f, 0.1f), 100, true))
+				.addComponent(new LightShaderComponent(Sleep.light, new Color(0f, 0f, 0f, 0.1f), 100, true))
 				.initComponents();
 	}
 
@@ -65,24 +65,24 @@ public class EntityFactory {
 				.addComponent(new SpectreMovementComponent())
 				.addComponent(new GhostRenderComponent(Sleep.assets.get("images/dark_circle.png", Texture.class)))
 				.addComponent(new DeathComponent())
-				.addComponent(new LightShaderComponent(Sleep.light, new Color(0.01f, 0f, 0f, 0.01f), 100, true))
+				.addComponent(new LightShaderComponent(Sleep.light, new Color(0f, 0f, 0f, 0.1f), 100, true))
 				.initComponents();
 	}
 
 	public static Entity makeBox(int x, int y) {
 		return Sleep.entityManager.add(new Entity("Box", new Vector2(x, y), BOX_DEPTH))
-				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/box.png", Texture.class)))
+				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/box_bw.png", Texture.class)))
 				.addComponent(new MovementComponent()).initComponents();
 	}
 
 	public static Entity makeWall(int x, int y) {
 		return Sleep.entityManager.add(new Entity("Wall", new Vector2(x, y), WALL_DEPTH))
-				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/wall.png", Texture.class)))
+				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/wall_bw.png", Texture.class)))
 				.initComponents();
 	}
 
 	public static Entity makeGrid(int xSize, int ySize) {
-		Texture tex = Sleep.assets.get("images/grid.png", Texture.class);
+		Texture tex = Sleep.assets.get("images/grid_bw.png", Texture.class);
 		tex.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		return Sleep.backgroundManager.add(new Entity("Grid", new Vector2(0, 0), GRID_DEPTH)).addComponent(
 				new BackgroundRenderComponent(tex, xSize, ySize));

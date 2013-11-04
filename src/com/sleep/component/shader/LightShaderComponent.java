@@ -57,8 +57,8 @@ public class LightShaderComponent extends Component implements ShaderComponent {
 			color.a += 0.05 * (MathUtils.random() - 0.5);
 			if (color.a <= 0.2)
 				color.a = 0.25f;
-			else if (color.a > 0.5)
-				color.a = 0.45f;
+			else if (color.a > 0.45)
+				color.a = 0.4f;
 		}
 
 		

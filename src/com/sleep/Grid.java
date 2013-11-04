@@ -302,6 +302,26 @@ public class Grid {
 
 	}
 
+	/**
+	 * calculates manhattan distance from position to player
+	 * 
+	 * if position is occupied by an entity, return a number smaller than 0 (-2).
+	 */
+	public int manhattanDistance(Vector2 position) {
+		return manhattanDistance(position.x, position.y);
+	}
+
+	public int manhattanDistance(float x, float y) {
+		if(grid[(int) x][(int) y] != null) {
+			return -2;
+		}
+		
+		int xPlayer = (int) Sleep.player.position.x / Constants.GRID_CELL_SIZE;
+		int yPlayer = (int) Sleep.player.position.y / Constants.GRID_CELL_SIZE;
+
+		return Math.abs(xPlayer - (int) x) + Math.abs(yPlayer - (int) y);
+	}
+
 	public void printGrid(int[][] distanceGrid) {
 		System.out.println("distance grid: ");
 		for (int x = 0; x < xSize; x++) {

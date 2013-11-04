@@ -1,5 +1,6 @@
 package com.sleep;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -7,14 +8,21 @@ import java.util.List;
 
 public class EntityManager {
 	private List<Entity> entityList;
+	private ArrayDeque<Entity> removeList;
 
 	public EntityManager() {
 		entityList = new ArrayList<Entity>();
+		removeList = new ArrayDeque<Entity>();
 	}
 
 	public void update() {
 		for (int i = 0; i < entityList.size(); i++) {
 			entityList.get(i).update();
+		}
+		
+		Entity entity;
+		while ((entity = removeList.poll()) != null) {
+			entityList.remove(entity);
 		}
 	}
 
@@ -50,8 +58,8 @@ public class EntityManager {
 		return ret;
 	}
 
-	public boolean remove(Entity e) {
-		return entityList.remove(e);
+	public void remove(Entity e) {
+		removeList.add(e);
 	}
 
 	public Entity add(Entity e) {

@@ -8,9 +8,9 @@ import com.sleep.Sleep;
 import com.sleep.component.ComponentException;
 
 public class GhostMovementComponent extends MovementComponent {
-	
+
 	private float moveTimer;
-	
+
 	public GhostMovementComponent() {
 		this.moveTimer = 0;
 		Velocity = 300f;
@@ -19,17 +19,17 @@ public class GhostMovementComponent extends MovementComponent {
 	@Override
 	public void update() {
 		moveTimer += Gdx.graphics.getRawDeltaTime();
-		if(moveTimer >= Constants.GHOST_MOVE_FREQUENCY && !isMoving()) {
+		if (moveTimer >= Constants.GHOST_MOVE_FREQUENCY && !isMoving()) {
 			moveTimer -= Constants.GHOST_MOVE_FREQUENCY;
-			
+
 			Vector2 moveTo = bestMove(owner.position);
-			
+
 			move(moveTo.x * Constants.GRID_CELL_SIZE, moveTo.y * Constants.GRID_CELL_SIZE);
 		}
-		
+
 		super.update();
 	}
-	
+
 	/**
 	 * looks in the distanceGrid for the move that brings the entity the closest
 	 * to the player
@@ -54,7 +54,8 @@ public class GhostMovementComponent extends MovementComponent {
 
 		for (Vector2 move : moves) {
 			if (move.x >= 0 && move.x < Sleep.grid.getXSize() && move.y >= 0 && move.y < Sleep.grid.getYSize()) {
-				if (Sleep.grid.getGhostDistanceAt(move.x, move.y) < min && Sleep.grid.getGhostDistanceAt(move.x, move.y) >= 0) {
+				if (Sleep.grid.getGhostDistanceAt(move.x, move.y) < min
+						&& Sleep.grid.getGhostDistanceAt(move.x, move.y) >= 0) {
 					min = Sleep.grid.getGhostDistanceAt(move.x, move.y);
 					bestMove.set(move.x, move.y);
 				} else if (Sleep.grid.getGhostDistanceAt(move.x, move.y) == min) {
@@ -65,13 +66,43 @@ public class GhostMovementComponent extends MovementComponent {
 					if (Math.abs(Math.abs(player.x - bestMove.x) - Math.abs(player.y - bestMove.y)) > Math.abs(Math
 							.abs(player.x - move.x) - Math.abs(player.y - move.y))) {
 						bestMove.set(move.x, move.y);
-					} 
-					
+					}
+
 					// if move is as good as bestMove, random!
 					else if (Math.abs(Math.abs(player.x - bestMove.x) - Math.abs(player.y - bestMove.y)) == Math
 							.abs(Math.abs(player.x - move.x) - Math.abs(player.y - move.y))) {
 						if (MathUtils.random(1) == 0) {
 							bestMove.set(move.x, move.y);
+						}
+					}
+				}
+			}
+		}
+
+		// if no move was found, check manhattan distance!
+		if (bestMove.x == 0 && bestMove.y == 0) {
+			for (Vector2 move : moves) {
+				if (move.x >= 0 && move.x < Sleep.grid.getXSize() && move.y >= 0 && move.y < Sleep.grid.getYSize()) {
+					if (Sleep.grid.manhattanDistance(move.x, move.y) < min
+							&& Sleep.grid.manhattanDistance(move.x, move.y) >= 0) {
+						min = Sleep.grid.manhattanDistance(move.x, move.y);
+						bestMove.set(move.x, move.y);
+					} else if (Sleep.grid.manhattanDistance(move.x, move.y) == min) {
+
+						// if difference in distance in x and y from player to
+						// move is smaller than difference in x and y from
+						// player to bestMove, set move to bestMove.
+						if (Math.abs(Math.abs(player.x - bestMove.x) - Math.abs(player.y - bestMove.y)) > Math.abs(Math
+								.abs(player.x - move.x) - Math.abs(player.y - move.y))) {
+							bestMove.set(move.x, move.y);
+						}
+
+						// if move is as good as bestMove, random!
+						else if (Math.abs(Math.abs(player.x - bestMove.x) - Math.abs(player.y - bestMove.y)) == Math
+								.abs(Math.abs(player.x - move.x) - Math.abs(player.y - move.y))) {
+							if (MathUtils.random(1) == 0) {
+								bestMove.set(move.x, move.y);
+							}
 						}
 					}
 				}

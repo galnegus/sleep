@@ -78,6 +78,36 @@ public class SpectreMovementComponent extends MovementComponent {
 			}
 		}
 
+		// if no move was found, check manhattan distance!
+		if (bestMove.x == 0 && bestMove.y == 0) {
+			for (Vector2 move : moves) {
+				if (move.x >= 0 && move.x < Sleep.grid.getXSize() && move.y >= 0 && move.y < Sleep.grid.getYSize()) {
+					if (Sleep.grid.manhattanDistance(move.x, move.y) < min
+							&& Sleep.grid.manhattanDistance(move.x, move.y) >= 0) {
+						min = Sleep.grid.manhattanDistance(move.x, move.y);
+						bestMove.set(move.x, move.y);
+					} else if (Sleep.grid.manhattanDistance(move.x, move.y) == min) {
+
+						// if difference in distance in x and y from player to
+						// move is smaller than difference in x and y from
+						// player to bestMove, set move to bestMove.
+						if (Math.abs(Math.abs(player.x - bestMove.x) - Math.abs(player.y - bestMove.y)) > Math.abs(Math
+								.abs(player.x - move.x) - Math.abs(player.y - move.y))) {
+							bestMove.set(move.x, move.y);
+						}
+
+						// if move is as good as bestMove, random!
+						else if (Math.abs(Math.abs(player.x - bestMove.x) - Math.abs(player.y - bestMove.y)) == Math
+								.abs(Math.abs(player.x - move.x) - Math.abs(player.y - move.y))) {
+							if (MathUtils.random(1) == 0) {
+								bestMove.set(move.x, move.y);
+							}
+						}
+					}
+				}
+			}
+		}
+		
 		Vector2 movement = new Vector2(bestMove.x - moverPos.x, bestMove.y - moverPos.y);
 		return movement;
 	}

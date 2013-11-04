@@ -19,7 +19,7 @@ import com.sleep.component.shader.LightShaderComponent;
 public class DeathComponent extends Component {
 	private boolean alive;
 	private MovementComponent killedBy;
-	
+
 	public DeathComponent() {
 		this.alive = true;
 		killedBy = null;
@@ -30,25 +30,22 @@ public class DeathComponent extends Component {
 		Sleep.grid.removeEntity(owner);
 		MovementComponent moveComp = owner.getComponent(MovementComponent.class);
 		if (moveComp != null) {
-			
 			moveComp.moveable = false;
 		}
 		LightShaderComponent lightComp = owner.getComponent(LightShaderComponent.class);
 		if (lightComp != null) {
-			
 			lightComp.destroy = true;
 		}
 		// det här är dumt
 		RenderComponent ghostComp = owner.getComponent(RenderComponent.class);
 		if (ClassReflection.isInstance(GhostRenderComponent.class, ghostComp)) {
-			System.out.println("yes");
 			((GhostRenderComponent) ghostComp).castShadows = false;
 		}
 	}
-	
+
 	public void die(MovementComponent killedBy) {
 		die();
-		
+
 		this.killedBy = killedBy;
 	}
 

@@ -22,7 +22,7 @@ public class SpawnerComponent extends Component implements RenderableComponent {
 
 	@Override
 	public void render() {
-		String out = Integer.toString((int) (timer * 0.6));
+		String out = Integer.toString((int) timer);
 
 		// for some reason, the font is rendered 3 pixels to the left (???)
 		fontOffset.x = 3 + ((Constants.GRID_CELL_SIZE - Sleep.font.getBounds(out).width) / 2);
