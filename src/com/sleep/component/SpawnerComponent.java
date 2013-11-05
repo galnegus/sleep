@@ -11,6 +11,8 @@ public class SpawnerComponent extends Component implements RenderableComponent {
 	String type;
 	float timer;
 	float frequency;
+	
+	Color red;
 
 	Vector2 fontOffset = new Vector2(0, 0);
 
@@ -18,6 +20,8 @@ public class SpawnerComponent extends Component implements RenderableComponent {
 		this.type = type;
 		this.timer = init;
 		this.frequency = frequency;
+		
+		this.red = new Color(1f, 64f/255f, 108f/255f, 1f);
 	}
 
 	@Override
@@ -28,7 +32,12 @@ public class SpawnerComponent extends Component implements RenderableComponent {
 		fontOffset.x = 3 + ((Constants.GRID_CELL_SIZE - Sleep.font.getBounds(out).width) / 2);
 		fontOffset.y = -((Constants.GRID_CELL_SIZE - Sleep.font.getBounds(out).height) / 2);
 
-		Sleep.font.setColor(Color.WHITE);
+		if (timer < 4) {
+			Sleep.font.setColor(red);
+		} else {
+			Sleep.font.setColor(Color.WHITE);
+		}
+		
 		Sleep.font.setFixedWidthGlyphs("1");
 		Sleep.font.draw(Sleep.batch, out, owner.position.x + fontOffset.x, owner.position.y + Constants.GRID_CELL_SIZE
 				+ fontOffset.y);

@@ -34,7 +34,7 @@ public class EntityFactory {
 		anim.add(new TextureRegion(Sleep.assets.get("images/player.png", Texture.class)));
 		anim.add(new TextureRegion(Sleep.assets.get("images/player_bw.png", Texture.class)));
 
-		Animation idle = new Animation(120f / 144f, anim, Animation.LOOP);
+		Animation idle = new Animation(0.5f, anim, Animation.LOOP);
 
 		LinkedHashMap<AnimationActions, Animation> monkeyAnimations = new LinkedHashMap<AnimationActions, Animation>(2);
 		monkeyAnimations.put(AnimationActions.WALK_RIGHT, idle);
