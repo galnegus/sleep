@@ -13,8 +13,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Grid {
 	private Entity[][] grid;
-	private int[][] ghostPathGrid;
-	private int[][] spectrePathGrid;
+	public int[][] ghostPathGrid;
+	public int[][] spectrePathGrid;
 	private int xSize, ySize;
 
 	public int getXSize() {
@@ -77,10 +77,10 @@ public class Grid {
 								* Constants.GRID_CELL_SIZE);
 					} else if (Character.isLetterOrDigit(charBoard[x][y])) {
 						if (!spawnerInit.containsKey(charBoard[x][y])) {
-							Gdx.app.error("GridError", "spawnerInit value for key '" + charBoard[x][y] + "' missing");
+							Gdx.app.error("LevelFormattingError", "spawnerInit value for key '" + charBoard[x][y] + "' missing");
 						}
 						if (!spawnerFreq.containsKey(charBoard[x][y])) {
-							Gdx.app.error("GridError", "spawnerFreq value for key '" + charBoard[x][y] + "' missing");
+							Gdx.app.error("LevelFormattingError", "spawnerFreq value for key '" + charBoard[x][y] + "' missing");
 						}
 
 						grid[x][y] = EntityFactory.makeSpawner(x * Constants.GRID_CELL_SIZE, y
@@ -129,20 +129,15 @@ public class Grid {
 
 	}
 
-	public int getGhostDistanceAt(Vector2 position) {
-		return getGhostDistanceAt(position.x, position.y);
-	}
-
-	public int getGhostDistanceAt(float x, float y) {
-		return ghostPathGrid[(int) x][(int) y];
-	}
-
-	public int getSpectreDistanceAt(Vector2 position) {
-		return getSpectreDistanceAt(position.x, position.y);
-	}
-
-	public int getSpectreDistanceAt(float x, float y) {
-		return spectrePathGrid[(int) x][(int) y];
+	/**
+	 * @param pathGrid
+	 *            A pathgrid, for instance ghostPathGrid or spectrePathGrid
+	 * @param position
+	 *            Position of entity
+	 * @return
+	 */
+	public int getPathDistance(int[][] pathGrid, Vector2 position) {
+		return pathGrid[(int) position.x][(int) position.y];
 	}
 
 	/**
@@ -237,8 +232,8 @@ public class Grid {
 	 * diagonally rather than horizontally/vertically.
 	 * 
 	 * The BFS searches from up to 5 initial positions: the player's position,
-	 * and any adjacent position horizontally or vertically that doesn't contain
-	 * any box or wall.
+	 * and any adjacent available (unoccupied) position horizontally or
+	 * vertically.
 	 */
 	private void updateSpectrePathGrid() {
 		for (int x = 0; x < xSize; x++) {
@@ -305,17 +300,18 @@ public class Grid {
 	/**
 	 * calculates manhattan distance from position to player
 	 * 
-	 * if position is occupied by an entity, return a number smaller than 0 (-2).
+	 * if position is occupied by an entity, return a number smaller than 0
+	 * (-2).
 	 */
 	public int manhattanDistance(Vector2 position) {
 		return manhattanDistance(position.x, position.y);
 	}
 
 	public int manhattanDistance(float x, float y) {
-		if(grid[(int) x][(int) y] != null) {
+		if (grid[(int) x][(int) y] != null) {
 			return -2;
 		}
-		
+
 		int xPlayer = (int) Sleep.player.position.x / Constants.GRID_CELL_SIZE;
 		int yPlayer = (int) Sleep.player.position.y / Constants.GRID_CELL_SIZE;
 

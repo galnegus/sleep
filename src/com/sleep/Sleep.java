@@ -59,7 +59,7 @@ public class Sleep implements ApplicationListener {
 		assets.load("music/spook2.ogg", Music.class);
 		assets.finishLoading();
 
-		// create shader
+		// initialize light shader texture
 		light = assets.get("images/light.png", Texture.class);
 
 		ShaderProgram.pedantic = false;
@@ -117,7 +117,7 @@ public class Sleep implements ApplicationListener {
 		// Gdx.gl.glClearColor(1f, 0.98f, 0.96f, 1);
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1);
 
-		// draw light shader stuff to FBO
+		// draw light shader textures to FBO
 		fbo.begin();
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(camera.combined);
