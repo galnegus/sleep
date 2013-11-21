@@ -4,8 +4,8 @@ import com.badlogic.gdx.Input;
 
 public class Constants {
 	// App
-	public static final int width = 1280;
-	public static final int height = 720;
+	public static final int WIDTH = 1280;
+	public static final int HEIGHT = 720;
 	
 	// Level
 	public static final char BOX = '$';
@@ -14,6 +14,10 @@ public class Constants {
 	public static final char GHOST = '.';
 	public static final char SPECTRE = ',';
 	public static final int GRID_CELL_SIZE = 64;
+	
+	// Camera
+	public static final int MAX_CAMERA_CELL_WIDTH = WIDTH / GRID_CELL_SIZE;
+	public static final int MAX_CAMERA_CELL_HEIGHT = HEIGHT / GRID_CELL_SIZE;
 
 	// Player behaviour
 	public static final float PLAYER_MOVE_FREQUENCY = 0.25f;

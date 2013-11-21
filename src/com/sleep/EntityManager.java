@@ -33,9 +33,15 @@ public class EntityManager {
 		}
 	}
 	
-	public void drawShader() {
+	public void drawLight() {
 		for (Entity e : entityList) {
-			e.drawShader();
+			e.drawLight();
+		}
+	}
+	
+	public void bindLight(int i) {
+		for (Entity e : entityList) {
+			e.bindLight(i);
 		}
 	}
 

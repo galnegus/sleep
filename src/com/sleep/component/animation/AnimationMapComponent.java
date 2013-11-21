@@ -3,6 +3,7 @@ package com.sleep.component.animation;
 import java.util.LinkedHashMap;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.sleep.Message;
 import com.sleep.component.Component;
 import com.sleep.component.ComponentException;
 import com.sleep.component.render.AnimationRenderComponent;
@@ -61,5 +62,11 @@ public class AnimationMapComponent extends Component {
 	@Override
 	public void init() throws ComponentException {
 		renderComponent = getDependency(RenderComponent.class, AnimationRenderComponent.class);
+	}
+
+	@Override
+	public void receiveMessage(Message message) {
+		// TODO Auto-generated method stub
+		
 	}
 }

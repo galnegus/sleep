@@ -22,6 +22,15 @@ public class CoolCamera extends OrthographicCamera {
 		this.setToOrtho(false, width, height);
 	}
 	
+	public void resize(int width, int height) {
+		viewportWidth = width;
+		viewportHeight = height;
+		
+		size.set(width, height);
+		centerPoint.set(width/2, height/2);
+		setToOrtho(false, width, height);
+	}
+	
 	/**
 	 * Sets the camera to be centered on the position of an entity (such as the
 	 * player Entity). Sets a minimum X position if the resulting X position
@@ -49,8 +58,8 @@ public class CoolCamera extends OrthographicCamera {
 			rotation -= rotateIncrement;
 		}
 		
-		float playerX = Sleep.player.position.x + (Sleep.player.getWidth())/ (2);
-		float playerY = Sleep.player.position.y + (Sleep.player.getHeight())/ (2);
+		float playerX = Sleep.world.activeLevel.player.position.x + (Sleep.world.activeLevel.player.getWidth())/ (2);
+		float playerY = Sleep.world.activeLevel.player.position.y + (Sleep.world.activeLevel.player.getHeight())/ (2);
 		
 		movement.x = delta * ((playerX - position.x) * CAMERA_SCROLL_ACCELERATION) / size.x ;
 		movement.y = delta * ((playerY - position.y) * CAMERA_SCROLL_ACCELERATION) / size.y;
@@ -58,12 +67,12 @@ public class CoolCamera extends OrthographicCamera {
 		
 		if (position.x <= size.x / 2 && movement.x < 0) {
 			movement.x = 0;
-		} else if (position.x >= Sleep.grid.getXSize() * Constants.GRID_CELL_SIZE - size.x / 2 && movement.x > 0) {
+		} else if (position.x >= Sleep.world.activeLevel.getXSize() * Constants.GRID_CELL_SIZE - size.x / 2 && movement.x > 0) {
 			movement.x = 0;
 		}
 		if (position.y <= size.y / 2 && movement.y < 0) {
 			movement.y = 0;
-		} else if (position.y >= Sleep.grid.getYSize() * Constants.GRID_CELL_SIZE - size.y / 2 && movement.y > 0) {
+		} else if (position.y >= Sleep.world.activeLevel.getYSize() * Constants.GRID_CELL_SIZE - size.y / 2 && movement.y > 0) {
 			movement.y = 0;
 		}
 		

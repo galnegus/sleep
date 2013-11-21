@@ -2,8 +2,8 @@ package com.sleep.component.movement;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.sleep.Constants;
 import com.sleep.Entity;
+import com.sleep.Message;
 import com.sleep.Sleep;
 import com.sleep.component.Component;
 import com.sleep.component.ComponentException;
@@ -20,7 +20,7 @@ public class MovementComponent extends Component {
 	private Vector2 destination = new Vector2();
 
 	private boolean moving = false;
-	public boolean moveable = true;
+	public boolean movable = true;
 
 	public Vector2 getDirection() {
 		return direction;
@@ -36,14 +36,14 @@ public class MovementComponent extends Component {
 	 * @param y
 	 */
 	public boolean move(float x, float y) {
-		if (moveable) {
+		if (movable) {
 			destination.x = owner.position.x + x;
 			destination.y = owner.position.y + y;
-			Entity entityAtDest = Sleep.grid.getEntityAt(destination.x, destination.y);
+			Entity entityAtDest = Sleep.world.activeLevel.getEntityAt(destination.x, destination.y);
 
 			if (entityAtDest == null) {
 				moving = true;
-				Sleep.grid.moveEntityTo(owner, destination);
+				Sleep.world.activeLevel.moveEntityTo(owner, destination.x, destination.y);
 
 				// push box
 			} else if (entityAtDest.getName().equals("Box")
@@ -52,7 +52,7 @@ public class MovementComponent extends Component {
 				// recursively check that several boxes can be moved
 				if (entityAtDest.getComponent(MovementComponent.class).move(x, y)) {
 					moving = true;
-					Sleep.grid.moveEntityTo(owner, destination);
+					Sleep.world.activeLevel.moveEntityTo(owner, destination.x, destination.y);
 				}
 
 				// no cannibalism!
@@ -60,7 +60,7 @@ public class MovementComponent extends Component {
 					&& (entityAtDest.getName().equals("Player") || owner.getName().equals("Box"))) {
 				entityAtDest.getComponent(DeathComponent.class).die(this);
 				moving = true;
-				Sleep.grid.moveEntityTo(owner, destination);
+				Sleep.world.activeLevel.moveEntityTo(owner, destination.x, destination.y);
 			}
 
 			return moving;
@@ -131,5 +131,12 @@ public class MovementComponent extends Component {
 
 	@Override
 	public void init() throws ComponentException {
+	}
+
+	@Override
+	public void receiveMessage(Message message) {
+		if (message == Message.ENTITY_DEATH) {
+			movable = false;
+		}
 	}
 }

@@ -2,6 +2,7 @@ package com.sleep.component.render;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.sleep.Message;
 import com.sleep.Sleep;
 import com.sleep.component.ComponentException;
 
@@ -49,5 +50,11 @@ public class AnimationRenderComponent extends RenderComponent {
 	@Override
 	public void init() throws ComponentException {
 		// DO NOTHING		
+	}
+
+	@Override
+	public void receiveMessage(Message message) {
+		// TODO Auto-generated method stub
+		
 	}
 }

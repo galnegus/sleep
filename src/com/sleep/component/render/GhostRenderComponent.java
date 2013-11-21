@@ -8,10 +8,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.sleep.Message;
 import com.sleep.Sleep;
-import com.sleep.component.Component;
 import com.sleep.component.ComponentException;
-import com.sleep.component.RenderableComponent;
 
 /**
  * This does two things:
@@ -121,6 +120,13 @@ public class GhostRenderComponent extends RenderComponent {
 				owner.removeShadow(this);
 			}
 
+		}
+	}
+
+	@Override
+	public void receiveMessage(Message message) {
+		if (message == Message.ENTITY_DEATH) {
+			castShadows = false;
 		}
 	}
 

@@ -1,7 +1,6 @@
 package com.sleep.component.movement;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.sleep.Constants;
 import com.sleep.Sleep;
@@ -28,7 +27,7 @@ public class GhostMovementComponent extends PathfindingMovementComponent {
 			moves[2] = new Vector2(0, -1);
 			moves[3] = new Vector2(0, 1);
 
-			Vector2 moveTo = bestMove(Sleep.grid.ghostPathGrid, moves);
+			Vector2 moveTo = bestMove(Sleep.world.activeLevel.ghostPathGrid, moves);
 
 			move(moveTo.x * Constants.GRID_CELL_SIZE, moveTo.y * Constants.GRID_CELL_SIZE);
 		}

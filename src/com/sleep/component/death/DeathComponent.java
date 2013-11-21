@@ -1,13 +1,14 @@
 package com.sleep.component.death;
 
 import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.sleep.Message;
 import com.sleep.Sleep;
 import com.sleep.component.Component;
 import com.sleep.component.ComponentException;
+import com.sleep.component.LightComponent;
 import com.sleep.component.movement.MovementComponent;
 import com.sleep.component.render.GhostRenderComponent;
 import com.sleep.component.render.RenderComponent;
-import com.sleep.component.shader.LightShaderComponent;
 
 /**
  * when die() is used, the entity is instantly removed from the grid.
@@ -27,20 +28,9 @@ public class DeathComponent extends Component {
 
 	public void die() {
 		alive = false;
-		Sleep.grid.removeEntity(owner);
-		MovementComponent moveComp = owner.getComponent(MovementComponent.class);
-		if (moveComp != null) {
-			moveComp.moveable = false;
-		}
-		LightShaderComponent lightComp = owner.getComponent(LightShaderComponent.class);
-		if (lightComp != null) {
-			lightComp.destroy = true;
-		}
-		// det här är dumt
-		RenderComponent ghostComp = owner.getComponent(RenderComponent.class);
-		if (ClassReflection.isInstance(GhostRenderComponent.class, ghostComp)) {
-			((GhostRenderComponent) ghostComp).castShadows = false;
-		}
+		Sleep.world.activeLevel.removeEntity(owner);
+		
+		owner.sendMessage(Message.ENTITY_DEATH);
 	}
 
 	public void die(MovementComponent killedBy) {
@@ -64,13 +54,19 @@ public class DeathComponent extends Component {
 					return;
 				}
 			}
-			Sleep.entityManager.remove(owner);
+			Sleep.world.activeLevel.entityManager.remove(owner);
 		}
 	}
 
 	@Override
 	public void init() throws ComponentException {
 
+	}
+
+	@Override
+	public void receiveMessage(Message message) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

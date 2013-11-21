@@ -6,9 +6,9 @@ import java.util.Map;
 import com.badlogic.gdx.math.Vector2;
 import com.sleep.component.Component;
 import com.sleep.component.ComponentException;
+import com.sleep.component.LightComponent;
 import com.sleep.component.RenderableComponent;
 import com.sleep.component.render.RenderComponent;
-import com.sleep.component.shader.ShaderComponent;
 
 public class Entity {
 
@@ -116,10 +116,18 @@ public class Entity {
 		}
 	}
 	
-	public void drawShader() {
+	public void drawLight() {
 		for (Component comp : components.values()) {
-			if (comp instanceof ShaderComponent) {
-				((ShaderComponent) comp).drawShader();
+			if (comp instanceof LightComponent) {
+				((LightComponent) comp).drawLight();
+			}
+		}
+	}
+	
+	public void bindLight(int i) {
+		for (Component comp : components.values()) {
+			if (comp instanceof LightComponent) {
+				((LightComponent) comp).bindLight(i);
 			}
 		}
 	}
@@ -129,6 +137,12 @@ public class Entity {
 			if (comp instanceof RenderableComponent) {
 				((RenderableComponent) comp).render();
 			}
+		}
+	}
+	
+	public void sendMessage(Message message) {
+		for (Component comp: components.values()) {
+			comp.receiveMessage(message);
 		}
 	}
 

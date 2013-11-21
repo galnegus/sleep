@@ -1,6 +1,7 @@
 package com.sleep.component.render;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.sleep.Message;
 import com.sleep.Sleep;
 import com.sleep.component.ComponentException;
 
@@ -24,7 +25,7 @@ public class BackgroundRenderComponent extends RenderComponent {
 
 	@Override
 	public void render() {
-		Sleep.batch.draw(image, 0, 0, getWidth() * ySize, getHeight() * xSize, 0, 0, ySize, xSize);
+		Sleep.batch.draw(image, 0, 0, getWidth() * xSize, getHeight() * ySize, 0, 0, xSize, ySize);
 	}
 
 	@Override
@@ -35,5 +36,11 @@ public class BackgroundRenderComponent extends RenderComponent {
 	@Override
 	public void init() throws ComponentException {
 		// DO NOTHING
+	}
+
+	@Override
+	public void receiveMessage(Message message) {
+		// TODO Auto-generated method stub
+		
 	}
 }

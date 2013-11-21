@@ -1,13 +1,12 @@
-package com.sleep.component.shader;
+package com.sleep.component;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
+import com.sleep.Message;
 import com.sleep.Sleep;
-import com.sleep.component.Component;
-import com.sleep.component.ComponentException;
 
-public class LightShaderComponent extends Component implements ShaderComponent {
+public class LightComponent extends Component {
 	private Texture light;
 	private Color color;
 	private float initSize;
@@ -24,7 +23,7 @@ public class LightShaderComponent extends Component implements ShaderComponent {
 	private final float destroySteps = 16;
 	private Color destroySubtract;
 
-	public LightShaderComponent(Texture light, Color color, float size, boolean lightOscillate) {
+	public LightComponent(Texture light, Color color, float size, boolean lightOscillate) {
 		this.light = light;
 		this.color = color;
 		this.initSize = size;
@@ -34,13 +33,16 @@ public class LightShaderComponent extends Component implements ShaderComponent {
 				color.a / destroySteps);
 	}
 
-	@Override
-	public void drawShader() {
+	public void drawLight() {
 		Color c = Sleep.batch.getColor();
 		Sleep.batch.setColor(color);
 		Sleep.batch.draw(light, owner.position.x + owner.getWidth() / 2 - size / 2, owner.position.y + owner.getWidth()
 				/ 2 - size / 2, size, size);
 		Sleep.batch.setColor(c);
+	}
+	
+	public void bindLight(int i) {
+		light.bind(i);
 	}
 
 	@Override
@@ -75,4 +77,10 @@ public class LightShaderComponent extends Component implements ShaderComponent {
 
 	}
 
+	@Override
+	public void receiveMessage(Message message) {
+		if (message == Message.ENTITY_DEATH) {
+			destroy = true;
+		}
+	}
 }

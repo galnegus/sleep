@@ -4,7 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.sleep.Constants;
-import com.sleep.EntityFactory;
+import com.sleep.EntityMaker;
+import com.sleep.Message;
 import com.sleep.Sleep;
 
 public class SpawnerComponent extends Component implements RenderableComponent {
@@ -48,9 +49,9 @@ public class SpawnerComponent extends Component implements RenderableComponent {
 		timer -= Gdx.graphics.getRawDeltaTime();
 		if(timer < 0) {
 			if(type.equals("Ghost")) {
-				EntityFactory.makeGhost((int) owner.position.x, (int) owner.position.y);
+				EntityMaker.makeGhost(Sleep.world.activeLevel.entityManager, (int) owner.position.x, (int) owner.position.y);
 			} else if(type.equals("Spectre")) {
-				EntityFactory.makeSpectre((int) owner.position.x, (int) owner.position.y);
+				EntityMaker.makeSpectre(Sleep.world.activeLevel.entityManager, (int) owner.position.x, (int) owner.position.y);
 			}
 			timer += frequency;
 		}
@@ -61,5 +62,11 @@ public class SpawnerComponent extends Component implements RenderableComponent {
 	public void init() throws ComponentException {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void receiveMessage(Message message) {
+		// TODO Auto-generated method stub
+		
 	}
 }

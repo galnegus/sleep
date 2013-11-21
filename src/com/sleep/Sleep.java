@@ -15,11 +15,8 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Sleep implements ApplicationListener {
 	// object/entity stuff
-	public static EntityManager backgroundManager;
-	public static EntityManager entityManager;
 	public static AssetManager assets;
-	public static Entity player;
-	public static Grid grid;
+	public static World world;
 
 	public static boolean updatesPaused = false;
 
@@ -73,15 +70,13 @@ public class Sleep implements ApplicationListener {
 		ambientShader.end();
 
 		// create entities/grid
-		entityManager = new EntityManager();
-		backgroundManager = new EntityManager();
-		grid = new Grid();
+		world = new World("levels/world");
 
 		// create objects for rendering stuff
-		camera = new CoolCamera(Constants.width, Constants.height);
+		camera = new CoolCamera(Constants.WIDTH, Constants.HEIGHT);
 		font = new BitmapFont(Gdx.files.internal("fonts/24pt.fnt"));
 		batch = new SpriteBatch();
-		fbo = new FrameBuffer(Format.RGBA8888, Constants.width, Constants.height, false);
+		fbo = new FrameBuffer(Format.RGBA8888, Constants.WIDTH, Constants.HEIGHT, false);
 
 		// play music
 		music = assets.get("music/spook2.ogg", Music.class);
@@ -97,13 +92,13 @@ public class Sleep implements ApplicationListener {
 		ambientShader.begin();
 		ambientShader.setUniformf("resolution", width, height);
 		ambientShader.end();
+		
+		camera.resize(width, height);
 	}
 
 	public void update() {
 		if (!updatesPaused) {
-			entityManager.update();
-			backgroundManager.update();
-			grid.update();
+			world.update();
 			camera.update(Gdx.graphics.getDeltaTime());
 		}
 	}
@@ -113,17 +108,16 @@ public class Sleep implements ApplicationListener {
 		// update stuff
 		update();
 
-		// get some color man
-		// Gdx.gl.glClearColor(1f, 0.98f, 0.96f, 1);
+		// clear screen color
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1);
 
-		// draw light shader textures to FBO
+		// draw light to FBO
 		fbo.begin();
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(camera.combined);
 		batch.setShader(defaultShader);
 		batch.begin();
-		entityManager.drawShader();
+		world.drawLight();
 		batch.end();
 		fbo.end();
 
@@ -133,9 +127,8 @@ public class Sleep implements ApplicationListener {
 		batch.setShader(ambientShader);
 		batch.begin();
 		fbo.getColorBufferTexture().bind(1);
-		light.bind(0);
-		backgroundManager.render();
-		entityManager.render();
+		world.bindLight(0);
+		world.render();
 		batch.end();
 	}
 
