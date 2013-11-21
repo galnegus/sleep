@@ -39,7 +39,7 @@ public class Sleep implements ApplicationListener {
 	 * a stupid order
 	 * 
 	 * This approximate order needs to be used:
-	 * load assets -> shaders -> entities/grid -> camera
+	 * load assets -> shaders -> camera -> world/levels
 	 **/
 	@Override
 	public void create() {
@@ -69,11 +69,13 @@ public class Sleep implements ApplicationListener {
 		ambientShader.setUniformf("ambientColor", ambientColor.x, ambientColor.y, ambientColor.z, ambientIntensity);
 		ambientShader.end();
 
-		// create entities/grid
+		// create camera
+		camera = new CoolCamera(Constants.WIDTH, Constants.HEIGHT);
+		
+		// create levels
 		world = new World("levels/world");
 
 		// create objects for rendering stuff
-		camera = new CoolCamera(Constants.WIDTH, Constants.HEIGHT);
 		font = new BitmapFont(Gdx.files.internal("fonts/24pt.fnt"));
 		batch = new SpriteBatch();
 		fbo = new FrameBuffer(Format.RGBA8888, Constants.WIDTH, Constants.HEIGHT, false);
@@ -82,7 +84,7 @@ public class Sleep implements ApplicationListener {
 		music = assets.get("music/spook2.ogg", Music.class);
 		music.setLooping(true);
 		music.setVolume(1f);
-		music.play();
+//		music.play();
 	}
 
 	@Override
@@ -93,7 +95,7 @@ public class Sleep implements ApplicationListener {
 		ambientShader.setUniformf("resolution", width, height);
 		ambientShader.end();
 		
-		camera.resize(width, height);
+//		camera.resize(width, height);
 	}
 
 	public void update() {

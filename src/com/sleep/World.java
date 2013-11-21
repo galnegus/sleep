@@ -33,7 +33,10 @@ public class World {
 	public void setLevel(int newLevel) {
 		activeLevel = levels.get(newLevel);
 
-		// Sleep.camera.resize(width, height);
+		int width = activeLevel.getXSize() * Constants.GRID_CELL_SIZE;
+		int height = activeLevel.getYSize() * Constants.GRID_CELL_SIZE;
+		
+		Sleep.camera.resize(width, height, activeLevel.player);
 	}
 
 	public void update() {
