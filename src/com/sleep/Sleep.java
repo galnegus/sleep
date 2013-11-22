@@ -1,6 +1,6 @@
 package com.sleep;
 
-import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
@@ -12,20 +12,24 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
+import com.sleep.ghost.CoolCamera;
+import com.sleep.ghost.World;
 
-public class Sleep implements ApplicationListener {
+public class Sleep extends Game {
 	// object/entity stuff
 	public static AssetManager assets;
 	public static World world;
 
-	public static boolean updatesPaused = false;
-
 	// rendering stuff
 	public static SpriteBatch batch;
-	public static BitmapFont font;
+	public static BitmapFont spawnerFont;
 	public static Music music;
 	public static FrameBuffer fbo;
 	public static CoolCamera camera;
+	
+	// screens
+	public static GhostScreen ghostScreen;
+	public static TextScreen textScreen;
 
 	// shader stuff
 	public static ShaderProgram ambientShader;
@@ -33,7 +37,7 @@ public class Sleep implements ApplicationListener {
 	public static final float ambientIntensity = 1f;
 	public static final Vector3 ambientColor = new Vector3(0.1f, 0.1f, 0.1f);
 	public static Texture light;
-
+	
 	/**
 	 * WARNING: Game will break (NullPointerException) if objects are created in
 	 * a stupid order
@@ -53,6 +57,7 @@ public class Sleep implements ApplicationListener {
 		assets.load("images/player.png", Texture.class);
 		assets.load("images/player_bw.png", Texture.class);
 		assets.load("images/placeholder.png", Texture.class);
+		assets.load("images/cursor.png", Texture.class);
 		assets.load("music/spook2.ogg", Music.class);
 		assets.finishLoading();
 
@@ -76,7 +81,7 @@ public class Sleep implements ApplicationListener {
 		world = new World("levels/world");
 
 		// create objects for rendering stuff
-		font = new BitmapFont(Gdx.files.internal("fonts/24pt.fnt"));
+		spawnerFont = new BitmapFont(Gdx.files.internal("fonts/24pt.fnt"));
 		batch = new SpriteBatch();
 		fbo = new FrameBuffer(Format.RGBA8888, Constants.WIDTH, Constants.HEIGHT, false);
 
@@ -85,6 +90,12 @@ public class Sleep implements ApplicationListener {
 		music.setLooping(true);
 		music.setVolume(1f);
 //		music.play();
+		
+		// create screens
+		ghostScreen = new GhostScreen();
+		textScreen = new TextScreen();
+		
+		setScreen(textScreen);
 	}
 
 	@Override
@@ -94,62 +105,30 @@ public class Sleep implements ApplicationListener {
 		ambientShader.begin();
 		ambientShader.setUniformf("resolution", width, height);
 		ambientShader.end();
-		
-//		camera.resize(width, height);
-	}
-
-	public void update() {
-		if (!updatesPaused) {
-			world.update();
-			camera.update(Gdx.graphics.getDeltaTime());
-		}
 	}
 
 	@Override
 	public void render() {
-		// update stuff
-		update();
-
-		// clear screen color
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1);
-
-		// draw light to FBO
-		fbo.begin();
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.setProjectionMatrix(camera.combined);
-		batch.setShader(defaultShader);
-		batch.begin();
-		world.drawLight();
-		batch.end();
-		fbo.end();
-
-		// draw scene
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.setProjectionMatrix(camera.combined);
-		batch.setShader(ambientShader);
-		batch.begin();
-		fbo.getColorBufferTexture().bind(1);
-		world.bindLight(0);
-		world.render();
-		batch.end();
+		super.render();
 	}
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-
+		batch.dispose();
+		spawnerFont.dispose();
+		music.dispose();
+		fbo.dispose();
+		ambientShader.dispose();
+		defaultShader.dispose();
+		light.dispose();
 	}
 
 }
