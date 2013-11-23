@@ -21,14 +21,12 @@ public class OverWorld {
 	private int rows;
 
 	private EntityManager entityManager;
-	private EntityManager backgroundManager;
 	private Map<Character, Room> roomList;
 
 	public Entity player;
 
 	public OverWorld(String filename) {
 		entityManager = new EntityManager();
-		backgroundManager = new EntityManager();
 		roomList = new HashMap<Character, Room>();
 
 		try {
@@ -91,9 +89,13 @@ public class OverWorld {
 					} else if (charBoard[x][y] == '-') {
 						EntityMaker.makeHorizontalConnection(entityManager, x * Constants.GRID_CELL_SIZE / 2, y
 								* Constants.GRID_CELL_SIZE / 2);
+						roomList.get(charBoard[x - 1][y]).addConnection("right", roomList.get(charBoard[x + 1][y]));
+						roomList.get(charBoard[x + 1][y]).addConnection("left", roomList.get(charBoard[x - 1][y]));
 					} else if (charBoard[x][y] == '|') {
 						EntityMaker.makeVerticalConnection(entityManager, x * Constants.GRID_CELL_SIZE / 2, y
 								* Constants.GRID_CELL_SIZE / 2);
+						roomList.get(charBoard[x][y - 1]).addConnection("up", roomList.get(charBoard[x][y + 1]));
+						roomList.get(charBoard[x][y + 1]).addConnection("down", roomList.get(charBoard[x][y - 1]));
 					}
 					
 					if(charBoard[x][y] == '1') {
@@ -131,7 +133,6 @@ public class OverWorld {
 	}
 
 	public void render() {
-		backgroundManager.render();
 		entityManager.render();
 	}
 }

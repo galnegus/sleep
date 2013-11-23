@@ -21,7 +21,7 @@ public class Terminal {
 	private InputReader inputReader;
 	
 	private static final int wrapWidth = 853;
-	public int logStartAt;
+	public int outputLogIndex;
 	private List<String> outputLog;
 	
 	public int cursor;
@@ -38,7 +38,7 @@ public class Terminal {
 		Gdx.input.setInputProcessor(inputProcessor);
 		this.inputReader = inputReader;
 		
-		logStartAt = 0;
+		outputLogIndex = 0;
 		outputLog = new ArrayList<String>();
 		
 		cursor = 0;
@@ -78,7 +78,7 @@ public class Terminal {
 	public void render() {
 		// render output
 		int outputStartPosY = startPosY + (int) font.getLineHeight();
-		for (int i = outputLog.size() - 1 - logStartAt; i >= 0; i--) {
+		for (int i = outputLog.size() - 1 - outputLogIndex; i >= 0; i--) {
 			outputStartPosY += font.getWrappedBounds(outputLog.get(i), wrapWidth).height;
 			
 			if (outputStartPosY >= Gdx.graphics.getHeight() + font.getWrappedBounds(outputLog.get(i), wrapWidth).height) {

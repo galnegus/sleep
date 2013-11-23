@@ -1,5 +1,8 @@
 package com.sleep.text;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 
@@ -7,10 +10,13 @@ public class TerminalInputProcessor implements InputProcessor {
 	private Terminal terminal;
 
 	public StringBuilder currentInput;
+	private List<String> inputLog;
+	private int inputLogIndex = 0;
 
 	public TerminalInputProcessor(Terminal terminal) {
 		this.terminal = terminal;
 		currentInput = new StringBuilder();
+		inputLog = new ArrayList<String>();
 	}
 
 	@Override
@@ -19,22 +25,40 @@ public class TerminalInputProcessor implements InputProcessor {
 			currentInput.deleteCharAt(terminal.cursor - 1);
 			terminal.cursor--;
 		}
-		if (keycode == Input.Keys.FORWARD_DEL && terminal.cursor < currentInput.length()) {
+		if (keycode == Input.Keys.FORWARD_DEL && terminal.cursor < currentInput.length())
 			currentInput.deleteCharAt(terminal.cursor);
-		}
+		
 		if (keycode == Input.Keys.LEFT && terminal.cursor > 0)
 			terminal.cursor--;
 		if (keycode == Input.Keys.RIGHT && terminal.cursor < currentInput.length())
 			terminal.cursor++;
-		if (keycode == Input.Keys.UP && terminal.logStartAt < terminal.outputLogSize() - 1)
-			terminal.logStartAt++;
-		if (keycode == Input.Keys.DOWN && terminal.logStartAt > 0)
-			terminal.logStartAt--;
+		
+		if (keycode == Input.Keys.PAGE_UP && terminal.outputLogIndex < terminal.outputLogSize() - 1)
+			terminal.outputLogIndex++;
+		if (keycode == Input.Keys.PAGE_DOWN && terminal.outputLogIndex > 0)
+			terminal.outputLogIndex--;
+		
+		if (keycode == Input.Keys.UP && !inputLog.isEmpty() && inputLogIndex < inputLog.size()) {
+			inputLogIndex++;
+			currentInput.setLength(0);
+			currentInput.append(inputLog.get(inputLog.size() - inputLogIndex));
+			terminal.cursor = inputLog.get(inputLog.size() - inputLogIndex).length();
+		} 
+		if (keycode == Input.Keys.DOWN && inputLogIndex > 1) {
+			inputLogIndex--;
+			currentInput.setLength(0);
+			currentInput.append(inputLog.get(inputLog.size() - inputLogIndex));
+			terminal.cursor = inputLog.get(inputLog.size() - inputLogIndex).length();
+		}
+		
 		if (keycode == Input.Keys.ENTER && currentInput.length() > 0) {
+			inputLog.add(currentInput.toString());
+			inputLogIndex = 0;
+			
 			terminal.sendInput(currentInput.toString());
 			currentInput.setLength(0);
 			terminal.cursor = 0;
-			terminal.logStartAt = 0;
+			terminal.outputLogIndex = 0;
 		}
 		terminal.cursorActive();
 		return false;

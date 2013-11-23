@@ -8,21 +8,22 @@ import com.sleep.text.IF;
 import com.sleep.text.OverWorld;
 
 public class TextScreen implements Screen {
+	private OverWorld overWorld;
+	private CoolCamera overWorldCamera;
+	
 	private IF interactiveFiction;
 	private OrthographicCamera textCamera;
 
-	private OverWorld overWorld;
-	private CoolCamera overWorldCamera;
-
 	public TextScreen() {
-		interactiveFiction = new IF();
-		textCamera = new OrthographicCamera();
-		textCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		overWorld = new OverWorld("levels/mansion");
 		overWorldCamera = new CoolCamera(Constants.WIDTH, Constants.HEIGHT);
 		overWorldCamera.resize(Constants.WIDTH * 4, Constants.HEIGHT * 4,
 				overWorld.player.position.x + (overWorld.player.getWidth() / 2) - Constants.WIDTH / 3,
 				overWorld.player.position.y + (overWorld.player.getHeight() / 2));
+		
+		interactiveFiction = new IF(overWorld);
+		textCamera = new OrthographicCamera();
+		textCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	public void update() {
