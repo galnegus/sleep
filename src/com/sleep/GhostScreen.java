@@ -3,14 +3,28 @@ package com.sleep;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.sleep.soko.LevelArchitect;
 
 public class GhostScreen implements Screen {
 	public static boolean updatesPaused = false;
+	private LevelArchitect levelArchitect;
+	private CoolCamera camera;
+
+	public GhostScreen() {
+		camera = new CoolCamera(Constants.WIDTH, Constants.HEIGHT);
+
+		// create levels
+		levelArchitect = new LevelArchitect("levels/levels", camera);
+	}
 
 	public void update() {
 		if (!updatesPaused) {
-			Sleep.world.update();
-			Sleep.camera.update(Gdx.graphics.getDeltaTime());
+			levelArchitect.update();
+
+			camera.update(Gdx.graphics.getDeltaTime(), levelArchitect.activeLevel.player.position.x
+					+ (levelArchitect.activeLevel.player.getWidth() / 2), levelArchitect.activeLevel.player.position.y
+					+ (levelArchitect.activeLevel.player.getHeight() / 2), levelArchitect.activeLevel.columnCount(),
+					levelArchitect.activeLevel.rowCount());
 		}
 	}
 
@@ -25,21 +39,21 @@ public class GhostScreen implements Screen {
 		// draw light to FBO
 		Sleep.fbo.begin();
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Sleep.batch.setProjectionMatrix(Sleep.camera.combined);
+		Sleep.batch.setProjectionMatrix(camera.combined);
 		Sleep.batch.setShader(Sleep.defaultShader);
 		Sleep.batch.begin();
-		Sleep.world.drawLight();
+		levelArchitect.drawLight();
 		Sleep.batch.end();
 		Sleep.fbo.end();
 
 		// draw scene
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Sleep.batch.setProjectionMatrix(Sleep.camera.combined);
+		Sleep.batch.setProjectionMatrix(camera.combined);
 		Sleep.batch.setShader(Sleep.ambientShader);
 		Sleep.batch.begin();
 		Sleep.fbo.getColorBufferTexture().bind(1);
-		Sleep.world.bindLight(0);
-		Sleep.world.render();
+		levelArchitect.bindLight(0);
+		levelArchitect.render();
 		Sleep.batch.end();
 	}
 

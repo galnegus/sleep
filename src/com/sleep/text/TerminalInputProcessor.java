@@ -26,10 +26,15 @@ public class TerminalInputProcessor implements InputProcessor {
 			terminal.cursor--;
 		if (keycode == Input.Keys.RIGHT && terminal.cursor < currentInput.length())
 			terminal.cursor++;
+		if (keycode == Input.Keys.UP && terminal.logStartAt < terminal.outputLogSize() - 1)
+			terminal.logStartAt++;
+		if (keycode == Input.Keys.DOWN && terminal.logStartAt > 0)
+			terminal.logStartAt--;
 		if (keycode == Input.Keys.ENTER && currentInput.length() > 0) {
 			terminal.sendInput(currentInput.toString());
 			currentInput.setLength(0);
 			terminal.cursor = 0;
+			terminal.logStartAt = 0;
 		}
 		terminal.cursorActive();
 		return false;

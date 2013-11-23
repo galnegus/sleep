@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -12,38 +11,31 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
-import com.sleep.ghost.CoolCamera;
-import com.sleep.ghost.World;
 
 public class Sleep extends Game {
-	// object/entity stuff
+	// assets
 	public static AssetManager assets;
-	public static World world;
 
 	// rendering stuff
 	public static SpriteBatch batch;
 	public static BitmapFont spawnerFont;
 	public static Music music;
 	public static FrameBuffer fbo;
-	public static CoolCamera camera;
 	
 	// screens
-	public static GhostScreen ghostScreen;
-	public static TextScreen textScreen;
+	private GhostScreen ghostScreen;
+	private TextScreen textScreen;
 
 	// shader stuff
 	public static ShaderProgram ambientShader;
 	public static ShaderProgram defaultShader;
 	public static final float ambientIntensity = 1f;
-	public static final Vector3 ambientColor = new Vector3(0.1f, 0.1f, 0.1f);
+	public static final Vector3 ambientColor = new Vector3(0f, 0f, 0f);
 	public static Texture light;
 	
 	/**
-	 * WARNING: Game will break (NullPointerException) if objects are created in
+	 * WARNING: Game might break (NullPointerException) if objects are created in
 	 * a stupid order
-	 * 
-	 * This approximate order needs to be used:
-	 * load assets -> shaders -> camera -> world/levels
 	 **/
 	@Override
 	public void create() {
@@ -58,6 +50,9 @@ public class Sleep extends Game {
 		assets.load("images/player_bw.png", Texture.class);
 		assets.load("images/placeholder.png", Texture.class);
 		assets.load("images/cursor.png", Texture.class);
+		assets.load("images/room_bw.png", Texture.class);
+		assets.load("images/horizontal_bw.png", Texture.class);
+		assets.load("images/vertical_bw.png", Texture.class);
 		assets.load("music/spook2.ogg", Music.class);
 		assets.finishLoading();
 
@@ -73,13 +68,7 @@ public class Sleep extends Game {
 		ambientShader.setUniformi("u_lightmap", 1); // texture binding to slot 1
 		ambientShader.setUniformf("ambientColor", ambientColor.x, ambientColor.y, ambientColor.z, ambientIntensity);
 		ambientShader.end();
-
-		// create camera
-		camera = new CoolCamera(Constants.WIDTH, Constants.HEIGHT);
 		
-		// create levels
-		world = new World("levels/world");
-
 		// create objects for rendering stuff
 		spawnerFont = new BitmapFont(Gdx.files.internal("fonts/24pt.fnt"));
 		batch = new SpriteBatch();

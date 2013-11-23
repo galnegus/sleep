@@ -33,7 +33,6 @@ public class Terminal {
 		font = new BitmapFont(Gdx.files.internal("fonts/Inconsolata36pxbold.fnt"));
 		font.setColor(1f, 1f, 1f, 1f);
 		maxInputLength = (int) ((float) wrapWidth / font.getSpaceWidth());
-		System.out.println(maxInputLength);
 
 		inputProcessor = new TerminalInputProcessor(this);
 		Gdx.input.setInputProcessor(inputProcessor);
@@ -68,6 +67,10 @@ public class Terminal {
 		cursorBlinkTimer = 0;
 	}
 	
+	public int outputLogSize() {
+		return outputLog.size();
+	}
+	
 	public int getMaxInputLength() {
 		return maxInputLength;
 	}
@@ -75,7 +78,7 @@ public class Terminal {
 	public void render() {
 		// render output
 		int outputStartPosY = startPosY + (int) font.getLineHeight();
-		for (int i = outputLog.size() - 1; i >= 0; i--) {
+		for (int i = outputLog.size() - 1 - logStartAt; i >= 0; i--) {
 			outputStartPosY += font.getWrappedBounds(outputLog.get(i), wrapWidth).height;
 			
 			if (outputStartPosY >= Gdx.graphics.getHeight() + font.getWrappedBounds(outputLog.get(i), wrapWidth).height) {
