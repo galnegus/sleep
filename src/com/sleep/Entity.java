@@ -1,4 +1,4 @@
-package com.sleep.soko;
+package com.sleep;
 
 import java.util.HashMap;
 import java.util.Map;

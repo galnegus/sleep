@@ -4,20 +4,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 
 public class CoolCamera extends OrthographicCamera {
-	protected Vector2 size;
 	protected Vector2 movement;
-	protected Vector2 scale;
-	protected Vector2 centerPoint;
-	protected float rotation;
 	protected final float CAMERA_SCROLL_ACCELERATION = 1500f;
 
 	public CoolCamera(int width, int height) {
-		this.size = new Vector2(width, height);
+		super(width, height);
 		this.movement = new Vector2(0, 0);
-		this.scale = new Vector2(1, 1);
-		this.centerPoint = new Vector2(width / 2, height / 2);
-		this.rotation = 0;
-
 		this.setToOrtho(false, width, height);
 	}
 
@@ -25,10 +17,10 @@ public class CoolCamera extends OrthographicCamera {
 	 * Changes the size of camera so that no "black bars" are visible. Also
 	 * positions the camera to focus on the player entity position.
 	 * 
-	 * @param width
+	 * @param boardWidth
 	 *            the width of the board in pixels (e.g. level.xSize *
 	 *            Constants.GRID_CELL_SIZE)
-	 * @param height
+	 * @param boardHeight
 	 *            the height of the board in pixels (e.g. level.ySize *
 	 *            Constants.GRID_CELL_SIZE)
 	 * @param x
@@ -37,70 +29,56 @@ public class CoolCamera extends OrthographicCamera {
 	 *            y position to position camera at (centered)
 	 */
 
-	public void resize(int width, int height, float x, float y) {
-		Vector2 widthSize = newSizeByWidth(width);
-		Vector2 heightSize = newSizeByHeight(height);
+	public void resize(int boardWidth, int boardHeight, float x, float y) {
+		Vector2 widthSize = newSizeByWidth(boardWidth);
+		Vector2 heightSize = newSizeByHeight(boardHeight);
 
 		if (widthSize.len() < heightSize.len()) {
-			width = (int) widthSize.x;
-			height = (int) widthSize.y;
+			viewportWidth = (int) widthSize.x;
+			viewportHeight = (int) widthSize.y;
 		} else {
-			width = (int) heightSize.x;
-			height = (int) heightSize.y;
+			viewportWidth = (int) heightSize.x;
+			viewportHeight = (int) heightSize.y;
 		}
 
-		if (width > Constants.WIDTH || height > Constants.HEIGHT) {
-			width = Constants.WIDTH;
-			height = Constants.HEIGHT;
+		if (viewportWidth > Constants.WIDTH || viewportHeight > Constants.HEIGHT) {
+			viewportWidth = Constants.WIDTH;
+			viewportHeight = Constants.HEIGHT;
 		}
 
-		viewportWidth = width;
-		viewportHeight = height;
-
-		size.set(width, height);
-		centerPoint.set(width / 2, height / 2);
-		setToOrtho(false, width, height);
+		setToOrtho(false, viewportWidth, viewportHeight);
 
 		position.set(x, y, position.z);
+		adjustPositionByBounds(boardWidth, boardHeight);
 	}
 
-	/**
-	 * Sets the camera to be centered on the position of an entity (such as the
-	 * player Entity). Sets a minimum X position if the resulting X position
-	 * from centering is less than 0.
-	 * 
-	 * @param monkey
-	 *            The entity to center the camera to.
-	 * @param gc
-	 *            GameContainer
-	 */
 	public void update(float delta, float x, float y) {
-		movement.x = delta * ((x - position.x) * CAMERA_SCROLL_ACCELERATION) / size.x;
-		movement.y = delta * ((y - position.y) * CAMERA_SCROLL_ACCELERATION) / size.y;
+		movement.x = delta * ((x - position.x) * CAMERA_SCROLL_ACCELERATION) / viewportWidth;
+		movement.y = delta * ((y - position.y) * CAMERA_SCROLL_ACCELERATION) / viewportHeight;
 
 		position.set(position.x + movement.x, position.y + movement.y, position.z);
 
 		super.update();
 	}
 
-	public void update(float delta, float x, float y, int cols, int rows) {
-		movement.x = delta * ((x - position.x) * CAMERA_SCROLL_ACCELERATION) / size.x;
-		movement.y = delta * ((y - position.y) * CAMERA_SCROLL_ACCELERATION) / size.y;
-
-		position.set(position.x + movement.x, position.y + movement.y, position.z);
-
-		if (position.x <= size.x / 2 && movement.x < 0) {
-			position.set(size.x / 2, position.y, position.z);
-		} else if (position.x >= cols * Constants.GRID_CELL_SIZE - size.x / 2 && movement.x > 0) {
-			position.set(cols * Constants.GRID_CELL_SIZE - size.x / 2, position.y, position.z);
-		}
-		if (position.y <= size.y / 2 && movement.y < 0) {
-			position.set(position.x, size.y / 2, position.z);
-		} else if (position.y >= rows * Constants.GRID_CELL_SIZE - size.y / 2 && movement.y > 0) {
-			position.set(position.x, rows * Constants.GRID_CELL_SIZE - size.y / 2, position.z);
-		}
-
+	public void update(float delta, float x, float y, int boardWidth, int boardHeight) {
+		update(delta, x, y);
+		adjustPositionByBounds(boardWidth, boardHeight);
 		super.update();
+	}
+	
+	private void adjustPositionByBounds(int boardWidth, int boardHeight) {
+		if (position.x <= viewportWidth / 2) {
+			position.set(viewportWidth / 2, position.y, position.z);
+		} else if (position.x >= boardWidth - viewportWidth / 2) {
+			position.set(boardWidth - viewportWidth / 2, position.y, position.z);
+		}
+		if (position.y <= viewportHeight / 2) {
+			position.set(position.x, viewportHeight / 2, position.z);
+		} else if (position.y >= boardHeight - viewportHeight / 2) {
+			System.out.println("height: " + boardHeight + ", width: " + boardWidth);
+			position.set(position.x, boardHeight - viewportHeight / 2, position.z);
+		}
 	}
 
 	public Vector2 newSizeByWidth(int width) {

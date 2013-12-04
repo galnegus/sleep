@@ -17,8 +17,8 @@ public class TextScreen implements Screen {
 	public TextScreen() {
 		overWorld = new OverWorld("levels/mansion");
 		overWorldCamera = new CoolCamera(Constants.WIDTH, Constants.HEIGHT);
-		overWorldCamera.resize(Constants.WIDTH * 4, Constants.HEIGHT * 4,
-				overWorld.player.position.x + (overWorld.player.getWidth() / 2) - Constants.WIDTH / 3,
+		overWorldCamera.resize(Constants.WIDTH / 2, Constants.HEIGHT / 2,
+				overWorld.player.position.x + (overWorld.player.getWidth() / 2) - Constants.WIDTH / 8,
 				overWorld.player.position.y + (overWorld.player.getHeight() / 2));
 		
 		interactiveFiction = new IF(overWorld);
@@ -29,7 +29,7 @@ public class TextScreen implements Screen {
 	public void update() {
 		overWorld.update();
 		overWorldCamera.update(Gdx.graphics.getDeltaTime(), overWorld.player.position.x
-				+ (overWorld.player.getWidth() / 2) - Constants.WIDTH / 3, overWorld.player.position.y
+				+ (overWorld.player.getWidth() / 2) - overWorldCamera.viewportWidth / 4, overWorld.player.position.y
 				+ (overWorld.player.getHeight() / 2));
 		interactiveFiction.update();
 	}

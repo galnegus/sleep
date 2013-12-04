@@ -8,17 +8,22 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.XmlReader;
-import com.badlogic.gdx.utils.XmlReader.Element;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.sleep.Constants;
-import com.sleep.soko.Entity;
-import com.sleep.soko.EntityMaker;
-import com.sleep.soko.EntityManager;
-import com.sleep.text.object.Room;
+import com.sleep.Entity;
+import com.sleep.EntityMaker;
+import com.sleep.EntityManager;
+import com.sleep.soko.component.Message;
 
 public class OverWorld {
 	private int columns;
 	private int rows;
+
+	private char[][] map;
+	private Vector2 playerPosition;
+	private Room currentRoom;
 
 	private EntityManager entityManager;
 	private Map<Character, Room> roomList;
@@ -28,28 +33,29 @@ public class OverWorld {
 	public OverWorld(String filename) {
 		entityManager = new EntityManager();
 		roomList = new HashMap<Character, Room>();
+		playerPosition = new Vector2();
 
 		try {
-			XmlReader xml = new XmlReader();
-
-			Element root = xml.parse(Gdx.files.internal(filename + ".xml"));
-			Element rooms = root.getChildByName("rooms");
+			JsonReader json = new JsonReader();
+			JsonValue root = json.parse(Gdx.files.internal(filename + ".json"));
+			JsonValue rooms = root.get("rooms");
 			
-			Element room;
+			JsonValue room;
 			char id;
 			String name;
-			for (int i = 0; i < rooms.getChildCount(); i++) {
-				room = rooms.getChild(i);
-
-				if (room.getChildByName("id") == null)
+			for (int i = 0; i < rooms.size; i++) {
+				room = rooms.get(i);
+				
+				if (room.getString("id") == null)
 					Gdx.app.error("WorldXmlError", "no id element found in room element " + i);
-				if (room.getChildByName("name") == null)
+				if (room.getString("name") == null)
 					Gdx.app.error("WorldXmlError", "no name element found in room element " + i);
-				if (room.getChildByName("id").getText().length() > 1) 
-					Gdx.app.error("WorldXmlError", "bad id supplied in xml element " + i + ", id must be a single character");
+				if (room.getString("id").length() > 1)
+					Gdx.app.error("WorldXmlError", "bad id supplied in xml element " + i
+							+ ", id must be a single character");
 
-				id = room.getChildByName("id").getText().charAt(0);
-				name = room.getChildByName("name").getText();
+				id = room.getString("id").charAt(0);
+				name = room.getString("name");
 				roomList.put(id, new Room(id, name));
 			}
 			
@@ -59,48 +65,66 @@ public class OverWorld {
 			columns = Integer.parseInt(br.readLine());
 			rows = Integer.parseInt(br.readLine());
 
-			char[][] charBoard = new char[columns][rows];
+			map = new char[columns][rows];
 			char[][] input = new char[rows][columns];
 
 			for (int i = 0; i < rows; i++) {
 				input[i] = br.readLine().toCharArray();
 			}
 
-			// rotate (x=y, y=x) and flip the board (y=ySize-y)
-			// [[1,2,3],[4,5,6]] -> [[5,6],[3,4],[1,2]]
+			/**
+			 * rotate (x=y, y=x) and flip the board (y=ySize-y)
+			 * [[1,2,3],[4,5,6]] -> [[5,6],[3,4],[1,2]]
+			 * 
+			 * also flip any doorways
+			 * - -> |, | -> -
+			 */
 			for (int x = 0; x < columns; x++) {
 				for (int y = 0; y < rows; y++) {
-					charBoard[x][rows - 1 - y] = input[y][x];
+					map[x][rows - 1 - y] = input[y][x];
+					
+//					if (map[x][rows - 1 - y] == Constants.HORIZONTAL_DOORWAY)
+//						map[x][rows - 1 - y] = Constants.VERTICAL_DOORWAY;
+//					else if (map[x][rows - 1 - y] == Constants.VERTICAL_DOORWAY)
+//						map[x][rows - 1 - y] = Constants.HORIZONTAL_DOORWAY;
 				}
 			}
 
 			br.close();
 
-			// create entities
+			// First create doorways
 			for (int x = 0; x < columns; x++) {
 				for (int y = 0; y < rows; y++) {
-					if (Character.isLetterOrDigit(charBoard[x][y])) {
-						EntityMaker.makeRoom(entityManager, x * Constants.GRID_CELL_SIZE / 2, y
+					if (map[x][y] == Constants.HORIZONTAL_DOORWAY) {
+						// HORIZONTAL DOORWAY
+						EntityMaker.makeHorizontalDoorway(entityManager, x * Constants.GRID_CELL_SIZE / 2, y
 								* Constants.GRID_CELL_SIZE / 2);
-					} else if (charBoard[x][y] == '#') {
-						// make wall
+					} else if (map[x][y] == Constants.VERTICAL_DOORWAY) {
+						// VERTICAL DOORWAY
+						EntityMaker.makeVerticalDoorway(entityManager, x * Constants.GRID_CELL_SIZE / 2, y
+								* Constants.GRID_CELL_SIZE / 2);
+					}
+				}
+			}
+
+			// Then create rooms
+			for (int x = 0; x < columns; x++) {
+				for (int y = 0; y < rows; y++) {
+					if (Character.isLetterOrDigit(map[x][y])) {
+						// ROOM
+						EntityMaker.makeRoom(entityManager, x * Constants.GRID_CELL_SIZE / 2, y
+								* Constants.GRID_CELL_SIZE / 2, roomList.get(map[x][y]));
+					} else if (map[x][y] == '#') {
+						// WALL
 						EntityMaker.makeWall(entityManager, x * Constants.GRID_CELL_SIZE / 2, y
 								* Constants.GRID_CELL_SIZE / 2);
-					} else if (charBoard[x][y] == '-') {
-						EntityMaker.makeHorizontalConnection(entityManager, x * Constants.GRID_CELL_SIZE / 2, y
-								* Constants.GRID_CELL_SIZE / 2);
-						roomList.get(charBoard[x - 1][y]).addConnection("right", roomList.get(charBoard[x + 1][y]));
-						roomList.get(charBoard[x + 1][y]).addConnection("left", roomList.get(charBoard[x - 1][y]));
-					} else if (charBoard[x][y] == '|') {
-						EntityMaker.makeVerticalConnection(entityManager, x * Constants.GRID_CELL_SIZE / 2, y
-								* Constants.GRID_CELL_SIZE / 2);
-						roomList.get(charBoard[x][y - 1]).addConnection("up", roomList.get(charBoard[x][y + 1]));
-						roomList.get(charBoard[x][y + 1]).addConnection("down", roomList.get(charBoard[x][y - 1]));
 					}
-					
-					if(charBoard[x][y] == '1') {
+
+					if (map[x][y] == '1') {
 						player = EntityMaker.makeIFPlayer(entityManager, x * Constants.GRID_CELL_SIZE / 2, y
 								* Constants.GRID_CELL_SIZE / 2);
+						playerPosition.set(x, y);
+						setCurrentRoom('1');
 					}
 				}
 			}
@@ -111,13 +135,60 @@ public class OverWorld {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public int columnCount() {
 		return columns;
 	}
-	
+
 	public int rowCount() {
 		return rows;
+	}
+
+	private boolean isWithinMapBounds(Vector2 position) {
+		if (position.x >= 0 && position.y >= 0 && position.x < columns && position.y < rows)
+			return true;
+		else
+			return false;
+	}
+
+	private boolean isDoorway(Vector2 position, Direction direction) {
+		if (isWithinMapBounds(position)) {
+			char mapSymbol = map[(int) position.x][(int) position.y];
+			if ((direction == Direction.LEFT || direction == Direction.RIGHT)
+					&& mapSymbol == Constants.HORIZONTAL_DOORWAY) {
+				return true;
+			} else if ((direction == Direction.UP || direction == Direction.DOWN)
+					&& mapSymbol == Constants.VERTICAL_DOORWAY) {
+				return true;
+			}
+		} 
+		return false;
+	}
+	
+	private void setCurrentRoom(char roomID) {
+		currentRoom = roomList.get(roomID);
+	}
+
+	public void movePlayer(Direction direction) {
+		Vector2 movement = direction.getMovement();
+		if (isDoorway(new Vector2(playerPosition.x + movement.x, playerPosition.y + movement.y), direction)) {
+			Message message = Message.fromString("move " + direction.toString());
+			player.sendMessage(message);
+
+			playerPosition.add(movement.x * 2, movement.y * 2);
+			setCurrentRoom(map[(int) playerPosition.x][(int) playerPosition.y]);
+		} 
+
+	}
+
+	public void printMap() {
+		System.out.println("map: ");
+		for (int x = 0; x < columns; x++) {
+			for (int y = 0; y < rows; y++) {
+				System.out.print(map[x][y]);
+			}
+			System.out.println();
+		}
 	}
 
 	public void update() {

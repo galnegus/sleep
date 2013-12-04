@@ -1,4 +1,4 @@
-package com.sleep.soko;
+package com.sleep;
 
 import java.util.LinkedHashMap;
 
@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.sleep.Sleep;
+import com.sleep.soko.Level;
 import com.sleep.soko.component.LightComponent;
 import com.sleep.soko.component.SpawnerComponent;
 import com.sleep.soko.component.animation.AnimationActions;
@@ -23,7 +23,9 @@ import com.sleep.soko.component.render.AnimationRenderComponent;
 import com.sleep.soko.component.render.BackgroundRenderComponent;
 import com.sleep.soko.component.render.GhostRenderComponent;
 import com.sleep.soko.component.render.ImageRenderComponent;
+import com.sleep.text.Room;
 import com.sleep.text.component.OverWorldMovementComponent;
+import com.sleep.text.component.RoomComponent;
 
 public class EntityMaker {
 	private static final int BOX_DEPTH = 0;
@@ -101,27 +103,21 @@ public class EntityMaker {
 	 * Entities for the IF part are listed below
 	 */
 
-	public static Entity makeRoom(EntityManager entityManager, int x, int y) {
+	public static Entity makeRoom(EntityManager entityManager, int x, int y, Room room) {
 		return entityManager.add(new Entity("Room", new Vector2(x, y), ROOM_DEPTH))
 				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/room_bw.png", Texture.class)))
+				.addComponent(new RoomComponent(room))
 				.initComponents();
 	}
-
-	public static Entity makeRoomGrid(EntityManager backgroundManager, int xSize, int ySize) {
-		Texture tex = Sleep.assets.get("images/wall.png", Texture.class);
-		tex.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
-		return backgroundManager.add(new Entity("RoomGrid", new Vector2(0, 0), GRID_DEPTH))
-				.addComponent(new BackgroundRenderComponent(tex, xSize, ySize)).initComponents();
-	}
 	
-	public static Entity makeHorizontalConnection(EntityManager entityManager, int x, int y) {
-		return entityManager.add(new Entity("Horizontal Connection", new Vector2(x, y), CONNECTION_DEPTH))
+	public static Entity makeHorizontalDoorway(EntityManager entityManager, int x, int y) {
+		return entityManager.add(new Entity("Horizontal Doorway", new Vector2(x, y), CONNECTION_DEPTH))
 				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/horizontal_bw.png", Texture.class)))
 				.initComponents();
 	}
 	
-	public static Entity makeVerticalConnection(EntityManager entityManager, int x, int y) {
-		return entityManager.add(new Entity("Vertical Connection", new Vector2(x, y), CONNECTION_DEPTH))
+	public static Entity makeVerticalDoorway(EntityManager entityManager, int x, int y) {
+		return entityManager.add(new Entity("Vertical Doorway", new Vector2(x, y), CONNECTION_DEPTH))
 				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/vertical_bw.png", Texture.class)))
 				.initComponents();
 	}

@@ -2,7 +2,7 @@ package com.sleep.soko.component.movement;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.sleep.soko.Entity;
+import com.sleep.Entity;
 import com.sleep.soko.Level;
 import com.sleep.soko.component.Component;
 import com.sleep.soko.component.ComponentException;

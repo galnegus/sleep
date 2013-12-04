@@ -1,5 +1,5 @@
 package com.sleep.text;
 
-public interface InputReader {
+public interface InputReceiver {
 	public void receiveInput(String input);
 }

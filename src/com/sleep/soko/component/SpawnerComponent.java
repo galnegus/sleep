@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.sleep.Constants;
+import com.sleep.EntityMaker;
 import com.sleep.Sleep;
-import com.sleep.soko.EntityMaker;
 import com.sleep.soko.Level;
 
 public class SpawnerComponent extends Component implements RenderableComponent {

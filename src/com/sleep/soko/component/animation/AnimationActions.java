@@ -1,6 +1,6 @@
 package com.sleep.soko.component.animation;
 
-import com.sleep.soko.Entity;
+import com.sleep.Entity;
 import com.sleep.soko.component.movement.MovementComponent;
 
 public enum AnimationActions {

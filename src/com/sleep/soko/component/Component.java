@@ -1,7 +1,7 @@
 package com.sleep.soko.component;
 
 import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.sleep.soko.Entity;
+import com.sleep.Entity;
 
 public abstract class Component {
 	protected Entity owner;

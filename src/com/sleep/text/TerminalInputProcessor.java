@@ -12,6 +12,7 @@ public class TerminalInputProcessor implements InputProcessor {
 	public StringBuilder currentInput;
 	private List<String> inputLog;
 	private int inputLogIndex = 0;
+	private int inputLogMaxSize = 5;
 
 	public TerminalInputProcessor(Terminal terminal) {
 		this.terminal = terminal;
@@ -21,40 +22,56 @@ public class TerminalInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
+		// BACKSPACE
 		if (keycode == Input.Keys.BACKSPACE && terminal.cursor > 0) {
 			currentInput.deleteCharAt(terminal.cursor - 1);
 			terminal.cursor--;
 		}
+		
+		// DELETE
 		if (keycode == Input.Keys.FORWARD_DEL && terminal.cursor < currentInput.length())
 			currentInput.deleteCharAt(terminal.cursor);
-		
+
+		// LEFT/RIGHT
 		if (keycode == Input.Keys.LEFT && terminal.cursor > 0)
 			terminal.cursor--;
 		if (keycode == Input.Keys.RIGHT && terminal.cursor < currentInput.length())
 			terminal.cursor++;
-		
+
+		// PG UP/PG DOWN
 		if (keycode == Input.Keys.PAGE_UP && terminal.outputLogIndex < terminal.outputLogSize() - 1)
 			terminal.outputLogIndex++;
 		if (keycode == Input.Keys.PAGE_DOWN && terminal.outputLogIndex > 0)
 			terminal.outputLogIndex--;
-		
+
+		// UP/DOWN
 		if (keycode == Input.Keys.UP && !inputLog.isEmpty() && inputLogIndex < inputLog.size()) {
 			inputLogIndex++;
 			currentInput.setLength(0);
 			currentInput.append(inputLog.get(inputLog.size() - inputLogIndex));
 			terminal.cursor = inputLog.get(inputLog.size() - inputLogIndex).length();
-		} 
+		}
 		if (keycode == Input.Keys.DOWN && inputLogIndex > 1) {
 			inputLogIndex--;
 			currentInput.setLength(0);
 			currentInput.append(inputLog.get(inputLog.size() - inputLogIndex));
 			terminal.cursor = inputLog.get(inputLog.size() - inputLogIndex).length();
 		}
-		
+
+		//ENTER
 		if (keycode == Input.Keys.ENTER && currentInput.length() > 0) {
-			inputLog.add(currentInput.toString());
+			// add input to inputLog if the last added element isn't repeated
+			if (inputLog.size() == 0 || !inputLog.get(inputLog.size() - 1).equals(currentInput.toString())) {
+				inputLog.add(currentInput.toString());
+			}
 			inputLogIndex = 0;
-			
+
+			// remove oldest element if inputLog's size exceeds max size
+			if (inputLog.size() > inputLogMaxSize) {
+				inputLog.remove(0);
+			}
+
+			// send input to terminal, reset input, cursor and outputLogIndex
 			terminal.sendInput(currentInput.toString());
 			currentInput.setLength(0);
 			terminal.cursor = 0;

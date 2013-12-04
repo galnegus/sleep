@@ -23,8 +23,8 @@ public class GhostScreen implements Screen {
 
 			camera.update(Gdx.graphics.getDeltaTime(), levelArchitect.activeLevel.player.position.x
 					+ (levelArchitect.activeLevel.player.getWidth() / 2), levelArchitect.activeLevel.player.position.y
-					+ (levelArchitect.activeLevel.player.getHeight() / 2), levelArchitect.activeLevel.columnCount(),
-					levelArchitect.activeLevel.rowCount());
+					+ (levelArchitect.activeLevel.player.getHeight() / 2), levelArchitect.activeLevel.columnCount()
+					* Constants.GRID_CELL_SIZE, levelArchitect.activeLevel.rowCount() * Constants.GRID_CELL_SIZE);
 		}
 	}
 

@@ -18,7 +18,7 @@ public class Terminal {
 	private int maxInputLength;
 	
 	private TerminalInputProcessor inputProcessor;
-	private InputReader inputReader;
+	private InputReceiver inputReceiver;
 	
 	private static final int wrapWidth = 853;
 	public int outputLogIndex;
@@ -29,14 +29,14 @@ public class Terminal {
 	private float cursorBlinkTimer;
 	private final float cursorBlinkFrequency = 0.5f;
 
-	public Terminal(InputReader inputReader) {
+	public Terminal(InputReceiver inputReader) {
 		font = new BitmapFont(Gdx.files.internal("fonts/Inconsolata36pxbold.fnt"));
 		font.setColor(1f, 1f, 1f, 1f);
 		maxInputLength = (int) ((float) wrapWidth / font.getSpaceWidth());
 
 		inputProcessor = new TerminalInputProcessor(this);
 		Gdx.input.setInputProcessor(inputProcessor);
-		this.inputReader = inputReader;
+		this.inputReceiver = inputReader;
 		
 		outputLogIndex = 0;
 		outputLog = new ArrayList<String>();
@@ -59,7 +59,11 @@ public class Terminal {
 	
 	public void sendInput(String input) {
 		print(input);
-		inputReader.receiveInput(input);
+		inputReceiver.receiveInput(input);
+	}
+	
+	public void clear() {
+		outputLog.clear();
 	}
 	
 	public void cursorActive() {

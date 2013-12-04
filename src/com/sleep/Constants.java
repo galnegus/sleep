@@ -7,7 +7,7 @@ public class Constants {
 	public static final int WIDTH = 1280;
 	public static final int HEIGHT = 720;
 	
-	// Level
+	// Level Symbols
 	public static final char BOX = '$';
 	public static final char WALL = '#';
 	public static final char PLAYER = '@';
@@ -37,5 +37,8 @@ public class Constants {
 
 	public static final int ROTATE_LEFT = Input.Keys.Q;
 	public static final int ROTATE_RIGHT = Input.Keys.E;
-
+	
+	// Overworld Symbols
+	public static final char VERTICAL_DOORWAY = '|';
+	public static final char HORIZONTAL_DOORWAY = '-';
 }

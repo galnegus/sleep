@@ -13,6 +13,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.sleep.Constants;
+import com.sleep.Entity;
+import com.sleep.EntityMaker;
+import com.sleep.EntityManager;
 
 public class Level {
 	private Entity[][] grid;
@@ -167,8 +170,6 @@ public class Level {
 		updateSpectrePathGrid();
 		
 		entityManager.update();
-
-		// printGrid();
 	}
 	
 	public void render() {
@@ -355,13 +356,13 @@ public class Level {
 					System.out.print(Constants.BOX);
 				} else if (grid[x][y].getName().equals("Ghost")) {
 					System.out.print(Constants.GHOST);
+				} else if (grid[x][y].getName().equals("Spectre")) {
+					System.out.print(Constants.SPECTRE);
 				}
 
 				// System.out.print("\t");
 			}
 			System.out.println();
 		}
-
-		System.out.println("[1,1]: " + (grid[1][1] == null ? "null" : grid[1][1].getName()));
 	}
 }
