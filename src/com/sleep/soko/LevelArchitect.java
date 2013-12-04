@@ -42,7 +42,7 @@ public class LevelArchitect {
 		int height = activeLevel.rowCount() * Constants.GRID_CELL_SIZE;
 
 		camera.resize(width, height, activeLevel.player.position.x + (activeLevel.player.getWidth() / 2),
-				activeLevel.player.position.y + (activeLevel.player.getHeight()) / 2);
+				activeLevel.player.position.y + (activeLevel.player.getHeight()) / 2, true);
 	}
 
 	public void update() {

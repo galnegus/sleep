@@ -29,7 +29,7 @@ public class CoolCamera extends OrthographicCamera {
 	 *            y position to position camera at (centered)
 	 */
 
-	public void resize(int boardWidth, int boardHeight, float x, float y) {
+	public void resize(int boardWidth, int boardHeight, float x, float y, boolean respectBoundaries) {
 		Vector2 widthSize = newSizeByWidth(boardWidth);
 		Vector2 heightSize = newSizeByHeight(boardHeight);
 
@@ -49,24 +49,28 @@ public class CoolCamera extends OrthographicCamera {
 		setToOrtho(false, viewportWidth, viewportHeight);
 
 		position.set(x, y, position.z);
-		adjustPositionByBounds(boardWidth, boardHeight);
+		
+		if (respectBoundaries)
+			adjustPositionByBounds(boardWidth, boardHeight);
 	}
 
 	public void update(float delta, float x, float y) {
-		movement.x = delta * ((x - position.x) * CAMERA_SCROLL_ACCELERATION) / viewportWidth;
-		movement.y = delta * ((y - position.y) * CAMERA_SCROLL_ACCELERATION) / viewportHeight;
-
-		position.set(position.x + movement.x, position.y + movement.y, position.z);
-
+		updatePosition(delta, x, y);
 		super.update();
 	}
 
 	public void update(float delta, float x, float y, int boardWidth, int boardHeight) {
-		update(delta, x, y);
+		updatePosition(delta, x, y);
 		adjustPositionByBounds(boardWidth, boardHeight);
 		super.update();
 	}
-	
+
+	private void updatePosition(float delta, float x, float y) {
+		movement.x = delta * ((x - position.x) * CAMERA_SCROLL_ACCELERATION) / viewportWidth;
+		movement.y = delta * ((y - position.y) * CAMERA_SCROLL_ACCELERATION) / viewportHeight;
+		position.set(position.x + movement.x, position.y + movement.y, position.z);
+	}
+
 	private void adjustPositionByBounds(int boardWidth, int boardHeight) {
 		if (position.x <= viewportWidth / 2) {
 			position.set(viewportWidth / 2, position.y, position.z);

@@ -19,7 +19,7 @@ public class TextScreen implements Screen {
 		overWorldCamera = new CoolCamera(Constants.WIDTH, Constants.HEIGHT);
 		overWorldCamera.resize(Constants.WIDTH / 2, Constants.HEIGHT / 2,
 				overWorld.player.position.x + (overWorld.player.getWidth() / 2) - Constants.WIDTH / 8,
-				overWorld.player.position.y + (overWorld.player.getHeight() / 2));
+				overWorld.player.position.y + (overWorld.player.getHeight() / 2), false);
 		
 		interactiveFiction = new IF(overWorld);
 		textCamera = new OrthographicCamera();
