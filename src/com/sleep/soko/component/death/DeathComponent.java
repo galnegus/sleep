@@ -1,6 +1,6 @@
 package com.sleep.soko.component.death;
 
-import com.sleep.soko.Level;
+import com.sleep.soko.SokoLevel;
 import com.sleep.soko.component.Component;
 import com.sleep.soko.component.ComponentException;
 import com.sleep.soko.component.Message;
@@ -14,12 +14,12 @@ import com.sleep.soko.component.movement.MovementComponent;
  * 
  */
 public class DeathComponent extends Component {
-	private Level level;
+	private SokoLevel level;
 	
 	private boolean alive;
 	private MovementComponent killedBy;
 
-	public DeathComponent(Level level) {
+	public DeathComponent(SokoLevel level) {
 		this.level = level;
 		this.alive = true;
 		killedBy = null;

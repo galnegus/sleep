@@ -3,7 +3,7 @@ package com.sleep.soko.component.movement;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.sleep.Entity;
-import com.sleep.soko.Level;
+import com.sleep.soko.SokoLevel;
 import com.sleep.soko.component.Component;
 import com.sleep.soko.component.ComponentException;
 import com.sleep.soko.component.Message;
@@ -14,7 +14,7 @@ import com.sleep.soko.component.death.DeathComponent;
  * 
  */
 public class MovementComponent extends Component {
-	protected Level level;
+	protected SokoLevel level;
 	
 	public float Velocity = 600f;
 	
@@ -24,7 +24,7 @@ public class MovementComponent extends Component {
 	private boolean moving = false;
 	public boolean movable = true;
 	
-	public MovementComponent(Level level) {
+	public MovementComponent(SokoLevel level) {
 		this.level = level;
 	}
 

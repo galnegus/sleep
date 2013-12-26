@@ -3,6 +3,7 @@ package com.sleep.text;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,6 +44,7 @@ public class OverWorld {
 			JsonValue room;
 			char id;
 			String name;
+			boolean soko;
 			for (int i = 0; i < rooms.size; i++) {
 				room = rooms.get(i);
 				
@@ -56,7 +58,16 @@ public class OverWorld {
 
 				id = room.getString("id").charAt(0);
 				name = room.getString("name");
-				roomList.put(id, new Room(id, name));
+				soko = room.getBoolean("soko");
+				JsonValue monologueBranch = room.get("monologue");
+				ArrayList<Monologue> monologues = null;
+				if (monologueBranch != null) {
+					monologues = new ArrayList<Monologue>();
+					for (int j = 0; j < monologueBranch.size; j++) {
+						monologues.add(new DefaultMonologue(monologueBranch.get(j).getString("text")));
+					}
+				}
+				roomList.put(id, new Room(id, name, soko, monologues));
 			}
 			
 			FileHandle levelTxt = Gdx.files.internal(filename + ".world");
@@ -82,11 +93,6 @@ public class OverWorld {
 			for (int x = 0; x < columns; x++) {
 				for (int y = 0; y < rows; y++) {
 					map[x][rows - 1 - y] = input[y][x];
-					
-//					if (map[x][rows - 1 - y] == Constants.HORIZONTAL_DOORWAY)
-//						map[x][rows - 1 - y] = Constants.VERTICAL_DOORWAY;
-//					else if (map[x][rows - 1 - y] == Constants.VERTICAL_DOORWAY)
-//						map[x][rows - 1 - y] = Constants.HORIZONTAL_DOORWAY;
 				}
 			}
 
@@ -120,11 +126,11 @@ public class OverWorld {
 								* Constants.GRID_CELL_SIZE / 2);
 					}
 
-					if (map[x][y] == '1') {
+					if (map[x][y] == '0') {
 						player = EntityMaker.makeIFPlayer(entityManager, x * Constants.GRID_CELL_SIZE / 2, y
 								* Constants.GRID_CELL_SIZE / 2);
 						playerPosition.set(x, y);
-						setCurrentRoom('1');
+						setCurrentRoom('0');
 					}
 				}
 			}
@@ -142,6 +148,10 @@ public class OverWorld {
 
 	public int rowCount() {
 		return rows;
+	}
+	
+	public Room getCurrentRoom() {
+		return currentRoom;
 	}
 
 	private boolean isWithinMapBounds(Vector2 position) {

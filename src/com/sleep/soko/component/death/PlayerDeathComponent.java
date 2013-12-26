@@ -1,9 +1,9 @@
 package com.sleep.soko.component.death;
 
-import com.sleep.soko.Level;
+import com.sleep.soko.SokoLevel;
 
 public class PlayerDeathComponent extends DeathComponent {
-	public PlayerDeathComponent(Level level) {
+	public PlayerDeathComponent(SokoLevel level) {
 		super(level);
 	}
 

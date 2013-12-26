@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.sleep.soko.Level;
+import com.sleep.soko.SokoLevel;
 import com.sleep.soko.component.LightComponent;
 import com.sleep.soko.component.SpawnerComponent;
 import com.sleep.soko.component.animation.AnimationActions;
@@ -39,7 +39,7 @@ public class EntityMaker {
 
 	private static final int GRID_DEPTH = -1;
 
-	public static Entity makePlayer(Level level, int x, int y) {
+	public static Entity makePlayer(SokoLevel level, int x, int y) {
 		Array<TextureRegion> anim = new Array<TextureRegion>();
 		anim.add(new TextureRegion(Sleep.assets.get("images/player.png", Texture.class)));
 		anim.add(new TextureRegion(Sleep.assets.get("images/player_bw.png", Texture.class)));
@@ -57,7 +57,7 @@ public class EntityMaker {
 				.initComponents();
 	}
 
-	public static Entity makeGhost(Level level, int x, int y) {
+	public static Entity makeGhost(SokoLevel level, int x, int y) {
 		return level.entityManager.add(new Entity("Ghost", new Vector2(x, y), GHOST_DEPTH))
 				.addComponent(new GhostMovementComponent(level))
 				.addComponent(new GhostRenderComponent(Sleep.assets.get("images/dark_circle.png", Texture.class)))
@@ -65,7 +65,7 @@ public class EntityMaker {
 				.addComponent(new LightComponent(Sleep.light, new Color(0f, 0f, 0f, 0.1f), 100, true)).initComponents();
 	}
 
-	public static Entity makeSpectre(Level level, int x, int y) {
+	public static Entity makeSpectre(SokoLevel level, int x, int y) {
 		return level.entityManager.add(new Entity("Spectre", new Vector2(x, y), GHOST_DEPTH))
 				.addComponent(new SpectreMovementComponent(level))
 				.addComponent(new GhostRenderComponent(Sleep.assets.get("images/dark_circle.png", Texture.class)))
@@ -73,7 +73,7 @@ public class EntityMaker {
 				.addComponent(new LightComponent(Sleep.light, new Color(0f, 0f, 0f, 0.1f), 100, true)).initComponents();
 	}
 
-	public static Entity makeBox(Level level, int x, int y) {
+	public static Entity makeBox(SokoLevel level, int x, int y) {
 		return level.entityManager.add(new Entity("Box", new Vector2(x, y), BOX_DEPTH))
 				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/box_bw.png", Texture.class)))
 				.addComponent(new MovementComponent(level)).initComponents();
@@ -92,7 +92,7 @@ public class EntityMaker {
 				.addComponent(new BackgroundRenderComponent(tex, xSize, ySize)).initComponents();
 	}
 
-	public static Entity makeSpawner(Level level, int x, int y, String type, float init, float freq) {
+	public static Entity makeSpawner(SokoLevel level, int x, int y, String type, float init, float freq) {
 		level.entityManager.add(new Entity("Spawner", new Vector2(x, y), SPAWNER_DEPTH))
 				.addComponent(new SpawnerComponent(level, type, init, freq)).initComponents();
 

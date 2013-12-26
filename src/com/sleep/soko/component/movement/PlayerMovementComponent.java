@@ -2,7 +2,7 @@ package com.sleep.soko.component.movement;
 
 import com.badlogic.gdx.Gdx;
 import com.sleep.Constants;
-import com.sleep.soko.Level;
+import com.sleep.soko.SokoLevel;
 import com.sleep.soko.component.ComponentException;
 
 public class PlayerMovementComponent extends MovementComponent {
@@ -11,7 +11,7 @@ public class PlayerMovementComponent extends MovementComponent {
 	private boolean movingLeft = false;
 	private boolean movingRight = false;
 
-	public PlayerMovementComponent(Level level) {
+	public PlayerMovementComponent(SokoLevel level) {
 		super(level);
 	}
 

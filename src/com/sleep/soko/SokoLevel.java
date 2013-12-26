@@ -17,7 +17,7 @@ import com.sleep.Entity;
 import com.sleep.EntityMaker;
 import com.sleep.EntityManager;
 
-public class Level {
+public class SokoLevel {
 	private Entity[][] grid;
 	public int[][] ghostPathGrid;
 	public int[][] spectrePathGrid;
@@ -35,7 +35,7 @@ public class Level {
 		return rows;
 	}
 
-	public Level(String filename) {
+	public SokoLevel(String filename) {
 		entityManager = new EntityManager();
 		backgroundManager = new EntityManager();
 		

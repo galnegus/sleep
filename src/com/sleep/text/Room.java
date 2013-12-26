@@ -1,26 +1,45 @@
 package com.sleep.text;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+
+import com.sleep.soko.SokoLevel;
 
 public class Room {
 	private char id;
 	private String name;
+	public SokoLevel level = null;
 	
-	private Map<Direction, Doorway> doorways;
+	ArrayList<Monologue> monologues;
+	private int currentMonologueIndex = 0;
+	private boolean anyMonologuesLeft = true;
 
-	public Room(char id, String name) {
+	public Room(char id, String name, boolean soko, ArrayList<Monologue> monologues) {
 		this.id = id;
 		this.name = name;
-		doorways = new HashMap<Direction, Doorway>();
+		this.monologues = monologues;
+		if (soko)
+			level = new SokoLevel("levels/" + id + ".level");
+		if (monologues == null)
+			anyMonologuesLeft = false;
+		
 	}
 	
-	public void addDoorway(Direction direction, Doorway doorway) {
-//		doorways.put(direction, destination);
+	public char getId() {
+		return id;
 	}
 	
-	public boolean doorway(Direction direction) {
-		return false;
+	public Monologue getCurrentMonologue() {
+		return monologues.get(currentMonologueIndex);
+	}
+	
+	public boolean hasMonologues() {
+		return anyMonologuesLeft;
+	}
+	
+	public void nextMonologue() {
+		currentMonologueIndex++;
+		if (monologues == null || currentMonologueIndex >= monologues.size())
+			anyMonologuesLeft = false;
 	}
 	
 	public String toString() {

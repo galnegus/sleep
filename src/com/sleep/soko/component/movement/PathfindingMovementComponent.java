@@ -2,11 +2,11 @@ package com.sleep.soko.component.movement;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.sleep.soko.Level;
+import com.sleep.soko.SokoLevel;
 import com.sleep.soko.component.ComponentException;
 
 public abstract class PathfindingMovementComponent extends MovementComponent {
-	public PathfindingMovementComponent(Level level) {
+	public PathfindingMovementComponent(SokoLevel level) {
 		super(level);
 	}
 

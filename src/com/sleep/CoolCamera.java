@@ -80,7 +80,6 @@ public class CoolCamera extends OrthographicCamera {
 		if (position.y <= viewportHeight / 2) {
 			position.set(position.x, viewportHeight / 2, position.z);
 		} else if (position.y >= boardHeight - viewportHeight / 2) {
-			System.out.println("height: " + boardHeight + ", width: " + boardWidth);
 			position.set(position.x, boardHeight - viewportHeight / 2, position.z);
 		}
 	}

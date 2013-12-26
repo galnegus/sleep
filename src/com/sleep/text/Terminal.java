@@ -8,39 +8,42 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.sleep.Sleep;
 
 public class Terminal {
 	private static final int startPosX = 35;
 	private static final int startPosY = 35;
-	
+
 	private BitmapFont font;
 	private int maxInputLength;
-	
+
 	private TerminalInputProcessor inputProcessor;
 	private InputReceiver inputReceiver;
-	
-	private static final int wrapWidth = 853;
+
+	private static final int wrapWidth = (int) (Gdx.graphics.getWidth() * (2f / 3f));
 	public int outputLogIndex;
 	private List<String> outputLog;
-	
+
 	public int cursor;
 	private Color cursorColor;
 	private float cursorBlinkTimer;
 	private final float cursorBlinkFrequency = 0.5f;
 
-	public Terminal(InputReceiver inputReader) {
-		font = new BitmapFont(Gdx.files.internal("fonts/Inconsolata36pxbold.fnt"));
-		font.setColor(1f, 1f, 1f, 1f);
+	// needs to be set to false when not rendering the terminal
+	public boolean terminalIsActive = false;
+
+	public Terminal(InputReceiver inputReader, BitmapFont font) {
+		this.font = font;
 		maxInputLength = (int) ((float) wrapWidth / font.getSpaceWidth());
 
 		inputProcessor = new TerminalInputProcessor(this);
 		Gdx.input.setInputProcessor(inputProcessor);
 		this.inputReceiver = inputReader;
-		
+
 		outputLogIndex = 0;
 		outputLog = new ArrayList<String>();
-		
+
 		cursor = 0;
 		cursorColor = new Color(1f, 1f, 1f, 1f);
 	}
@@ -52,29 +55,29 @@ public class Terminal {
 			cursorColor.set((cursorColor.r + 1) % 2, (cursorColor.g + 1) % 2, (cursorColor.b + 1) % 2, 1f);
 		}
 	}
-	
+
 	public void print(String output) {
 		outputLog.add(output);
 	}
-	
+
 	public void sendInput(String input) {
 		print(input);
 		inputReceiver.receiveInput(input);
 	}
-	
+
 	public void clear() {
 		outputLog.clear();
 	}
-	
+
 	public void cursorActive() {
 		cursorColor.set(1f, 1f, 1f, 1f);
 		cursorBlinkTimer = 0;
 	}
-	
+
 	public int outputLogSize() {
 		return outputLog.size();
 	}
-	
+
 	public int getMaxInputLength() {
 		return maxInputLength;
 	}
@@ -82,19 +85,22 @@ public class Terminal {
 	public void render() {
 		// render output
 		int outputStartPosY = startPosY + (int) font.getLineHeight();
+		TextBounds wrappedBounds;
 		for (int i = outputLog.size() - 1 - outputLogIndex; i >= 0; i--) {
-			outputStartPosY += font.getWrappedBounds(outputLog.get(i), wrapWidth).height;
-			
-			if (outputStartPosY >= Gdx.graphics.getHeight() + font.getWrappedBounds(outputLog.get(i), wrapWidth).height) {
+			wrappedBounds = font.getWrappedBounds(outputLog.get(i), wrapWidth);
+			outputStartPosY += wrappedBounds.height + font.getWrappedBounds(" ", wrapWidth).height / 4;
+
+			if (outputStartPosY >= Gdx.graphics.getHeight() + wrappedBounds.height) {
 				break;
 			}
-			
+
 			font.drawWrapped(Sleep.batch, outputLog.get(i), startPosX, outputStartPosY, wrapWidth);
 		}
-		
+
 		// render current input
-		font.draw(Sleep.batch, ">" + inputProcessor.currentInput.toString(), startPosX, startPosY + font.getLineHeight());
-		
+		font.draw(Sleep.batch, ">" + inputProcessor.currentInput.toString(), startPosX,
+				startPosY + font.getLineHeight());
+
 		// render cursor
 		Color c = Sleep.batch.getColor();
 		Sleep.batch.setColor(cursorColor);

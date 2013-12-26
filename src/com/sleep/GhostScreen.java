@@ -3,29 +3,36 @@ package com.sleep;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.sleep.soko.LevelArchitect;
+import com.sleep.soko.SokoLevel;
 
 public class GhostScreen implements Screen {
 	public static boolean updatesPaused = false;
-	private LevelArchitect levelArchitect;
+	private SokoLevel level;
 	private CoolCamera camera;
 
 	public GhostScreen() {
 		camera = new CoolCamera(Constants.WIDTH, Constants.HEIGHT);
 
-		// create levels
-		levelArchitect = new LevelArchitect("levels/levels", camera);
 	}
 
 	public void update() {
 		if (!updatesPaused) {
-			levelArchitect.update();
+			level.update();
 
-			camera.update(Gdx.graphics.getDeltaTime(), levelArchitect.activeLevel.player.position.x
-					+ (levelArchitect.activeLevel.player.getWidth() / 2), levelArchitect.activeLevel.player.position.y
-					+ (levelArchitect.activeLevel.player.getHeight() / 2), levelArchitect.activeLevel.columnCount()
-					* Constants.GRID_CELL_SIZE, levelArchitect.activeLevel.rowCount() * Constants.GRID_CELL_SIZE);
+			camera.update(Gdx.graphics.getDeltaTime(), level.player.position.x + (level.player.getWidth() / 2),
+					level.player.position.y + (level.player.getHeight() / 2), level.columnCount()
+							* Constants.GRID_CELL_SIZE, level.rowCount() * Constants.GRID_CELL_SIZE);
 		}
+	}
+
+	public void setLevel(SokoLevel level) {
+		this.level = level;
+
+		int width = level.columnCount() * Constants.GRID_CELL_SIZE;
+		int height = level.rowCount() * Constants.GRID_CELL_SIZE;
+
+		camera.resize(width, height, level.player.position.x + (level.player.getWidth() / 2), level.player.position.y
+				+ (level.player.getHeight()) / 2, true);
 	}
 
 	@Override
@@ -42,7 +49,7 @@ public class GhostScreen implements Screen {
 		Sleep.batch.setProjectionMatrix(camera.combined);
 		Sleep.batch.setShader(Sleep.defaultShader);
 		Sleep.batch.begin();
-		levelArchitect.drawLight();
+		level.drawLight();
 		Sleep.batch.end();
 		Sleep.fbo.end();
 
@@ -52,8 +59,8 @@ public class GhostScreen implements Screen {
 		Sleep.batch.setShader(Sleep.ambientShader);
 		Sleep.batch.begin();
 		Sleep.fbo.getColorBufferTexture().bind(1);
-		levelArchitect.bindLight(0);
-		levelArchitect.render();
+		level.bindLight(0);
+		level.render();
 		Sleep.batch.end();
 	}
 

@@ -23,8 +23,8 @@ public class Sleep extends Game {
 	public static FrameBuffer fbo;
 	
 	// screens
-	private GhostScreen ghostScreen;
-	private TextScreen textScreen;
+	public GhostScreen ghostScreen;
+	public TextScreen textScreen;
 
 	// shader stuff
 	public static ShaderProgram ambientShader;
@@ -82,11 +82,11 @@ public class Sleep extends Game {
 		
 		// create screens
 		ghostScreen = new GhostScreen();
-		textScreen = new TextScreen();
+		textScreen = new TextScreen(this);
 		
 		setScreen(textScreen);
 	}
-
+	
 	@Override
 	public void resize(int width, int height) {
 		fbo = new FrameBuffer(Format.RGBA8888, width, height, false);

@@ -6,10 +6,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.sleep.Constants;
 import com.sleep.EntityMaker;
 import com.sleep.Sleep;
-import com.sleep.soko.Level;
+import com.sleep.soko.SokoLevel;
 
 public class SpawnerComponent extends Component implements RenderableComponent {
-	private Level level;
+	private SokoLevel level;
 	
 	private String type;
 	private float timer;
@@ -19,7 +19,7 @@ public class SpawnerComponent extends Component implements RenderableComponent {
 
 	private Vector2 fontOffset = new Vector2(0, 0);
 
-	public SpawnerComponent(Level level, String type, float init, float frequency) {
+	public SpawnerComponent(SokoLevel level, String type, float init, float frequency) {
 		this.level = level;
 		this.type = type;
 		this.timer = init;

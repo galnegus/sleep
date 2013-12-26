@@ -3,14 +3,14 @@ package com.sleep.soko.component.movement;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.sleep.Constants;
-import com.sleep.soko.Level;
+import com.sleep.soko.SokoLevel;
 import com.sleep.soko.component.ComponentException;
 
 public class GhostMovementComponent extends PathfindingMovementComponent {
 
 	private float moveTimer;
 
-	public GhostMovementComponent(Level level) {
+	public GhostMovementComponent(SokoLevel level) {
 		super(level);
 		this.moveTimer = 0;
 		Velocity = 300f;
