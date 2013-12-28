@@ -2,7 +2,6 @@ package com.sleep;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.sleep.text.IF;
 import com.sleep.text.OverWorld;
@@ -10,18 +9,18 @@ import com.sleep.text.OverWorld;
 public class TextScreen implements Screen {
 	private OverWorld overWorld;
 	private CoolCamera overWorldCamera;
-	
+
 	private IF interactiveFiction;
 	private OrthographicCamera textCamera;
 
 	public TextScreen(Sleep sleep) {
 		overWorld = new OverWorld("levels/dream");
 		overWorldCamera = new CoolCamera(Constants.WIDTH, Constants.HEIGHT);
-		overWorldCamera.resize(Constants.WIDTH / 2, Constants.HEIGHT / 2,
-				overWorld.player.position.x + (overWorld.player.getWidth() / 2) - Constants.WIDTH / 8,
-				overWorld.player.position.y + (overWorld.player.getHeight() / 2), false);
-		
-		interactiveFiction = new IF(sleep, overWorld);
+		overWorldCamera.resize(Constants.WIDTH / 2, Constants.HEIGHT / 2, overWorld.player.position.x
+				+ (overWorld.player.getWidth() / 2) - Constants.WIDTH / 8, overWorld.player.position.y
+				+ (overWorld.player.getHeight() / 2), false);
+
+		interactiveFiction = new IF(sleep);
 		textCamera = new OrthographicCamera();
 		textCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
@@ -38,35 +37,15 @@ public class TextScreen implements Screen {
 	public void render(float delta) {
 		// update stuff
 		update();
-
-		// clear screen color
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1);
-
-		// draw light to FBO
-		Sleep.fbo.begin();
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Sleep.batch.setProjectionMatrix(overWorldCamera.combined);
-		Sleep.batch.setShader(Sleep.defaultShader);
-		Sleep.batch.begin();
-		overWorld.drawLight();
-		Sleep.batch.end();
-		Sleep.fbo.end();
-
-		// draw scene
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Sleep.batch.setProjectionMatrix(overWorldCamera.combined);
-		Sleep.batch.setShader(Sleep.ambientShader);
-		Sleep.batch.begin();
-		Sleep.fbo.getColorBufferTexture().bind(1);
-		overWorld.bindLight(0);
+		
 		overWorld.render();
-		Sleep.batch.end();
 
 		Sleep.batch.setProjectionMatrix(textCamera.combined);
-		Sleep.batch.setShader(Sleep.defaultShader);
+		Sleep.batch.setShader(null);
 		Sleep.batch.begin();
-		interactiveFiction.render();
+		interactiveFiction.render(delta);
 		Sleep.batch.end();
+
 	}
 
 	@Override

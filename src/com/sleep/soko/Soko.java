@@ -1,16 +1,18 @@
-package com.sleep;
+package com.sleep.soko;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.sleep.soko.SokoLevel;
+import com.sleep.Constants;
+import com.sleep.CoolCamera;
+import com.sleep.Sleep;
 
-public class GhostScreen implements Screen {
+public class Soko implements Screen {
 	public static boolean updatesPaused = false;
 	private SokoLevel level;
 	private CoolCamera camera;
 
-	public GhostScreen() {
+	public Soko() {
 		camera = new CoolCamera(Constants.WIDTH, Constants.HEIGHT);
 
 	}
@@ -44,21 +46,21 @@ public class GhostScreen implements Screen {
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1);
 
 		// draw light to FBO
-		Sleep.fbo.begin();
+		Sleep.fboLight.begin();
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Sleep.batch.setProjectionMatrix(camera.combined);
-		Sleep.batch.setShader(Sleep.defaultShader);
+		Sleep.batch.setShader(null);
 		Sleep.batch.begin();
 		level.drawLight();
 		Sleep.batch.end();
-		Sleep.fbo.end();
+		Sleep.fboLight.end();
 
 		// draw scene
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Sleep.batch.setProjectionMatrix(camera.combined);
 		Sleep.batch.setShader(Sleep.ambientShader);
 		Sleep.batch.begin();
-		Sleep.fbo.getColorBufferTexture().bind(1);
+		Sleep.fboLight.getColorBufferTexture().bind(1);
 		level.bindLight(0);
 		level.render();
 		Sleep.batch.end();

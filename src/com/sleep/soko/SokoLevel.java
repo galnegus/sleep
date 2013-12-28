@@ -22,11 +22,11 @@ public class SokoLevel {
 	public int[][] ghostPathGrid;
 	public int[][] spectrePathGrid;
 	private int columns, rows;
-	
+
 	public EntityManager entityManager;
 	public EntityManager backgroundManager;
 	public Entity player;
-	
+
 	public int columnCount() {
 		return columns;
 	}
@@ -38,7 +38,7 @@ public class SokoLevel {
 	public SokoLevel(String filename) {
 		entityManager = new EntityManager();
 		backgroundManager = new EntityManager();
-		
+
 		try {
 			FileHandle levelTxt = Gdx.files.internal(filename);
 			BufferedReader br = levelTxt.reader(200);
@@ -85,17 +85,21 @@ public class SokoLevel {
 					if (charBoard[x][y] == ' ') {
 						// do nothing
 					} else if (charBoard[x][y] == Constants.BOX) {
-						grid[x][y] = EntityMaker.makeBox(this, x * Constants.GRID_CELL_SIZE, y * Constants.GRID_CELL_SIZE);
+						grid[x][y] = EntityMaker.makeBox(this, x * Constants.GRID_CELL_SIZE, y
+								* Constants.GRID_CELL_SIZE);
 					} else if (charBoard[x][y] == Constants.PLAYER) {
-						player = EntityMaker.makePlayer(this, x * Constants.GRID_CELL_SIZE, y * Constants.GRID_CELL_SIZE);
+						player = EntityMaker.makePlayer(this, x * Constants.GRID_CELL_SIZE, y
+								* Constants.GRID_CELL_SIZE);
 						grid[x][y] = player;
 					} else if (charBoard[x][y] == Constants.WALL) {
-						grid[x][y] = EntityMaker.makeWall(entityManager, x * Constants.GRID_CELL_SIZE, y * Constants.GRID_CELL_SIZE);
+						grid[x][y] = EntityMaker.makeWall(entityManager, x * Constants.GRID_CELL_SIZE, y
+								* Constants.GRID_CELL_SIZE);
 					} else if (charBoard[x][y] == Constants.GHOST) {
-						grid[x][y] = EntityMaker.makeGhost(this, x * Constants.GRID_CELL_SIZE, y * Constants.GRID_CELL_SIZE);
+						grid[x][y] = EntityMaker.makeGhost(this, x * Constants.GRID_CELL_SIZE, y
+								* Constants.GRID_CELL_SIZE);
 					} else if (charBoard[x][y] == Constants.SPECTRE) {
-						grid[x][y] = EntityMaker
-								.makeSpectre(this, x * Constants.GRID_CELL_SIZE, y * Constants.GRID_CELL_SIZE);
+						grid[x][y] = EntityMaker.makeSpectre(this, x * Constants.GRID_CELL_SIZE, y
+								* Constants.GRID_CELL_SIZE);
 					} else if (Character.isLetterOrDigit(charBoard[x][y])) {
 						if (!spawnerInit.containsKey(charBoard[x][y])) {
 							Gdx.app.error("LevelFormattingError", "spawnerInit value for key '" + charBoard[x][y]
@@ -106,8 +110,8 @@ public class SokoLevel {
 									+ "' missing");
 						}
 
-						grid[x][y] = EntityMaker.makeSpawner(this, x * Constants.GRID_CELL_SIZE,
-								y * Constants.GRID_CELL_SIZE, spawnerType.get(charBoard[x][y]),
+						grid[x][y] = EntityMaker.makeSpawner(this, x * Constants.GRID_CELL_SIZE, y
+								* Constants.GRID_CELL_SIZE, spawnerType.get(charBoard[x][y]),
 								spawnerInit.get(charBoard[x][y]), spawnerFreq.get(charBoard[x][y]));
 					}
 				}
@@ -168,24 +172,27 @@ public class SokoLevel {
 	public void update() {
 		updateGhostPathGrid();
 		updateSpectrePathGrid();
-		
+
 		entityManager.update();
 	}
-	
+
 	public void render() {
 		backgroundManager.render();
 		entityManager.render();
 	}
-	
+
 	public void drawLight() {
 		entityManager.drawLight();
 	}
-	
+
 	public void bindLight(int i) {
 		entityManager.bindLight(i);
 	}
 
 	/**
+	 * BFS search through the grid orthogonally, marking the distance in moves
+	 * from any position to the player's position.
+	 * 
 	 * -2 == not visited
 	 * -1 == visited but unreachable
 	 * >= 0 == visited and reachable
@@ -235,8 +242,7 @@ public class SokoLevel {
 	 * diagonally rather than horizontally/vertically.
 	 * 
 	 * The BFS searches from up to 5 initial positions: the player's position,
-	 * and any adjacent available (unoccupied) position horizontally or
-	 * vertically.
+	 * and any adjacent available (unoccupied) orthogonal position.
 	 */
 	private void updateSpectrePathGrid() {
 		for (int x = 0; x < columns; x++) {
@@ -299,7 +305,7 @@ public class SokoLevel {
 		}
 
 	}
-	
+
 	public int getPathDistance(int[][] pathGrid, int x, int y) {
 		return pathGrid[x][y];
 	}

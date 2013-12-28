@@ -92,6 +92,8 @@ public class DefaultMonologue implements Monologue {
 	public void render(BitmapFont font) {
 		String text = pollText();
 		String words = pollWords();
+		
+		// fixes newline bug when whole words arn't yet printed
 		if (text.length() > 0 && words.length() > 0
 				&& font.getWrappedBounds(text, wrapWidth).height != font.getWrappedBounds(words, wrapWidth).height) {
 			text = new StringBuilder(text).insert(currentSpaceIndex, "\n").toString();
