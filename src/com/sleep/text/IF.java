@@ -17,7 +17,7 @@ public class IF extends CoolScreen implements InputReceiver {
 
 	private BitmapFont font;
 
-	private LinkedList<Monologue> monoloque;
+	private LinkedList<Monologue> monoloQue;
 
 	public IF(Sleep sleep) {
 		super(sleep);
@@ -35,7 +35,7 @@ public class IF extends CoolScreen implements InputReceiver {
 
 		this.sleep = sleep;
 
-		monoloque = new LinkedList<Monologue>();
+		monoloQue = new LinkedList<Monologue>();
 	}
 
 	public void update() {
@@ -68,24 +68,24 @@ public class IF extends CoolScreen implements InputReceiver {
 	}
 	
 	public void drawInteractiveFiction() {
-		Sleep.batch.setProjectionMatrix(Sleep.viewportCamera.combined);
-		Sleep.batch.setShader(null);
-		Sleep.batch.begin();
 		Room room = overWorld.getCurrentRoom();
 		while (room.hasMonologues()) {
-			monoloque.add(room.getCurrentMonologue());
+			monoloQue.add(room.getCurrentMonologue());
 			room.nextMonologue();
 		}
 
-		if (!monoloque.isEmpty()) {
+		Sleep.batch.setProjectionMatrix(Sleep.viewportCamera.combined);
+		Sleep.batch.setShader(null);
+		Sleep.batch.begin();
+		if (!monoloQue.isEmpty()) {
 			terminal.fader.fadeOut();
 			terminal.terminalIsActive = false;
-			Monologue monologue = monoloque.getFirst();
+			Monologue monologue = monoloQue.getFirst();
 			if (monologue.isDone() && monologue.continueTriggered()) {
 				monologue.postRender(font);
 				if (monologue.isReallyDone()) {
 					terminal.print(monologue.toString());
-					monoloque.removeFirst();
+					monoloQue.removeFirst();
 				}
 			} else {
 				monologue.render(font);
@@ -100,23 +100,23 @@ public class IF extends CoolScreen implements InputReceiver {
 
 	@Override
 	public void receiveInput(String input) {
-		if (input.equals("go left"))
+		if (input.equals("go left") || input.equals("go west"))
 			overWorld.movePlayer(Direction.LEFT);
-		else if (input.equals("go up"))
+		else if (input.equals("go up") || input.equals("go north"))
 			overWorld.movePlayer(Direction.UP);
-		else if (input.equals("go right"))
+		else if (input.equals("go right") || input.equals("go east"))
 			overWorld.movePlayer(Direction.RIGHT);
-		else if (input.equals("go down"))
+		else if (input.equals("go down") || input.equals("go south"))
 			overWorld.movePlayer(Direction.DOWN);
 		else if (input.equals("clear"))
 			terminal.clear();
-		else if (input.equals("kill") && overWorld.getCurrentRoom().level != null) {
+		else if (input.equals("sleep") && overWorld.getCurrentRoom().level != null) {
 			terminal.terminalIsActive = false;
 			sleep.sokoDeath.setLevel(overWorld.getCurrentRoom().level);
 			screenSwitcher.switchScreen(sleep.sokoDeath);
 			// sleep.setScreen(sleep.sokoDeath);
 		} else if (input.equals("test")) {
-			monoloque.add(new TyperMonologue("Hedge."));
+			monoloQue.add(new TyperMonologue("Hedge."));
 		}
 	}
 

@@ -10,11 +10,11 @@ import com.sleep.soko.SokoLevel;
 
 public class SpawnerComponent extends Component implements RenderableComponent {
 	private SokoLevel level;
-	
+
 	private String type;
 	private float timer;
 	private float frequency;
-	
+
 	private Color red;
 
 	private Vector2 fontOffset = new Vector2(0, 0);
@@ -24,8 +24,8 @@ public class SpawnerComponent extends Component implements RenderableComponent {
 		this.type = type;
 		this.timer = init;
 		this.frequency = frequency;
-		
-		this.red = new Color(1f, 64f/255f, 108f/255f, 1f);
+
+		this.red = new Color(1f, 64f / 255f, 108f / 255f, 1f);
 	}
 
 	@Override
@@ -41,19 +41,19 @@ public class SpawnerComponent extends Component implements RenderableComponent {
 		} else {
 			Sleep.spawnerFont.setColor(Color.WHITE);
 		}
-		
+
 		Sleep.spawnerFont.setFixedWidthGlyphs("1");
-		Sleep.spawnerFont.draw(Sleep.batch, out, owner.position.x + fontOffset.x, owner.position.y + Constants.GRID_CELL_SIZE
-				+ fontOffset.y);
+		Sleep.spawnerFont.draw(Sleep.batch, out, owner.position.x + fontOffset.x, owner.position.y
+				+ Constants.GRID_CELL_SIZE + fontOffset.y);
 	}
 
 	@Override
 	public void update() {
 		timer -= Gdx.graphics.getRawDeltaTime();
-		if(timer < 0) {
-			if(type.equals("Ghost")) {
+		if (timer < 0) {
+			if (type.equals("Ghost")) {
 				EntityMaker.makeGhost(level, (int) owner.position.x, (int) owner.position.y);
-			} else if(type.equals("Spectre")) {
+			} else if (type.equals("Spectre")) {
 				EntityMaker.makeSpectre(level, (int) owner.position.x, (int) owner.position.y);
 			}
 			timer += frequency;
@@ -70,6 +70,6 @@ public class SpawnerComponent extends Component implements RenderableComponent {
 	@Override
 	public void receiveMessage(Message message) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

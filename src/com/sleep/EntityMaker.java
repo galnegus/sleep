@@ -42,6 +42,10 @@ public class EntityMaker {
 
 	private static final int GRID_DEPTH = -1;
 
+	/*
+	 * Entities for soko
+	 */
+
 	public static Entity makePlayer(SokoLevel level, int x, int y) {
 		Array<TextureRegion> anim = new Array<TextureRegion>();
 		anim.add(new TextureRegion(Sleep.assets.get("images/player.png", Texture.class)));
@@ -56,8 +60,7 @@ public class EntityMaker {
 		return level.entityManager.add(new Entity("Player", new Vector2(x, y), PLAYER_DEPTH))
 				.addComponent(new PlayerMovementComponent(level)).addComponent(new AnimationRenderComponent(idle))
 				.addComponent(new PlayerDeathComponent(level))
-				.addComponent(new LightComponent(Sleep.light, new Color(1f, 1f, 1f, 1f), 2500, true))
-				.initComponents();
+				.addComponent(new LightComponent(Sleep.light, new Color(1f, 1f, 1f, 1f), 2500, true)).initComponents();
 	}
 
 	public static Entity makeGhost(SokoLevel level, int x, int y) {
@@ -82,16 +85,10 @@ public class EntityMaker {
 				.addComponent(new MovementComponent(level)).initComponents();
 	}
 
-	public static Entity makeWall(EntityManager entityManager, int x, int y) {
-		return entityManager.add(new Entity("Wall", new Vector2(x, y), WALL_DEPTH))
-				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/wall_bw.png", Texture.class)))
-				.initComponents();
-	}
-
-	public static Entity makeGrid(EntityManager backgroundManager, int x, int y, int xSize, int ySize) {
+	public static Entity makeGrid(SokoLevel level, int x, int y, int xSize, int ySize) {
 		Texture tex = Sleep.assets.get("images/grid_bw.png", Texture.class);
 		tex.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
-		return backgroundManager.add(new Entity("Grid", new Vector2(x, y), GRID_DEPTH))
+		return level.backgroundManager.add(new Entity("Grid", new Vector2(x, y), GRID_DEPTH))
 				.addComponent(new BackgroundRenderComponent(tex, xSize, ySize)).initComponents();
 	}
 
@@ -101,30 +98,39 @@ public class EntityMaker {
 
 		return makeWall(level.entityManager, x, y);
 	}
-	
+
 	/*
-	 * Entities for the IF part are listed below
+	 * Entities for both soko/IF
+	 */
+
+	public static Entity makeWall(EntityManager entityManager, int x, int y) {
+		return entityManager.add(new Entity("Wall", new Vector2(x, y), WALL_DEPTH))
+				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/wall_bw.png", Texture.class)))
+				.initComponents();
+	}
+
+	/*
+	 * Entities for IF
 	 */
 
 	public static Entity makeRoom(EntityManager entityManager, int x, int y, Room room) {
 		return entityManager.add(new Entity("Room", new Vector2(x, y), ROOM_DEPTH))
 				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/room_bw.png", Texture.class)))
-				.addComponent(new RoomComponent(room))
-				.initComponents();
+				.addComponent(new RoomComponent(room)).initComponents();
 	}
-	
+
 	public static Entity makeHorizontalDoorway(EntityManager entityManager, int x, int y) {
 		return entityManager.add(new Entity("Horizontal Doorway", new Vector2(x, y), CONNECTION_DEPTH))
 				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/horizontal_bw.png", Texture.class)))
 				.initComponents();
 	}
-	
+
 	public static Entity makeVerticalDoorway(EntityManager entityManager, int x, int y) {
 		return entityManager.add(new Entity("Vertical Doorway", new Vector2(x, y), CONNECTION_DEPTH))
 				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/vertical_bw.png", Texture.class)))
 				.initComponents();
 	}
-	
+
 	public static Entity makeIFPlayer(EntityManager entityManager, int x, int y) {
 		Array<TextureRegion> anim = new Array<TextureRegion>();
 		anim.add(new TextureRegion(Sleep.assets.get("images/player.png", Texture.class)));

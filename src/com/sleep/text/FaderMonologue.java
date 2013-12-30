@@ -33,14 +33,12 @@ public class FaderMonologue extends Monologue {
 		
 		font.drawWrapped(Sleep.batch, text, x, y, wrapWidth);
 		
-//		System.out.println(font.getColor());
-		
 		if (!renderIsDone)
 			fader.renderDone(font);
 		
 		if (fader.done()) {
 			renderIsDone = true;
-//			fader.fadeOut();
+			fader.fadeOut();
 		}
 		
 		if (renderIsDone) {
@@ -53,9 +51,12 @@ public class FaderMonologue extends Monologue {
 	public void postRender(BitmapFont font) {
 		if (!postRenderIsDone)
 			fader.render(font);
+		
 		font.drawWrapped(Sleep.batch, text, x, y, wrapWidth);
+		
 		if (!postRenderIsDone)
 			fader.renderDone(font);
+		
 		if (fader.done())
 			postRenderIsDone = true;
 	}

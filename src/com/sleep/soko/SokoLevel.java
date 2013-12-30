@@ -1,32 +1,25 @@
 package com.sleep.soko;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.sleep.Constants;
 import com.sleep.Entity;
-import com.sleep.EntityMaker;
 import com.sleep.EntityManager;
 import com.sleep.LightSource;
 import com.sleep.Renderer;
 
 public class SokoLevel implements LightSource, Renderer {
+	public EntityManager entityManager;
+	public EntityManager backgroundManager;
+
 	private Entity[][] grid;
 	public int[][] ghostPathGrid;
 	public int[][] spectrePathGrid;
 	private int columns, rows;
 
-	public EntityManager entityManager;
-	public EntityManager backgroundManager;
 	public Entity player;
 
 	public int columnCount() {
@@ -41,91 +34,15 @@ public class SokoLevel implements LightSource, Renderer {
 		entityManager = new EntityManager();
 		backgroundManager = new EntityManager();
 
-		try {
-			FileHandle levelTxt = Gdx.files.internal(filename);
-			BufferedReader br = levelTxt.reader(200);
+		SokoLevelParser parser = new SokoLevelParser(filename, this);
+		grid = parser.getGrid();
+		ghostPathGrid = parser.getGhostPathGrid();
+		spectrePathGrid = parser.getSpectrePathGrid();
 
-			columns = Integer.parseInt(br.readLine());
-			rows = Integer.parseInt(br.readLine());
+		columns = parser.getColumns();
+		rows = parser.getRows();
 
-			grid = new Entity[columns][rows];
-			ghostPathGrid = new int[columns][rows];
-			spectrePathGrid = new int[columns][rows];
-
-			char[][] charBoard = new char[columns][rows];
-			char[][] input = new char[rows][columns];
-
-			for (int i = 0; i < rows; i++) {
-				input[i] = br.readLine().toCharArray();
-			}
-
-			// rotate (x=y, y=x) and flip the board (y=ySize-y)
-			// [[1,2,3],[4,5,6]] -> [[5,6],[3,4],[1,2]]
-			for (int x = 0; x < columns; x++) {
-				for (int y = 0; y < rows; y++) {
-					charBoard[x][rows - 1 - y] = input[y][x];
-				}
-			}
-
-			// parse spawner timings
-			String[] line;
-			Map<Character, String> spawnerType = new HashMap<Character, String>();
-			Map<Character, Float> spawnerInit = new HashMap<Character, Float>();
-			Map<Character, Float> spawnerFreq = new HashMap<Character, Float>();
-			while (br.ready()) {
-				line = br.readLine().split(" ");
-				spawnerType.put(line[0].charAt(0), line[1]);
-				spawnerInit.put(line[0].charAt(0), Float.parseFloat(line[2]));
-				spawnerFreq.put(line[0].charAt(0), Float.parseFloat(line[3]));
-			}
-
-			br.close();
-
-			// create entities
-			for (int x = 0; x < columns; x++) {
-				for (int y = 0; y < rows; y++) {
-					if (charBoard[x][y] == ' ') {
-						// do nothing
-					} else if (charBoard[x][y] == Constants.BOX) {
-						grid[x][y] = EntityMaker.makeBox(this, x * Constants.GRID_CELL_SIZE, y
-								* Constants.GRID_CELL_SIZE);
-					} else if (charBoard[x][y] == Constants.PLAYER) {
-						player = EntityMaker.makePlayer(this, x * Constants.GRID_CELL_SIZE, y
-								* Constants.GRID_CELL_SIZE);
-						grid[x][y] = player;
-					} else if (charBoard[x][y] == Constants.WALL) {
-						grid[x][y] = EntityMaker.makeWall(entityManager, x * Constants.GRID_CELL_SIZE, y
-								* Constants.GRID_CELL_SIZE);
-					} else if (charBoard[x][y] == Constants.GHOST) {
-						grid[x][y] = EntityMaker.makeGhost(this, x * Constants.GRID_CELL_SIZE, y
-								* Constants.GRID_CELL_SIZE);
-					} else if (charBoard[x][y] == Constants.SPECTRE) {
-						grid[x][y] = EntityMaker.makeSpectre(this, x * Constants.GRID_CELL_SIZE, y
-								* Constants.GRID_CELL_SIZE);
-					} else if (Character.isLetterOrDigit(charBoard[x][y])) {
-						if (!spawnerInit.containsKey(charBoard[x][y])) {
-							Gdx.app.error("LevelFormattingError", "spawnerInit value for key '" + charBoard[x][y]
-									+ "' missing");
-						}
-						if (!spawnerFreq.containsKey(charBoard[x][y])) {
-							Gdx.app.error("LevelFormattingError", "spawnerFreq value for key '" + charBoard[x][y]
-									+ "' missing");
-						}
-
-						grid[x][y] = EntityMaker.makeSpawner(this, x * Constants.GRID_CELL_SIZE, y
-								* Constants.GRID_CELL_SIZE, spawnerType.get(charBoard[x][y]),
-								spawnerInit.get(charBoard[x][y]), spawnerFreq.get(charBoard[x][y]));
-					}
-				}
-			}
-
-			EntityMaker.makeGrid(backgroundManager, 0, 0, columns, rows);
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		player = parser.getPlayer();
 	}
 
 	public Vector2 getGridPos(float x, float y) {
@@ -327,7 +244,7 @@ public class SokoLevel implements LightSource, Renderer {
 		return Math.abs((int) playerGridPos.x - x) + Math.abs((int) playerGridPos.y - y);
 	}
 
-	public void printGrid(int[][] distanceGrid) {
+	private void printGrid(int[][] distanceGrid) {
 		System.out.println("distance grid: ");
 		for (int x = 0; x < columns; x++) {
 			for (int y = 0; y < rows; y++) {
@@ -337,7 +254,7 @@ public class SokoLevel implements LightSource, Renderer {
 		}
 	}
 
-	public void printGrid(char[][] distanceGrid) {
+	private void printGrid(char[][] distanceGrid) {
 		System.out.println("distance grid: ");
 		for (int x = 0; x < columns; x++) {
 			for (int y = 0; y < rows; y++) {
@@ -347,7 +264,7 @@ public class SokoLevel implements LightSource, Renderer {
 		}
 	}
 
-	public void printGrid() {
+	private void printGrid() {
 		for (int i = 0; i < 5; i++) {
 			System.out.println();
 		}
