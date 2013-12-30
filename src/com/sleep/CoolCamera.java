@@ -49,28 +49,55 @@ public class CoolCamera extends OrthographicCamera {
 		setToOrtho(false, viewportWidth, viewportHeight);
 
 		position.set(x, y, position.z);
-		
+
 		if (respectBoundaries)
 			adjustPositionByBounds(boardWidth, boardHeight);
 	}
 
+	/**
+	 * Updates the camera, focusing on the coordinates given.
+	 * 
+	 * @param delta
+	 *            Gdx.graphics.getDeltaTime()
+	 * @param x
+	 *            x-coordinate of position to focus camera on
+	 * @param y
+	 *            y-coordinate of position to focus camera on
+	 */
 	public void update(float delta, float x, float y) {
 		updatePosition(delta, x, y);
 		super.update();
 	}
 
+	/**
+	 * Updates camera position (see above), adjusts position so that nothing
+	 * outside of the given board size (black bars) is inside of the camera's
+	 * viewport.
+	 * 
+	 * @param boardWidth
+	 *            the width of the board
+	 * @param boardHeight
+	 *            the height of the board
+	 */
 	public void update(float delta, float x, float y, int boardWidth, int boardHeight) {
 		updatePosition(delta, x, y);
 		adjustPositionByBounds(boardWidth, boardHeight);
 		super.update();
 	}
 
+	/**
+	 * Updates position smoothly, focusing on (x, y).
+	 */
 	private void updatePosition(float delta, float x, float y) {
 		movement.x = delta * ((x - position.x) * CAMERA_SCROLL_ACCELERATION) / viewportWidth;
 		movement.y = delta * ((y - position.y) * CAMERA_SCROLL_ACCELERATION) / viewportHeight;
 		position.set(position.x + movement.x, position.y + movement.y, position.z);
 	}
 
+	/**
+	 * Adjusts position so that only the board, given by the parameters is
+	 * visible.
+	 */
 	private void adjustPositionByBounds(int boardWidth, int boardHeight) {
 		if (position.x <= viewportWidth / 2) {
 			position.set(viewportWidth / 2, position.y, position.z);
@@ -84,10 +111,18 @@ public class CoolCamera extends OrthographicCamera {
 		}
 	}
 
+	/**
+	 * Caclulates appropriate size that fits aspect ratio given by
+	 * Constants.WIDTH and Constants.HEIGHT, given a width.
+	 */
 	public Vector2 newSizeByWidth(int width) {
 		return new Vector2(width, width * ((float) Constants.HEIGHT / (float) Constants.WIDTH));
 	}
 
+	/**
+	 * Caclulates appropriate size that fits aspect ratio given by
+	 * Constants.WIDTH and Constants.HEIGHT, given a height.
+	 */
 	public Vector2 newSizeByHeight(int height) {
 		return new Vector2(height * ((float) Constants.WIDTH / (float) Constants.HEIGHT), height);
 	}

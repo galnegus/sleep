@@ -27,6 +27,9 @@ import com.sleep.text.Room;
 import com.sleep.text.component.OverWorldMovementComponent;
 import com.sleep.text.component.RoomComponent;
 
+/**
+ * Creates entities!
+ */
 public class EntityMaker {
 	private static final int BOX_DEPTH = 0;
 	private static final int GHOST_DEPTH = 1;
@@ -53,7 +56,7 @@ public class EntityMaker {
 		return level.entityManager.add(new Entity("Player", new Vector2(x, y), PLAYER_DEPTH))
 				.addComponent(new PlayerMovementComponent(level)).addComponent(new AnimationRenderComponent(idle))
 				.addComponent(new PlayerDeathComponent(level))
-				.addComponent(new LightComponent(Sleep.light, new Color(1f, 1f, 1f, 0.25f), 2500, true))
+				.addComponent(new LightComponent(Sleep.light, new Color(1f, 1f, 1f, 1f), 2500, true))
 				.initComponents();
 	}
 

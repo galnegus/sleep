@@ -16,8 +16,10 @@ import com.sleep.Constants;
 import com.sleep.Entity;
 import com.sleep.EntityMaker;
 import com.sleep.EntityManager;
+import com.sleep.LightSource;
+import com.sleep.Renderer;
 
-public class SokoLevel {
+public class SokoLevel implements LightSource, Renderer {
 	private Entity[][] grid;
 	public int[][] ghostPathGrid;
 	public int[][] spectrePathGrid;

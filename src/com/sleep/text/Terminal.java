@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.sleep.BatchFader;
-import com.sleep.FontFader;
+import com.sleep.Constants;
+import com.sleep.Fader;
 import com.sleep.Sleep;
 
 public class Terminal {
@@ -30,8 +30,7 @@ public class Terminal {
 	private float cursorBlinkTimer;
 	private final float cursorBlinkFrequency = 0.5f;
 	
-	public BatchFader batchFader;
-	public FontFader fontFader;
+	public Fader fader;
 	
 	// needs to be set to false when not rendering the terminal
 	public boolean terminalIsActive = false;
@@ -40,7 +39,7 @@ public class Terminal {
 		this.font = font;
 
 		inputProcessor = new TerminalInputProcessor(this);
-		Gdx.input.setInputProcessor(inputProcessor);
+		Sleep.inputMultiplexer.addProcessor(inputProcessor);
 		this.inputReceiver = inputReader;
 
 		outputLogIndex = 0;
@@ -49,8 +48,7 @@ public class Terminal {
 		cursor = 0;
 		cursorColor = new Color(1f, 1f, 1f, 1f);
 		
-		batchFader = new BatchFader(new Color(0, 0, 0, 1));
-		fontFader = new FontFader(new Color(0, 0, 0, 1));
+		fader = new Fader(new Color(Color.BLACK), new Color(Color.WHITE), Constants.FADER_FREQ, Constants.FADER_STEPS);
 		
 	}
 
@@ -89,8 +87,7 @@ public class Terminal {
 	}
 
 	public void render() {
-		batchFader.render(Sleep.batch);
-		fontFader.render(font);
+		fader.render(Sleep.batch, font);
 		
 		// render output
 		int outputStartPosY = startPosY + (int) font.getLineHeight();
@@ -113,15 +110,14 @@ public class Terminal {
 		// render cursor
 		Color c = new Color(Sleep.batch.getColor());
 		Sleep.batch.setColor(cursorColor.r * c.r, cursorColor.g * c.g, cursorColor.b * c.b, cursorColor.a * c.a);
-		int blendSrc = Sleep.batch.getBlendSrcFunc();
-		int blendDst = Sleep.batch.getBlendDstFunc();
+//		int blendSrc = Sleep.batch.getBlendSrcFunc();
+//		int blendDst = Sleep.batch.getBlendDstFunc();
 //		Sleep.batch.setBlendFunction(GL20.GL_ONE_MINUS_DST_COLOR, GL20.GL_ONE_MINUS_SRC_COLOR);
 		Sleep.batch.draw(Sleep.assets.get("images/cursor2.png", Texture.class), 3 + startPosX + font.getSpaceWidth()
 				+ cursor * font.getSpaceWidth(), startPosY - font.getLineHeight() / 4);
-		Sleep.batch.setBlendFunction(blendSrc, blendDst);
+//		Sleep.batch.setBlendFunction(blendSrc, blendDst);
 		Sleep.batch.setColor(c);
 		
-		batchFader.renderDone(Sleep.batch);
-		fontFader.renderDone(font);
+		fader.renderDone(Sleep.batch, font);
 	}
 }

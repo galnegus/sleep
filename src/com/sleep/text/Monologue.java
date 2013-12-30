@@ -2,22 +2,48 @@ package com.sleep.text;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
-public interface Monologue {
-	public int getX();
+public abstract class Monologue {
+	protected String text;
+	protected int x;
+	protected int y;
+	protected int wrapWidth;
 
-	public int getY();
+	protected boolean renderIsDone = false;
+	protected boolean continueTrigger = false;
+	protected boolean postRenderIsDone = false;
 
-	public int getWrapWidth();
-	
-	public boolean isDone();
-	
-	public boolean isReallyDone();
+	public Monologue(String text, int x, int y, int wrapWidth) {
+		this.text = text.trim();
+		this.x = x;
+		this.y = y;
+		this.wrapWidth = wrapWidth;
+	}
 
-	public String pollText();
-	
-	public String pollWords();
+	public int getX() {
+		return x;
+	}
 
-	public void render(BitmapFont font);
+	public int getY() {
+		return y;
+	}
+
+	public boolean isDone() {
+		return renderIsDone;
+	}
 	
-	public void renderDone(BitmapFont font);
+	public boolean continueTriggered() {
+		return continueTrigger;
+	}
+
+	public boolean isReallyDone() {
+		return postRenderIsDone;
+	}
+
+	public String toString() {
+		return text;
+	}
+
+	public abstract void render(BitmapFont font);
+
+	public abstract void postRender(BitmapFont font);
 }

@@ -1,20 +1,20 @@
 package com.sleep.soko;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
 import com.sleep.Constants;
 import com.sleep.CoolCamera;
+import com.sleep.CoolScreen;
 import com.sleep.Sleep;
 
-public class Soko implements Screen {
+public class Soko extends CoolScreen {
 	public static boolean updatesPaused = false;
 	private SokoLevel level;
 	private CoolCamera camera;
 
-	public Soko() {
-		camera = new CoolCamera(Constants.WIDTH, Constants.HEIGHT);
+	public Soko(Sleep sleep) {
+		super(sleep);
 
+		camera = new CoolCamera(Constants.WIDTH, Constants.HEIGHT);
 	}
 
 	public void update() {
@@ -42,28 +42,17 @@ public class Soko implements Screen {
 		// update stuff
 		update();
 
-		// clear screen color
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1);
+		super.drawLight(camera, level);
 
-		// draw light to FBO
-		Sleep.fboLight.begin();
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Sleep.batch.setProjectionMatrix(camera.combined);
-		Sleep.batch.setShader(null);
-		Sleep.batch.begin();
-		level.drawLight();
-		Sleep.batch.end();
-		Sleep.fboLight.end();
+		Sleep.fboBlurA.begin();
+		super.drawScene(camera, level, level);
+		Sleep.fboBlurA.end();
 
-		// draw scene
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Sleep.batch.setProjectionMatrix(camera.combined);
-		Sleep.batch.setShader(Sleep.ambientShader);
-		Sleep.batch.begin();
-		Sleep.fboLight.getColorBufferTexture().bind(1);
-		level.bindLight(0);
-		level.render();
-		Sleep.batch.end();
+		super.drawBlur();
+
+		// SWITCHES SCREEN IF TRIGGERED, OTHERWISE DOES NOTHING
+		super.render();
+
 	}
 
 	@Override

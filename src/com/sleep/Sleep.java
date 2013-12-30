@@ -2,6 +2,7 @@ package com.sleep;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.sleep.soko.Soko;
 import com.sleep.text.IF;
@@ -22,6 +24,7 @@ public class Sleep extends Game {
 
 	// rendering stuff
 	public static SpriteBatch batch;
+	public static ShapeRenderer shapeRenderer;
 	public static BitmapFont spawnerFont;
 	public static Music music;
 
@@ -42,8 +45,12 @@ public class Sleep extends Game {
 	public static final float ambientIntensity = 1f;
 	public static final Vector3 ambientColor = new Vector3(0f, 0f, 0f);
 	public static Texture light;
-	
+
 	public static ShaderProgram blurShader;
+	public static float blurRadius = 0f;
+
+	// input thingy
+	public static InputMultiplexer inputMultiplexer;
 
 	/**
 	 * WARNING: Game might break (NullPointerException) if objects are created
@@ -76,14 +83,14 @@ public class Sleep extends Game {
 		// ambient light shader
 		ambientShader = new ShaderProgram(Gdx.files.internal("shaders/vertexShader.vsh"),
 				Gdx.files.internal("shaders/ambientPixelShader.fsh"));
-		
+
 		if (!ambientShader.isCompiled()) {
 			System.err.println(ambientShader.getLog());
 			System.exit(0);
 		}
 		if (ambientShader.getLog().length() != 0)
 			System.out.println(ambientShader.getLog());
-		
+
 		ambientShader.begin();
 		ambientShader.setUniformi("u_lightmap", 1); // texture binding to slot 1
 		ambientShader.setUniformf("ambientColor", ambientColor.x, ambientColor.y, ambientColor.z, ambientIntensity);
@@ -92,14 +99,14 @@ public class Sleep extends Game {
 		// blur shader
 		blurShader = new ShaderProgram(Gdx.files.internal("shaders/vertexShader.vsh"),
 				Gdx.files.internal("shaders/blurPixelShader.fsh"));
-		
+
 		if (!blurShader.isCompiled()) {
 			System.err.println(blurShader.getLog());
 			System.exit(0);
 		}
 		if (blurShader.getLog().length() != 0)
 			System.out.println(blurShader.getLog());
-		
+
 		blurShader.begin();
 		blurShader.setUniformf("dir", 0f, 0f); // direction of blur; nil for now
 		blurShader.setUniformf("resolution", Constants.WIDTH); // size of FBO
@@ -109,7 +116,8 @@ public class Sleep extends Game {
 		// create objects for rendering stuff
 		spawnerFont = new BitmapFont(Gdx.files.internal("fonts/24pt.fnt"));
 		batch = new SpriteBatch();
-		
+		shapeRenderer = new ShapeRenderer();
+
 		fboLight = new FrameBuffer(Format.RGBA8888, Constants.WIDTH, Constants.HEIGHT, false);
 		fboBlurA = new FrameBuffer(Format.RGBA8888, Constants.WIDTH, Constants.HEIGHT, false);
 		fboBlurB = new FrameBuffer(Format.RGBA8888, Constants.WIDTH, Constants.HEIGHT, false);
@@ -125,9 +133,13 @@ public class Sleep extends Game {
 		music.setLooping(true);
 		music.setVolume(1f);
 		// music.play();
+		
+		// create input multiplexer
+		inputMultiplexer = new InputMultiplexer();
+		Gdx.input.setInputProcessor(inputMultiplexer);
 
 		// create screens
-		sokoDeath = new Soko();
+		sokoDeath = new Soko(this);
 		interactiveFiction = new IF(this);
 
 		setScreen(interactiveFiction);

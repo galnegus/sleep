@@ -3,14 +3,16 @@ package com.sleep.text;
 import java.util.LinkedList;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.sleep.Constants;
+import com.sleep.CoolCamera;
+import com.sleep.CoolScreen;
 import com.sleep.Sleep;
 
-public class IF implements InputReceiver, Screen {
+public class IF extends CoolScreen implements InputReceiver {
 	private Terminal terminal;
 	private OverWorld overWorld;
+	private CoolCamera overWorldCamera;
 	private Sleep sleep;
 
 	private BitmapFont font;
@@ -18,10 +20,16 @@ public class IF implements InputReceiver, Screen {
 	private LinkedList<Monologue> monoloque;
 
 	public IF(Sleep sleep) {
+		super(sleep);
+		
 		overWorld = new OverWorld("levels/dream");
+		overWorldCamera = new CoolCamera(Constants.WIDTH, Constants.HEIGHT);
+		overWorldCamera.resize(Constants.WIDTH / 2, Constants.HEIGHT / 2, overWorld.player.position.x
+				+ (overWorld.player.getWidth() / 2) - Constants.WIDTH / 8, overWorld.player.position.y
+				+ (overWorld.player.getHeight() / 2), false);
 
 		font = new BitmapFont(Gdx.files.internal("fonts/Inconsolata36pxbold.fnt"));
-		font.setColor(0.8f, 0.8f, 0.8f, 1f);
+		font.setColor(1f, 1f, 1f, 1f);
 
 		terminal = new Terminal(this, font);
 
@@ -32,6 +40,9 @@ public class IF implements InputReceiver, Screen {
 
 	public void update() {
 		overWorld.update();
+		overWorldCamera.update(Gdx.graphics.getDeltaTime(), overWorld.player.position.x
+				+ (overWorld.player.getWidth() / 2) - overWorldCamera.viewportWidth / 4, overWorld.player.position.y
+				+ (overWorld.player.getHeight() / 2));
 		if (terminal.terminalIsActive)
 			terminal.update();
 	}
@@ -39,8 +50,24 @@ public class IF implements InputReceiver, Screen {
 	public void render(float delta) {
 		update();
 
-		overWorld.render();
+		super.drawLight(overWorldCamera, overWorld);
 
+		// start framebuffer for blurring effect
+		Sleep.fboBlurA.begin();
+		
+		super.drawScene(overWorldCamera, overWorld, overWorld);
+
+		drawInteractiveFiction();
+		
+		// end framebuffer for blurring
+		Sleep.fboBlurA.end();
+
+		super.drawBlur();
+
+		super.render();
+	}
+	
+	public void drawInteractiveFiction() {
 		Sleep.batch.setProjectionMatrix(Sleep.viewportCamera.combined);
 		Sleep.batch.setShader(null);
 		Sleep.batch.begin();
@@ -51,12 +78,11 @@ public class IF implements InputReceiver, Screen {
 		}
 
 		if (!monoloque.isEmpty()) {
+			terminal.fader.fadeOut();
 			terminal.terminalIsActive = false;
-			terminal.batchFader.goDark();
-			terminal.fontFader.goDark();
 			Monologue monologue = monoloque.getFirst();
-			if (monologue.isDone() && Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
-				monologue.renderDone(font);
+			if (monologue.isDone() && monologue.continueTriggered()) {
+				monologue.postRender(font);
 				if (monologue.isReallyDone()) {
 					terminal.print(monologue.toString());
 					monoloque.removeFirst();
@@ -66,12 +92,10 @@ public class IF implements InputReceiver, Screen {
 			}
 		} else {
 			terminal.terminalIsActive = true;
-			terminal.batchFader.fadeIn();
-			terminal.fontFader.fadeIn();
+			terminal.fader.fadeIn();
 			terminal.render();
 		}
 		Sleep.batch.end();
-
 	}
 
 	@Override
@@ -89,9 +113,10 @@ public class IF implements InputReceiver, Screen {
 		else if (input.equals("kill") && overWorld.getCurrentRoom().level != null) {
 			terminal.terminalIsActive = false;
 			sleep.sokoDeath.setLevel(overWorld.getCurrentRoom().level);
-			sleep.setScreen(sleep.sokoDeath);
+			screenSwitcher.switchScreen(sleep.sokoDeath);
+			// sleep.setScreen(sleep.sokoDeath);
 		} else if (input.equals("test")) {
-			monoloque.add(new DefaultMonologue("Hedge."));
+			monoloque.add(new TyperMonologue("Hedge."));
 		}
 	}
 

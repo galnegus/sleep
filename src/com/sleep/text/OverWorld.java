@@ -10,22 +10,20 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.sleep.BatchFader;
 import com.sleep.Constants;
-import com.sleep.CoolCamera;
 import com.sleep.Entity;
 import com.sleep.EntityMaker;
 import com.sleep.EntityManager;
+import com.sleep.Fader;
+import com.sleep.LightSource;
+import com.sleep.Renderer;
 import com.sleep.Sleep;
 import com.sleep.soko.component.Message;
 
-public class OverWorld {
-	private CoolCamera overWorldCamera;
-
+public class OverWorld implements Renderer, LightSource {
 	private int columns;
 	private int rows;
 
@@ -38,13 +36,13 @@ public class OverWorld {
 
 	public Entity player;
 
-	public BatchFader fader;
+	public Fader fader;
 
 	public OverWorld(String filename) {
 		entityManager = new EntityManager();
 		roomList = new HashMap<Character, Room>();
 		playerPosition = new Vector2();
-		fader = new BatchFader(new Color(0, 0, 0, 1), new Color(1, 1, 1, 1));
+		fader = new Fader(new Color(Color.BLACK), new Color(Color.WHITE), Constants.FADER_FREQ, Constants.FADER_STEPS);
 
 		try {
 			JsonReader json = new JsonReader();
@@ -74,7 +72,8 @@ public class OverWorld {
 				if (monologueBranch != null) {
 					monologues = new ArrayList<Monologue>();
 					for (int j = 0; j < monologueBranch.size; j++) {
-						monologues.add(new DefaultMonologue(monologueBranch.get(j).getString("text")));
+//						monologues.add(new TyperMonologue(monologueBranch.get(j).getString("text")));
+						monologues.add(new FaderMonologue(monologueBranch.get(j).getString("text")));
 					}
 				}
 				roomList.put(id, new Room(id, name, soko, monologues));
@@ -150,10 +149,6 @@ public class OverWorld {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		overWorldCamera = new CoolCamera(Constants.WIDTH, Constants.HEIGHT);
-		overWorldCamera.resize(Constants.WIDTH / 2, Constants.HEIGHT / 2, player.position.x + (player.getWidth() / 2)
-				- Constants.WIDTH / 8, player.position.y + (player.getHeight() / 2), false);
 	}
 
 	public int columnCount() {
@@ -217,69 +212,21 @@ public class OverWorld {
 
 	public void update() {
 		entityManager.update();
-		overWorldCamera.update(Gdx.graphics.getDeltaTime(), player.position.x + (player.getWidth() / 2)
-				- overWorldCamera.viewportWidth / 4, player.position.y + (player.getHeight() / 2));
 	}
 	
 	public void drawLight() {
-		
+		entityManager.drawLight();
 	}
 	
 	public void bindLight(int i) {
-		
+		entityManager.bindLight(i);
 	}
 
 	public void render() {
 		fader.render(Sleep.batch);
 
-		// clear screen color
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1);
-		
-
-		// draw light to FBO
-		Sleep.fboLight.begin();
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Sleep.batch.setProjectionMatrix(overWorldCamera.combined);
-		Sleep.batch.setShader(null);
-		Sleep.batch.begin();
-		entityManager.drawLight();
-		Sleep.batch.end();
-		Sleep.fboLight.end();
-		
-		// draw scene
-		Sleep.fboBlurA.begin();
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Sleep.batch.setProjectionMatrix(overWorldCamera.combined);
-		Sleep.batch.setShader(Sleep.ambientShader);
-		Sleep.batch.begin();
-		Sleep.fboLight.getColorBufferTexture().bind(1);
-		entityManager.bindLight(0);
 		entityManager.render();
-		Sleep.batch.end();
-		Sleep.fboBlurA.end();
 		
 		fader.renderDone(Sleep.batch);
-		Sleep.batch.setProjectionMatrix(Sleep.viewportCamera.combined);
-		Sleep.fboBlurB.begin();
-		Sleep.batch.begin();
-		Sleep.batch.setShader(Sleep.blurShader);
-		Sleep.blurShader.setUniformf("dir", 0f, 1f);
-		float mouseYAmt = Gdx.input.getY() / (float) Gdx.graphics.getWidth();
-		Sleep.blurShader.setUniformf("radius", mouseYAmt * 120f);
-		Sleep.fboRegion.setTexture(Sleep.fboBlurA.getColorBufferTexture());
-		Sleep.batch.draw(Sleep.fboRegion, 0, 0);
-		Sleep.batch.flush();
-		Sleep.fboBlurB.end();
-		
-		
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Sleep.blurShader.setUniformf("dir", 1f, 0f);
-		float mouseXAmt = Gdx.input.getX() / (float) Gdx.graphics.getWidth();
-		Sleep.blurShader.setUniformf("radius", mouseXAmt * 50f);
-		Sleep.fboRegion.setTexture(Sleep.fboBlurB.getColorBufferTexture());
-		Sleep.batch.draw(Sleep.fboRegion, 0, 0);
-		Sleep.batch.flush();
-		Sleep.batch.end();
-		Sleep.batch.setShader(null);
 	}
 }
