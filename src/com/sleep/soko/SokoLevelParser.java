@@ -13,25 +13,39 @@ import com.sleep.Entity;
 import com.sleep.EntityMaker;
 
 public class SokoLevelParser {
+
+	private String filename;
+
 	private Entity[][] grid;
-	public int[][] ghostPathGrid;
-	public int[][] spectrePathGrid;
+	private int[][] ghostPathGrid;
+	private int[][] spectrePathGrid;
 	private int columns, rows;
 
-	public Entity player;
+	private Entity player;
+
+	private Win winCondition;
 
 	public SokoLevelParser(String filename, SokoLevel level) {
 		try {
+			this.filename = filename;
+
 			FileHandle levelTxt = Gdx.files.internal(filename);
 			BufferedReader br = levelTxt.reader(200);
 
+			// get rows and columns
 			columns = Integer.parseInt(br.readLine());
 			rows = Integer.parseInt(br.readLine());
 
+			// create win condiiton
+			String win = br.readLine();
+			winCondition = parseWinCondition(win);
+
+			// create relevant grid matrices
 			grid = new Entity[columns][rows];
 			ghostPathGrid = new int[columns][rows];
 			spectrePathGrid = new int[columns][rows];
 
+			// temporary matrices used for proper positioning
 			char[][] charBoard = new char[columns][rows];
 			char[][] input = new char[rows][columns];
 
@@ -42,9 +56,9 @@ public class SokoLevelParser {
 			// rotate (x=y, y=x) and flip the board vertically (y=ySize-y)
 			// so that the matrix indices matches the opengl coordinates
 			//
-			// [1,2,3] -> [5,6]
-			// [4,5,6] -> [3,4]
-			// XXXXXXX -> [1,2]
+			// [1,2,3] -> [3,6]
+			// [4,5,6] -> [2,5]
+			// -> [1,4]
 
 			for (int x = 0; x < columns; x++) {
 				for (int y = 0; y < rows; y++) {
@@ -87,6 +101,11 @@ public class SokoLevelParser {
 					} else if (charBoard[x][y] == Constants.SPECTRE) {
 						grid[x][y] = EntityMaker.makeSpectre(level, x * Constants.GRID_CELL_SIZE, y
 								* Constants.GRID_CELL_SIZE);
+					} else if (charBoard[x][y] == Constants.EXIT) {
+						grid[x][y] = EntityMaker.makeExit(level, x * Constants.GRID_CELL_SIZE, y
+								* Constants.GRID_CELL_SIZE);
+						((WinExit) winCondition)
+								.setPosition(x * Constants.GRID_CELL_SIZE, y * Constants.GRID_CELL_SIZE);
 					} else if (Character.isLetterOrDigit(charBoard[x][y])) {
 						if (!spawnerInit.containsKey(charBoard[x][y])) {
 							Gdx.app.error("LevelFormattingError", "spawnerInit value for key '" + charBoard[x][y]
@@ -113,6 +132,19 @@ public class SokoLevelParser {
 		}
 	}
 
+	private Win parseWinCondition(String win) {
+		if (win.equals("EXIT")) {
+			return new WinExit();
+		} else if (win.equals("MURDER")) {
+			return new WinMurder();
+		} else if (win.equals("SURVIVE")) {
+			return new WinSurvive();
+		} else {
+			Gdx.app.error("LevelFormattingError", "Invalid win condition given in level file: " + filename);
+			return null;
+		}
+	}
+
 	public Entity[][] getGrid() {
 		return grid;
 	}
@@ -135,6 +167,10 @@ public class SokoLevelParser {
 
 	public Entity getPlayer() {
 		return player;
+	}
+	
+	public Win getWinCondition() {
+		return winCondition;
 	}
 
 }

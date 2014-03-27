@@ -72,6 +72,9 @@ public class Sleep extends Game {
 		assets.load("images/room_bw.png", Texture.class);
 		assets.load("images/horizontal_bw.png", Texture.class);
 		assets.load("images/vertical_bw.png", Texture.class);
+		assets.load("images/exit1.png", Texture.class);
+		assets.load("images/exit2.png", Texture.class);
+		assets.load("images/exit3.png", Texture.class);
 		assets.load("music/spook2.ogg", Music.class);
 		assets.finishLoading();
 

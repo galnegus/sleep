@@ -13,6 +13,8 @@ public class Constants {
 	public static final char PLAYER = '@';
 	public static final char GHOST = '.';
 	public static final char SPECTRE = ',';
+	public static final char EXIT = '*';
+	
 	public static final int GRID_CELL_SIZE = 64;
 
 	// Player behaviour

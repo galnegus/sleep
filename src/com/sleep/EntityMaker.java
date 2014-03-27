@@ -31,6 +31,7 @@ import com.sleep.text.component.RoomComponent;
  * Creates entities!
  */
 public class EntityMaker {
+	private static final int EXIT_DEPTH = 0;
 	private static final int BOX_DEPTH = 0;
 	private static final int GHOST_DEPTH = 1;
 	private static final int PLAYER_DEPTH = 2;
@@ -53,9 +54,8 @@ public class EntityMaker {
 
 		Animation idle = new Animation(0.5f, anim, Animation.LOOP);
 
-		LinkedHashMap<AnimationActions, Animation> monkeyAnimations = new LinkedHashMap<AnimationActions, Animation>(2);
-		monkeyAnimations.put(AnimationActions.WALK_RIGHT, idle);
-		monkeyAnimations.put(AnimationActions.WALK_LEFT, idle);
+		LinkedHashMap<AnimationActions, Animation> playerAnimations = new LinkedHashMap<AnimationActions, Animation>(2);
+		playerAnimations.put(AnimationActions.IDLE, idle);
 
 		return level.entityManager.add(new Entity("Player", new Vector2(x, y), PLAYER_DEPTH))
 				.addComponent(new PlayerMovementComponent(level)).addComponent(new AnimationRenderComponent(idle))
@@ -83,6 +83,22 @@ public class EntityMaker {
 		return level.entityManager.add(new Entity("Box", new Vector2(x, y), BOX_DEPTH))
 				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/box_bw.png", Texture.class)))
 				.addComponent(new MovementComponent(level)).initComponents();
+	}
+	
+	public static Entity makeExit(SokoLevel level, int x, int y) {
+		Array<TextureRegion> anim = new Array<TextureRegion>();
+		anim.add(new TextureRegion(Sleep.assets.get("images/exit1.png", Texture.class)));
+		anim.add(new TextureRegion(Sleep.assets.get("images/exit2.png", Texture.class)));
+		anim.add(new TextureRegion(Sleep.assets.get("images/exit3.png", Texture.class)));
+
+		Animation portal = new Animation(0.25f, anim, Animation.LOOP_PINGPONG);
+
+		LinkedHashMap<AnimationActions, Animation> exitAnimations = new LinkedHashMap<AnimationActions, Animation>(2);
+		exitAnimations.put(AnimationActions.IDLE, portal);
+
+		return level.entityManager.add(new Entity("Exit", new Vector2(x, y), EXIT_DEPTH))
+				.addComponent(new AnimationRenderComponent(portal))
+				.addComponent(new LightComponent(Sleep.light, new Color(0.3125f, 0.8125f, 0.8125f, 1f), 64, true)).initComponents();
 	}
 
 	public static Entity makeGrid(SokoLevel level, int x, int y, int xSize, int ySize) {

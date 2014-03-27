@@ -23,7 +23,13 @@ public enum AnimationActions {
 			else
 				return false;
 		}
-	};
+	}, // IDLE MUST BE AT BOTTOM OF ANIMATION QUEUE
+	IDLE ("idle") {
+		public boolean check(Entity owner) {
+			return true;
+		}
+	}
+	;
 	
 	public String name;
 	

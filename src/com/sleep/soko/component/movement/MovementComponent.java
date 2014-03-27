@@ -15,15 +15,15 @@ import com.sleep.soko.component.death.DeathComponent;
  */
 public class MovementComponent extends Component {
 	protected SokoLevel level;
-	
+
 	public float Velocity = 600f;
-	
+
 	protected Vector2 direction = new Vector2(0, 0);
 	private Vector2 destination = new Vector2();
 
 	private boolean moving = false;
 	public boolean movable = true;
-	
+
 	public MovementComponent(SokoLevel level) {
 		this.level = level;
 	}
@@ -33,10 +33,22 @@ public class MovementComponent extends Component {
 	}
 
 	/**
-	 * moves the entity by a given amount
-	 * 
+	 * moves the entity by a given amount<br />
+	 * <br />
 	 * this method only triggers a "movement",
-	 * the movement is done when the moving boolean is set to false
+	 * the movement is done when the moving boolean is set to false<br />
+	 * <br />
+	 * this method handles all movement based collision detecton, there are a
+	 * number of rules: 
+	 * <pre>
+	 * 1. It's always possible to move to an empty location
+	 * 2. It's possible to move to an exit entity if owner is a player
+	 * 3. A box can be moved if owner entity is a player or another box
+	 * 4. A kill is possible only possible if:
+	 * 		I. 		Target has a DeathComponent
+	 * 		II. 	Owner is not a player entity
+	 * 		III. 	Target is a player entity OR owner is a box
+	 * </pre>
 	 * 
 	 * @param x
 	 * @param y
@@ -51,10 +63,17 @@ public class MovementComponent extends Component {
 				moving = true;
 				level.moveEntityTo(owner, destination.x, destination.y);
 
-				// push box
+				
+			} else if(entityAtDest.getName().equals("Exit") && owner.getName().equals("Player")) {				
+				
+				
+				
+				
+				
 			} else if (entityAtDest.getName().equals("Box")
 					&& (owner.getName().equals("Player") || owner.getName().equals("Box"))) {
-
+				// push box
+				
 				// recursively check that several boxes can be moved
 				if (entityAtDest.getComponent(MovementComponent.class).move(x, y)) {
 					moving = true;

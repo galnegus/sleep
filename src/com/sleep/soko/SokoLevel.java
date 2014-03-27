@@ -21,6 +21,8 @@ public class SokoLevel implements LightSource, Renderer {
 	private int columns, rows;
 
 	public Entity player;
+	
+	private Win winCondition;
 
 	public int columnCount() {
 		return columns;
@@ -43,6 +45,8 @@ public class SokoLevel implements LightSource, Renderer {
 		rows = parser.getRows();
 
 		player = parser.getPlayer();
+		
+		winCondition = parser.getWinCondition();
 	}
 
 	public Vector2 getGridPos(float x, float y) {
