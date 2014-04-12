@@ -66,8 +66,8 @@ public class MovementComponent extends Component {
 				
 			} else if(entityAtDest.getName().equals("Exit") && owner.getName().equals("Player")) {				
 				
-				
-				
+				moving = true;
+				level.levelComplete();
 				
 				
 			} else if (entityAtDest.getName().equals("Box")

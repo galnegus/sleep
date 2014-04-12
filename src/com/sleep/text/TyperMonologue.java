@@ -27,7 +27,7 @@ public class TyperMonologue extends Monologue {
 	}
 
 	public TyperMonologue(String text) {
-		this(text, 50, Gdx.graphics.getHeight() - 50, (int) (700), 0.05f);
+		this(text, 50, Gdx.graphics.getHeight() - 50, (int) (700), 0.01f);
 	}
 
 	private String pollText() {
@@ -46,7 +46,7 @@ public class TyperMonologue extends Monologue {
 			lastChar = text.charAt(charCounter);
 			return text.substring(0, charCounter);
 		} else {
-			renderIsDone = true;
+			introIsDone = true;
 			if (Gdx.input.isKeyPressed(Keys.ENTER))
 				continueTrigger = true;
 			return text;
@@ -72,6 +72,6 @@ public class TyperMonologue extends Monologue {
 	
 	@Override
 	public void postRender(BitmapFont font) {
-		postRenderIsDone = true;
+		outroIsDone = true;
 	}
 }

@@ -7,12 +7,14 @@ import com.sleep.CoolScreen;
 import com.sleep.Sleep;
 
 public class Soko extends CoolScreen {
+	private Sleep sleep;
 	public static boolean updatesPaused = false;
 	private SokoLevel level;
 	private CoolCamera camera;
 
 	public Soko(Sleep sleep) {
 		super(sleep);
+		this.sleep = sleep;
 
 		camera = new CoolCamera(Constants.WIDTH, Constants.HEIGHT);
 	}
@@ -29,6 +31,7 @@ public class Soko extends CoolScreen {
 
 	public void setLevel(SokoLevel level) {
 		this.level = level;
+		level.setSleep(sleep);
 
 		int width = level.columnCount() * Constants.GRID_CELL_SIZE;
 		int height = level.rowCount() * Constants.GRID_CELL_SIZE;

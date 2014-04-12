@@ -6,10 +6,18 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
 public abstract class CoolScreen implements Screen {
-	public CoolScreenSwitcher screenSwitcher;
+	private CoolScreenSwitcher screenSwitcher;
 
 	public CoolScreen(Sleep sleep) {
 		screenSwitcher = new CoolScreenSwitcher(sleep);
+	}
+	
+	public void switchScreen(CoolScreen screen) {
+		screenSwitcher.switchScreen(screen);
+	}
+	
+	public void switchToScreen() {
+		screenSwitcher.switchToScreen();
 	}
 
 	/**

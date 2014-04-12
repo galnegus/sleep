@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public class CoolScreenSwitcher {
 	private Sleep sleep;
-	private boolean switchFrom = false;
-	private boolean switchTo = false;
-	private CoolScreen screen;
+	private boolean isSwitchingFrom = false;
+	private boolean isSwitchingTo = false;
+	private CoolScreen switchTo;
 	private float timer = 0f;
 	private float freq = 0.1f;
 	private int steps = 10;
@@ -33,17 +33,17 @@ public class CoolScreenSwitcher {
 	 * fading/blurring process.
 	 */
 	public void switchScreen(CoolScreen screen) {
-		this.screen = screen;
+		this.switchTo = screen;
 		oldBlurRadius = Sleep.blurRadius;
-		switchFrom = true;
-		screen.screenSwitcher.switchToScreen();
+		isSwitchingFrom = true;
+		screen.switchToScreen();
 	}
 
 	/**
 	 * This method is called when this screen is switched to.
 	 */
 	public void switchToScreen() {
-		switchTo = true;
+		isSwitchingTo = true;
 		value = 1f;
 		oldBlurRadius = Sleep.blurRadius;
 	}
@@ -53,7 +53,7 @@ public class CoolScreenSwitcher {
 	 * switchFrom are false.
 	 */
 	public void render() {
-		if (switchFrom || switchTo) {
+		if (isSwitchingFrom || isSwitchingTo) {
 			// might be needed at some point?
 
 			Sleep.blurRadius = oldBlurRadius + value * blurRadiusMultiplier;
@@ -69,13 +69,13 @@ public class CoolScreenSwitcher {
 			Gdx.gl.glDisable(GL20.GL_BLEND);
 		}
 
-		if (switchFrom) {
+		if (isSwitchingFrom) {
 			timer += Gdx.graphics.getRawDeltaTime();
 			if (timer > freq) {
 				if (value == 1f) {
 					timer = 0f;
-					switchFrom = false;
-					sleep.setScreen(screen);
+					isSwitchingFrom = false;
+					sleep.setScreen(switchTo);
 					Sleep.blurRadius = oldBlurRadius;
 				}
 
@@ -84,12 +84,12 @@ public class CoolScreenSwitcher {
 				if (value > 1)
 					value = 1f;
 			}
-		} else if (switchTo) {
+		} else if (isSwitchingTo) {
 			timer += Gdx.graphics.getRawDeltaTime();
 			if (timer > freq) {
 				if (value == 0f) {
 					timer = 0f;
-					switchTo = false;
+					isSwitchingTo = false;
 					Sleep.blurRadius = oldBlurRadius;
 				}
 

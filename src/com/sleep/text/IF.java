@@ -43,7 +43,7 @@ public class IF extends CoolScreen implements InputReceiver {
 		overWorldCamera.update(Gdx.graphics.getDeltaTime(), overWorld.player.position.x
 				+ (overWorld.player.getWidth() / 2) - overWorldCamera.viewportWidth / 4, overWorld.player.position.y
 				+ (overWorld.player.getHeight() / 2));
-		if (terminal.terminalIsActive)
+		if (terminal.isActive())
 			terminal.update();
 	}
 
@@ -79,11 +79,11 @@ public class IF extends CoolScreen implements InputReceiver {
 		Sleep.batch.begin();
 		if (!monoloQue.isEmpty()) {
 			terminal.fader.fadeOut();
-			terminal.terminalIsActive = false;
+			terminal.isOutputtingMonologue = true;
 			Monologue monologue = monoloQue.getFirst();
-			if (monologue.isDone() && monologue.continueTriggered()) {
+			if (monologue.introIsDone() && monologue.continueTriggered()) {
 				monologue.postRender(font);
-				if (monologue.isReallyDone()) {
+				if (monologue.outroIsDone()) {
 					terminal.print(monologue.toString());
 					monoloQue.removeFirst();
 				}
@@ -91,10 +91,10 @@ public class IF extends CoolScreen implements InputReceiver {
 				monologue.render(font);
 			}
 		} else {
-			terminal.terminalIsActive = true;
+			terminal.isOutputtingMonologue = false;
 			terminal.fader.fadeIn();
-			terminal.render();
 		}
+		terminal.render();
 		Sleep.batch.end();
 	}
 
@@ -111,13 +111,18 @@ public class IF extends CoolScreen implements InputReceiver {
 		else if (input.equals("clear"))
 			terminal.clear();
 		else if (input.equals("sleep") && overWorld.getCurrentRoom().level != null) {
-			terminal.terminalIsActive = false;
 			sleep.sokoDeath.setLevel(overWorld.getCurrentRoom().level);
-			screenSwitcher.switchScreen(sleep.sokoDeath);
-			// sleep.setScreen(sleep.sokoDeath);
+			terminal.isInSokoDeath = true;
+			switchScreen(sleep.sokoDeath);
 		} else if (input.equals("test")) {
 			monoloQue.add(new TyperMonologue("Hedge."));
 		}
+	}
+	
+	@Override
+	public void switchToScreen() {
+		super.switchToScreen();
+		terminal.isInSokoDeath = false;
 	}
 
 	@Override

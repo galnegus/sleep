@@ -28,20 +28,20 @@ public class FaderMonologue extends Monologue {
 
 	@Override
 	public void render(BitmapFont font) {
-		if (!renderIsDone)
+		if (!introIsDone)
 			fader.render(font);
 		
 		font.drawWrapped(Sleep.batch, text, x, y, wrapWidth);
 		
-		if (!renderIsDone)
+		if (!introIsDone)
 			fader.renderDone(font);
 		
 		if (fader.done()) {
-			renderIsDone = true;
+			introIsDone = true;
 			fader.fadeOut();
 		}
 		
-		if (renderIsDone) {
+		if (introIsDone) {
 			if (Gdx.input.isKeyPressed(Keys.ENTER))
 				continueTrigger = true;
 		}
@@ -49,16 +49,16 @@ public class FaderMonologue extends Monologue {
 
 	@Override
 	public void postRender(BitmapFont font) {
-		if (!postRenderIsDone)
+		if (!outroIsDone)
 			fader.render(font);
 		
 		font.drawWrapped(Sleep.batch, text, x, y, wrapWidth);
 		
-		if (!postRenderIsDone)
+		if (!outroIsDone)
 			fader.renderDone(font);
 		
 		if (fader.done())
-			postRenderIsDone = true;
+			outroIsDone = true;
 	}
 
 }

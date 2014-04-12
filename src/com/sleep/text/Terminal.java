@@ -33,7 +33,8 @@ public class Terminal {
 	public Fader fader;
 	
 	// needs to be set to false when not rendering the terminal
-	public boolean terminalIsActive = false;
+	public boolean isOutputtingMonologue = false;
+	public boolean isInSokoDeath = false;
 
 	public Terminal(InputReceiver inputReader, BitmapFont font) {
 		this.font = font;
@@ -58,6 +59,13 @@ public class Terminal {
 			cursorBlinkTimer -= cursorBlinkFrequency;
 			cursorColor.set((cursorColor.r + 1) % 2, (cursorColor.g + 1) % 2, (cursorColor.b + 1) % 2, (cursorColor.a + 1) % 2);
 		}
+	}
+	
+	public boolean isActive() {
+		if (!isOutputtingMonologue && !isInSokoDeath) {
+			return true;
+		}
+		return false;
 	}
 
 	public void print(String output) {

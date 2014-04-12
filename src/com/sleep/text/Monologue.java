@@ -8,9 +8,9 @@ public abstract class Monologue {
 	protected int y;
 	protected int wrapWidth;
 
-	protected boolean renderIsDone = false;
+	protected boolean introIsDone = false;
 	protected boolean continueTrigger = false;
-	protected boolean postRenderIsDone = false;
+	protected boolean outroIsDone = false;
 
 	public Monologue(String text, int x, int y, int wrapWidth) {
 		this.text = text.trim();
@@ -27,16 +27,16 @@ public abstract class Monologue {
 		return y;
 	}
 
-	public boolean isDone() {
-		return renderIsDone;
+	public boolean introIsDone() {
+		return introIsDone;
 	}
 	
 	public boolean continueTriggered() {
 		return continueTrigger;
 	}
 
-	public boolean isReallyDone() {
-		return postRenderIsDone;
+	public boolean outroIsDone() {
+		return outroIsDone;
 	}
 
 	public String toString() {

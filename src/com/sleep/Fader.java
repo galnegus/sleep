@@ -61,22 +61,23 @@ public class Fader {
 	}
 
 	public void render(SpriteBatch batch, BitmapFont font) {
-		timer += Gdx.graphics.getRawDeltaTime();
-		if (timer > frequency) {
-			timer -= frequency;
-			if (Math.abs(colorSum(c) - colorSum(target)) > Math.abs(incrementSum())) {
-				c.r += incrementR;
-				c.g += incrementG;
-				c.b += incrementB;
-				c.a += incrementA;
-			} else if (Math.abs(colorSum(c) - colorSum(target)) <= Math.abs(incrementSum())) {
-				c.r = target.r;
-				c.g = target.g;
-				c.b = target.b;
-				c.a = target.a;
+		if (!done()) {
+			timer += Gdx.graphics.getRawDeltaTime();
+			if (timer > frequency) {
+				timer -= frequency;
+				if (Math.abs(colorSum(c) - colorSum(target)) > Math.abs(incrementSum())) {
+					c.r += incrementR;
+					c.g += incrementG;
+					c.b += incrementB;
+					c.a += incrementA;
+				} else if (Math.abs(colorSum(c) - colorSum(target)) <= Math.abs(incrementSum())) {
+					c.r = target.r;
+					c.g = target.g;
+					c.b = target.b;
+					c.a = target.a;
+				}
 			}
 		}
-
 		if (batch != null) {
 			oldColor = new Color(batch.getColor());
 			batch.setColor(c.r, c.g, c.b, c.a);
@@ -86,7 +87,6 @@ public class Fader {
 			oldColor = new Color(font.getColor());
 			font.setColor(c.r, c.g, c.b, c.a);
 		}
-
 	}
 
 	public void renderDone(SpriteBatch batch) {
@@ -141,5 +141,10 @@ public class Fader {
 		// System.out.println("color: " + c.toString() + ", target: " +
 		// target.toString());
 		return c.equals(target);
+	}
+	
+	@Override
+	public String toString() {
+		return "Color = " + c.toString();
 	}
 }

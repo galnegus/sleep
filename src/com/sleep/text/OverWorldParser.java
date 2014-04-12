@@ -26,6 +26,8 @@ public class OverWorldParser {
 
 	private Entity player;
 	private Vector2 playerPosition;
+	
+	private final char STARTING_ROOM = '0';
 
 	public OverWorldParser(String filename, EntityManager entityManager) {
 		roomList = new HashMap<Character, Room>();
@@ -125,11 +127,11 @@ public class OverWorldParser {
 								* Constants.GRID_CELL_SIZE / 2);
 					}
 
-					if (map[x][y] == '0') {
+					if (map[x][y] == STARTING_ROOM) {
 						player = EntityMaker.makeIFPlayer(entityManager, x * Constants.GRID_CELL_SIZE / 2, y
 								* Constants.GRID_CELL_SIZE / 2);
 						playerPosition.set(x, y);
-						currentRoom = roomList.get('0');
+						currentRoom = roomList.get(STARTING_ROOM);
 					}
 				}
 			}

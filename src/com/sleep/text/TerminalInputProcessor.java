@@ -22,7 +22,7 @@ public class TerminalInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		if (terminal.terminalIsActive) {
+		if (terminal.isActive()) {
 			// BACKSPACE
 			if (keycode == Input.Keys.BACKSPACE && terminal.cursor > 0) {
 				currentInput.deleteCharAt(terminal.cursor - 1);
@@ -90,7 +90,7 @@ public class TerminalInputProcessor implements InputProcessor {
 
 	@Override
 	public boolean keyTyped(char character) {
-		if (terminal.terminalIsActive) {
+		if (terminal.isActive()) {
 			if ((Character.isLetterOrDigit(character) || character == ' ' || character == '-' || character == '_')
 					&& currentInput.length() < terminal.getMaxInputLength()) {
 				currentInput.insert(terminal.cursor, character);

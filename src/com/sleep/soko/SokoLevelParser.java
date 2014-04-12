@@ -104,8 +104,6 @@ public class SokoLevelParser {
 					} else if (charBoard[x][y] == Constants.EXIT) {
 						grid[x][y] = EntityMaker.makeExit(level, x * Constants.GRID_CELL_SIZE, y
 								* Constants.GRID_CELL_SIZE);
-						((WinExit) winCondition)
-								.setPosition(x * Constants.GRID_CELL_SIZE, y * Constants.GRID_CELL_SIZE);
 					} else if (Character.isLetterOrDigit(charBoard[x][y])) {
 						if (!spawnerInit.containsKey(charBoard[x][y])) {
 							Gdx.app.error("LevelFormattingError", "spawnerInit value for key '" + charBoard[x][y]
@@ -134,7 +132,7 @@ public class SokoLevelParser {
 
 	private Win parseWinCondition(String win) {
 		if (win.equals("EXIT")) {
-			return new WinExit();
+			return null;
 		} else if (win.equals("MURDER")) {
 			return new WinMurder();
 		} else if (win.equals("SURVIVE")) {

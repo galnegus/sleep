@@ -4,14 +4,19 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.sleep.Constants;
+import com.sleep.CoolScreen;
 import com.sleep.Entity;
 import com.sleep.EntityManager;
 import com.sleep.LightSource;
 import com.sleep.Renderer;
+import com.sleep.Sleep;
 
 public class SokoLevel implements LightSource, Renderer {
+	private Sleep sleep = null;
+	
 	public EntityManager entityManager;
 	public EntityManager backgroundManager;
 
@@ -23,6 +28,8 @@ public class SokoLevel implements LightSource, Renderer {
 	public Entity player;
 	
 	private Win winCondition;
+	
+	private boolean update = true;
 
 	public int columnCount() {
 		return columns;
@@ -33,6 +40,7 @@ public class SokoLevel implements LightSource, Renderer {
 	}
 
 	public SokoLevel(String filename) {
+		
 		entityManager = new EntityManager();
 		backgroundManager = new EntityManager();
 
@@ -47,6 +55,20 @@ public class SokoLevel implements LightSource, Renderer {
 		player = parser.getPlayer();
 		
 		winCondition = parser.getWinCondition();
+	}
+	
+	public void levelComplete() {
+		if (sleep == null) {
+			Gdx.app.error(this.getClass().getName(), "Sleep has not been set, cannot switch screen!");
+		} else {
+			sleep.sokoDeath.switchScreen(sleep.interactiveFiction);
+		}
+	}
+	
+	public void setSleep(Sleep sleep) {
+		if (this.sleep == null) {
+			this.sleep = sleep;
+		}
 	}
 
 	public Vector2 getGridPos(float x, float y) {
@@ -93,10 +115,12 @@ public class SokoLevel implements LightSource, Renderer {
 	}
 
 	public void update() {
-		updateGhostPathGrid();
-		updateSpectrePathGrid();
+		if (update) {
+			updateGhostPathGrid();
+			updateSpectrePathGrid();
 
-		entityManager.update();
+			entityManager.update();
+		}
 	}
 
 	public void render() {

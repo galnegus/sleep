@@ -31,7 +31,7 @@ import com.sleep.text.component.RoomComponent;
  * Creates entities!
  */
 public class EntityMaker {
-	private static final int EXIT_DEPTH = 0;
+	private static final int EXIT_DEPTH = 3;
 	private static final int BOX_DEPTH = 0;
 	private static final int GHOST_DEPTH = 1;
 	private static final int PLAYER_DEPTH = 2;
