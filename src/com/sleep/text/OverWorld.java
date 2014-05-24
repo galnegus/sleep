@@ -83,11 +83,16 @@ public class OverWorld implements Renderer, LightSource {
 	public void movePlayer(Direction direction) {
 		Vector2 movement = direction.getMovement();
 		if (isDoorway(new Vector2(playerPosition.x + movement.x, playerPosition.y + movement.y), direction)) {
-			Message message = Message.fromString("move " + direction.toString());
-			player.sendMessage(message);
+			Vector2 targetPosition = new Vector2(playerPosition.x + movement.x * 2, playerPosition.y + movement.y * 2);
+			Room targetRoom = roomList.get(map[(int) targetPosition.x][(int) targetPosition.y]);
+			
+			if (currentRoom.isCompleted() || targetRoom.isCompleted()) {
+				Message message = Message.fromString("move " + direction.toString());
+				player.sendMessage(message);
 
-			playerPosition.add(movement.x * 2, movement.y * 2);
-			currentRoom = roomList.get(map[(int) playerPosition.x][(int) playerPosition.y]);
+				playerPosition.set(targetPosition);
+				currentRoom = targetRoom;
+			}
 		}
 
 	}

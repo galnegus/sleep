@@ -2,6 +2,7 @@ package com.sleep.text;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.sleep.soko.SokoLevel;
 
 public class Room {
@@ -26,6 +27,15 @@ public class Room {
 	
 	public char getId() {
 		return id;
+	}
+	
+	public boolean isCompleted() {
+		if (level != null) {
+			return level.isCompleted();
+		} else {
+			Gdx.app.error("Room.java", "Room " + name + "(" + id + ") does not have a level, cannot be completed");
+			return false;
+		}
 	}
 	
 	public Monologue getCurrentMonologue() {

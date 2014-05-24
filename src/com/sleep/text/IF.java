@@ -110,7 +110,7 @@ public class IF extends CoolScreen implements InputReceiver {
 			overWorld.movePlayer(Direction.DOWN);
 		else if (input.equals("clear"))
 			terminal.clear();
-		else if (input.equals("sleep") && overWorld.getCurrentRoom().level != null) {
+		else if (input.equals("sleep") && overWorld.getCurrentRoom().level != null && !overWorld.getCurrentRoom().isCompleted()) {
 			sleep.sokoDeath.setLevel(overWorld.getCurrentRoom().level);
 			terminal.isInSokoDeath = true;
 			switchScreen(sleep.sokoDeath);

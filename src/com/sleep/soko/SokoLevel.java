@@ -24,6 +24,7 @@ public class SokoLevel implements LightSource, Renderer {
 	public Entity player;
 	
 	private boolean update = true;
+	private boolean complete = false;
 
 	public int columnCount() {
 		return collisionGrid.columnCount();
@@ -48,6 +49,7 @@ public class SokoLevel implements LightSource, Renderer {
 			Gdx.app.error(this.getClass().getName(), "Sleep has not been set, cannot switch screen!");
 		} else {
 			sleep.sokoDeath.switchScreen(sleep.interactiveFiction);
+			complete = true;
 		}
 	}
 	
@@ -55,6 +57,10 @@ public class SokoLevel implements LightSource, Renderer {
 		if (this.sleep == null) {
 			this.sleep = sleep;
 		}
+	}
+	
+	public boolean isCompleted() {
+		return complete;
 	}
 
 	public void update() {
