@@ -27,7 +27,7 @@ public class DeathComponent extends Component {
 
 	public void die() {
 		alive = false;
-		level.removeEntity(owner);
+		level.collisionGrid.removeEntity(owner);
 		
 		owner.sendMessage(Message.ENTITY_DEATH);
 	}

@@ -30,8 +30,8 @@ public abstract class PathfindingMovementComponent extends MovementComponent {
 	 */
 	public Vector2 bestMove(int[][] pathGrid, Vector2[] moves) {
 		Vector2 bestMove = new Vector2(0, 0);
-		Vector2 moverPos = level.getGridPos(owner.position.x, owner.position.y);
-		Vector2 player = level.getGridPos(level.player.position.x,
+		Vector2 moverPos = level.collisionGrid.getGridPos(owner.position.x, owner.position.y);
+		Vector2 player = level.collisionGrid.getGridPos(level.player.position.x,
 				level.player.position.y);
 
 		// apply actual gridpos to each move
@@ -45,11 +45,11 @@ public abstract class PathfindingMovementComponent extends MovementComponent {
 		for (Vector2 move : moves) {
 			if (move.x >= 0 && move.x < level.columnCount() && move.y >= 0
 					&& move.y < level.rowCount()) {
-				if (level.getPathDistance(pathGrid, (int) move.x, (int) move.y) < min
-						&& level.getPathDistance(pathGrid, (int) move.x, (int) move.y) >= 0) {
-					min = level.getPathDistance(pathGrid, (int) move.x, (int) move.y);
+				if (level.collisionGrid.getPathDistance(pathGrid, (int) move.x, (int) move.y) < min
+						&& level.collisionGrid.getPathDistance(pathGrid, (int) move.x, (int) move.y) >= 0) {
+					min = level.collisionGrid.getPathDistance(pathGrid, (int) move.x, (int) move.y);
 					bestMove.set(move.x, move.y);
-				} else if (level.getPathDistance(pathGrid, (int) move.x, (int) move.y) == min) {
+				} else if (level.collisionGrid.getPathDistance(pathGrid, (int) move.x, (int) move.y) == min) {
 
 					// if the difference in distance in x and y from player to
 					// move is smaller than difference in x and y from player to
@@ -75,11 +75,11 @@ public abstract class PathfindingMovementComponent extends MovementComponent {
 			for (Vector2 move : moves) {
 				if (move.x >= 0 && move.x < level.columnCount() && move.y >= 0
 						&& move.y < level.rowCount()) {
-					if (level.manhattanDistance((int) move.x, (int) move.y) < min
-							&& level.manhattanDistance((int) move.x, (int) move.y) >= 0) {
-						min = level.manhattanDistance((int) move.x, (int) move.y);
+					if (level.collisionGrid.manhattanDistance((int) move.x, (int) move.y) < min
+							&& level.collisionGrid.manhattanDistance((int) move.x, (int) move.y) >= 0) {
+						min = level.collisionGrid.manhattanDistance((int) move.x, (int) move.y);
 						bestMove.set(move.x, move.y);
-					} else if (level.manhattanDistance((int) move.x, (int) move.y) == min) {
+					} else if (level.collisionGrid.manhattanDistance((int) move.x, (int) move.y) == min) {
 
 						// if difference in distance in x and y from player to
 						// move is smaller than difference in x and y from

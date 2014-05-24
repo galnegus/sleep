@@ -27,7 +27,7 @@ public class SpectreMovementComponent extends PathfindingMovementComponent {
 			moves[2] = new Vector2(1, -1);
 			moves[3] = new Vector2(1, 1);
 
-			Vector2 moveTo = bestMove(level.spectrePathGrid, moves);
+			Vector2 moveTo = bestMove(level.collisionGrid.spectrePathGrid, moves);
 
 			move(moveTo.x * Constants.GRID_CELL_SIZE, moveTo.y * Constants.GRID_CELL_SIZE);
 		}

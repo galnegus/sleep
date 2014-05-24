@@ -28,7 +28,7 @@ public class GhostMovementComponent extends PathfindingMovementComponent {
 			moves[2] = new Vector2(0, -1);
 			moves[3] = new Vector2(0, 1);
 
-			Vector2 moveTo = bestMove(level.ghostPathGrid, moves);
+			Vector2 moveTo = bestMove(level.collisionGrid.ghostPathGrid, moves);
 
 			move(moveTo.x * Constants.GRID_CELL_SIZE, moveTo.y * Constants.GRID_CELL_SIZE);
 		}

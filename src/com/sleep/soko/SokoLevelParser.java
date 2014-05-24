@@ -58,7 +58,7 @@ public class SokoLevelParser {
 			//
 			// [1,2,3] -> [3,6]
 			// [4,5,6] -> [2,5]
-			// -> [1,4]
+			// _______ -> [1,4]
 
 			for (int x = 0; x < columns; x++) {
 				for (int y = 0; y < rows; y++) {

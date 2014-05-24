@@ -57,16 +57,17 @@ public class MovementComponent extends Component {
 		if (movable) {
 			destination.x = owner.position.x + x;
 			destination.y = owner.position.y + y;
-			Entity entityAtDest = level.getEntityAt(destination.x, destination.y);
+			Entity entityAtDest = level.collisionGrid.getEntityAt(destination.x, destination.y);
 
 			if (entityAtDest == null) {
 				moving = true;
-				level.moveEntityTo(owner, destination.x, destination.y);
+				level.collisionGrid.moveEntityTo(owner, destination.x, destination.y);
 
 				
 			} else if(entityAtDest.getName().equals("Exit") && owner.getName().equals("Player")) {				
 				
 				moving = true;
+				level.collisionGrid.removeEntity(owner); // player is not collidable once it steps on exit
 				level.levelComplete();
 				
 				
@@ -77,7 +78,7 @@ public class MovementComponent extends Component {
 				// recursively check that several boxes can be moved
 				if (entityAtDest.getComponent(MovementComponent.class).move(x, y)) {
 					moving = true;
-					level.moveEntityTo(owner, destination.x, destination.y);
+					level.collisionGrid.moveEntityTo(owner, destination.x, destination.y);
 				}
 
 				// no cannibalism!
@@ -85,7 +86,7 @@ public class MovementComponent extends Component {
 					&& (entityAtDest.getName().equals("Player") || owner.getName().equals("Box"))) {
 				entityAtDest.getComponent(DeathComponent.class).die(this);
 				moving = true;
-				level.moveEntityTo(owner, destination.x, destination.y);
+				level.collisionGrid.moveEntityTo(owner, destination.x, destination.y);
 			}
 
 			return moving;
