@@ -18,6 +18,7 @@ public class IF extends CoolScreen implements InputReceiver {
 	private BitmapFont font;
 
 	private LinkedList<Monologue> monoloQue;
+	private MonologueInputProcessor monologueInputProcessor;
 
 	public IF(Sleep sleep) {
 		super(sleep);
@@ -36,6 +37,8 @@ public class IF extends CoolScreen implements InputReceiver {
 		this.sleep = sleep;
 
 		monoloQue = new LinkedList<Monologue>();
+		monologueInputProcessor = new MonologueInputProcessor();
+		Sleep.inputMultiplexer.addProcessor(monologueInputProcessor);
 	}
 
 	public void update() {
@@ -81,9 +84,10 @@ public class IF extends CoolScreen implements InputReceiver {
 			terminal.fader.fadeOut();
 			terminal.isOutputtingMonologue = true;
 			Monologue monologue = monoloQue.getFirst();
-			if (monologue.introIsDone() && monologue.continueTriggered()) {
+			monologueInputProcessor.setActiveMonologue(monologue);
+			if (monologue.introIsDone && monologue.continueTriggered) {
 				monologue.postRender(font);
-				if (monologue.outroIsDone()) {
+				if (monologue.outroIsDone) {
 					terminal.print(monologue.toString());
 					monoloQue.removeFirst();
 				}

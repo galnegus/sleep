@@ -40,7 +40,8 @@ public abstract class PathfindingMovementComponent extends MovementComponent {
 			move.y += moverPos.y;
 		}
 
-		int min = level.columnCount() * level.rowCount();
+		// arbitrary initial number, used to remember best move
+		int min = level.columnCount() * level.rowCount(); 
 
 		for (Vector2 move : moves) {
 			if (move.x >= 0 && move.x < level.columnCount() && move.y >= 0

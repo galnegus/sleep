@@ -9,7 +9,7 @@ public abstract class Monologue {
 	protected int wrapWidth;
 
 	protected boolean introIsDone = false;
-	protected boolean continueTrigger = false;
+	protected boolean continueTriggered = false;
 	protected boolean outroIsDone = false;
 
 	public Monologue(String text, int x, int y, int wrapWidth) {
@@ -25,18 +25,6 @@ public abstract class Monologue {
 
 	public int getY() {
 		return y;
-	}
-
-	public boolean introIsDone() {
-		return introIsDone;
-	}
-	
-	public boolean continueTriggered() {
-		return continueTrigger;
-	}
-
-	public boolean outroIsDone() {
-		return outroIsDone;
 	}
 
 	public String toString() {

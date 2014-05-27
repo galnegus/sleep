@@ -36,14 +36,10 @@ public class FaderMonologue extends Monologue {
 		if (!introIsDone)
 			fader.renderDone(font);
 		
-		if (fader.done()) {
+		if (introIsDone || fader.done()) {
 			introIsDone = true;
+			fader.goLight();
 			fader.fadeOut();
-		}
-		
-		if (introIsDone) {
-			if (Gdx.input.isKeyPressed(Keys.ENTER))
-				continueTrigger = true;
 		}
 	}
 
