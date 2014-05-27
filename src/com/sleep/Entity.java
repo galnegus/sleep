@@ -15,7 +15,7 @@ public class Entity {
 
 	private String name;
 	public Vector2 position;
-	private int depth;
+	private final int depth;
 	
 	private Map<Class<? extends Component>, Component> components = null;
 

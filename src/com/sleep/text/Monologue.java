@@ -31,7 +31,7 @@ public abstract class Monologue {
 		return text;
 	}
 
-	public abstract void render(BitmapFont font);
+	public abstract void renderIntro(BitmapFont font);
 
-	public abstract void postRender(BitmapFont font);
+	public abstract void renderOutro(BitmapFont font);
 }

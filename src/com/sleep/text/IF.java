@@ -86,13 +86,13 @@ public class IF extends CoolScreen implements InputReceiver {
 			Monologue monologue = monoloQue.getFirst();
 			monologueInputProcessor.setActiveMonologue(monologue);
 			if (monologue.introIsDone && monologue.continueTriggered) {
-				monologue.postRender(font);
+				monologue.renderOutro(font);
 				if (monologue.outroIsDone) {
 					terminal.print(monologue.toString());
 					monoloQue.removeFirst();
 				}
 			} else {
-				monologue.render(font);
+				monologue.renderIntro(font);
 			}
 		} else {
 			terminal.isOutputtingMonologue = false;

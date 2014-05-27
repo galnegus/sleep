@@ -4,28 +4,34 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 
 public class MonologueInputProcessor implements InputProcessor {
-	Monologue activeMonologue = null;
+	// the monologue that is being progressed
+	Monologue monologue = null;
+	
+	// the monologue that was active when the enter key was pressed down
+	Monologue monologueAtEnterDown = null;
 	
 	public void setActiveMonologue(Monologue activeMonologue) {
-		this.activeMonologue = activeMonologue;
+		this.monologue = activeMonologue;
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
+		if (keycode == Input.Keys.ENTER) {
+			monologueAtEnterDown = monologue;		
+		}
+		
 		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
 		if (keycode == Input.Keys.ENTER) {
-			if (activeMonologue != null) {
-				if (!activeMonologue.introIsDone) {
-					activeMonologue.introIsDone = true;
-				} else if (!activeMonologue.continueTriggered) {
-					activeMonologue.continueTriggered = true;
-				}/* else if (!activeMonologue.outroIsDone) {
-					activeMonologue.outroIsDone = true;
-				}*/ // maybe, maybe not
+			if (monologue != null && monologue == monologueAtEnterDown) {
+				if (!monologue.introIsDone) {
+					monologue.introIsDone = true;
+				} else if (!monologue.continueTriggered) {
+					monologue.continueTriggered = true;
+				}
 			}			
 		}
 		

@@ -27,7 +27,6 @@ public class EntityManager {
 	}
 
 	public void render() {
-		sort();
 		for (Entity e : entityList) {
 			e.render();
 		}
@@ -70,6 +69,7 @@ public class EntityManager {
 
 	public Entity add(Entity e) {
 		entityList.add(e);
+		sort();
 		return e;
 	}
 	

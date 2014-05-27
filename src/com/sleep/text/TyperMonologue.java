@@ -1,7 +1,6 @@
 package com.sleep.text;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.sleep.Sleep;
 
@@ -59,7 +58,7 @@ public class TyperMonologue extends Monologue {
 	}
 
 	@Override
-	public void render(BitmapFont font) {
+	public void renderIntro(BitmapFont font) {
 		String text = pollText();
 		String words = pollWords();
 		
@@ -72,7 +71,7 @@ public class TyperMonologue extends Monologue {
 	}
 	
 	@Override
-	public void postRender(BitmapFont font) {
+	public void renderOutro(BitmapFont font) {
 		outroIsDone = true;
 	}
 }

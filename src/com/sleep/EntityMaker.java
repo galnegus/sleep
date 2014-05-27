@@ -24,8 +24,8 @@ import com.sleep.soko.component.render.BackgroundRenderComponent;
 import com.sleep.soko.component.render.GhostRenderComponent;
 import com.sleep.soko.component.render.ImageRenderComponent;
 import com.sleep.text.Room;
-import com.sleep.text.component.OverWorldMovementComponent;
-import com.sleep.text.component.RoomComponent;
+import com.sleep.text.component.movement.OverWorldMovementComponent;
+import com.sleep.text.component.render.RoomRenderComponent;
 
 /**
  * Creates entities!
@@ -131,8 +131,7 @@ public class EntityMaker {
 
 	public static Entity makeRoom(EntityManager entityManager, int x, int y, Room room) {
 		return entityManager.add(new Entity("Room", new Vector2(x, y), ROOM_DEPTH))
-				.addComponent(new ImageRenderComponent(Sleep.assets.get("images/room_bw.png", Texture.class)))
-				.addComponent(new RoomComponent(room)).initComponents();
+				.addComponent(new RoomRenderComponent(Sleep.assets.get("images/room_bw.png", Texture.class), room)).initComponents();
 	}
 
 	public static Entity makeHorizontalDoorway(EntityManager entityManager, int x, int y) {

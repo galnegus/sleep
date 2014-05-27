@@ -1,12 +1,6 @@
 package com.sleep.soko;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
-import com.sleep.Constants;
 import com.sleep.Entity;
 import com.sleep.EntityManager;
 import com.sleep.LightSource;

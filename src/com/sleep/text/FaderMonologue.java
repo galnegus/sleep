@@ -1,7 +1,6 @@
 package com.sleep.text;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.sleep.Fader;
@@ -27,7 +26,7 @@ public class FaderMonologue extends Monologue {
 	}
 
 	@Override
-	public void render(BitmapFont font) {
+	public void renderIntro(BitmapFont font) {
 		if (!introIsDone)
 			fader.render(font);
 		
@@ -44,7 +43,7 @@ public class FaderMonologue extends Monologue {
 	}
 
 	@Override
-	public void postRender(BitmapFont font) {
+	public void renderOutro(BitmapFont font) {
 		if (!outroIsDone)
 			fader.render(font);
 		
